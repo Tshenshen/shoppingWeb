@@ -56,4 +56,8 @@ class ShoppingWebApplicationTests {
 
     }
 
+    @Test
+    void testPageHelper(){
+
+    }
 }
