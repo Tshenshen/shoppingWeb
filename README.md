@@ -16,3 +16,8 @@
 * 为chrome浏览器添加插件（在xxxx文件夹中）
 * 使用教程视屏也在
 * 先抓点数据好干事
+## 6.编写浏览商品页面
+* 将抓到数据放入数据库
+* 编写前端页面
+* 编写对应的controller,mapper,service
+* 整合pageHelper
