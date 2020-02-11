@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,6 +40,20 @@ class ShoppingWebApplicationTests {
     @Test
     void r1(){
         System.out.println(userMapper.getAll());
+    }
+
+    @Test
+    void rename(){
+        File picdir = new File("C:\\Users\\Administrator\\Downloads\\aaa\\pic");
+        File[] files = picdir.listFiles();
+        int i = 1;
+        for (File pic :
+                files) {
+//            pic.renameTo(i+"");
+            pic.renameTo(new File("C:\\Users\\Administrator\\Downloads\\aaa\\pic\\"+i+".jpg"));
+            i++;
+        }
+
     }
 
 }
