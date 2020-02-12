@@ -2,6 +2,8 @@ package com.liang.shoppingweb.entity.user;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import java.util.Date;
 
 
@@ -18,6 +20,7 @@ public class User {
     /**
      * 用户名
      */
+    @NotBlank
     private String username;
     /**
      * 昵称
@@ -36,13 +39,13 @@ public class User {
      */
     private String email;
     /**
-     * 1为删除
+     * 1为有效
      */
-    private char isDelete;
+    private char enable;
     /**
-     * 1为卖家
+     * <@link>AuthorityConstant
      */
-    private char isSeller;
+    private String role;
     /**
      * 最后登录时间
      */

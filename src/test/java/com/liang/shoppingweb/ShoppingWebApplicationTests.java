@@ -4,6 +4,8 @@ import com.liang.shoppingweb.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -57,7 +59,9 @@ class ShoppingWebApplicationTests {
     }
 
     @Test
-    void testPageHelper(){
-
+    void password(){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encode = encoder.encode("123");
+        System.out.println(encode);
     }
 }

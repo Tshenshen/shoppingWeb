@@ -18,8 +18,8 @@ public class GoodsListController {
     @Autowired
     private GoodsService goodsService;
 
-    @GetMapping("/index")
-    public String index(Model model){
+    @GetMapping({"/index.html","/","/index"})
+    public String indexHtml(Model model){
         PageInfo<Goods> pageInfo = goodsService.getAllByPage(1,PageConstant.pageSize);
         model.addAttribute("pageInfo", pageInfo);
         return "index";
