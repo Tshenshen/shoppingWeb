@@ -1,15 +1,15 @@
 package com.liang.shoppingweb.controller;
 
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.UserMapper;
+import com.liang.shoppingweb.exception.MyException;
 import com.liang.shoppingweb.service.UserService;
 import com.liang.shoppingweb.utils.EncodeUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
@@ -29,11 +29,17 @@ public class LoginController {
     }
 
     @PostMapping("/userRegister")
-    public String userRegister(User user) {
+    public String userRegister(User user, Model model) {
         user.setPassword(EncodeUtils.encodeByBCrypt(user.getPassword()));
         user.setEnable('1');
         user.setCreateDate(new Date());
-        userService.insertUser(user);
+        try {
+            userService.insertUser(user);
+        }catch (MyException e){
+            e.printStackTrace();
+            model.addAttribute("errMsg",e.getErrMsg());
+            return "register";
+        }
         return "login";
     }
 }

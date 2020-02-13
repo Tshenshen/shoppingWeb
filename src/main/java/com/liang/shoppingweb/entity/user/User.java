@@ -49,7 +49,7 @@ public class User {
     /**
      * 最后登录时间
      */
-    private Date lastLoginTime;
+    private Date lastLoginDate;
     /**
      * 创建日期
      */

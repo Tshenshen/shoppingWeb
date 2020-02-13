@@ -25,6 +25,7 @@
             <div class="form-group">
                 <label >User name</label>
                 <input class="form-control" name="username" placeholder="UserName">
+                <label th:if="${errMsg!=null&&errMsg.username!=null}" style="color: red">[[${errMsg.username}]]</label>
             </div>
             <div class="form-group">
                 <label >Email address</label>

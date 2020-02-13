@@ -38,3 +38,10 @@
 ## 4.添加注册页面
 * 编写注册页面
 * 测试用户测试功能
+## 5.添加记录用户最后一次登录时间的功能
+* 编写*MyLoginSuccessHandler* 继承*SavedRequestAwareAuthenticationSuccessHandler*
+* 编写相应的mapper和service 
+* 将MyLoginSuccessHandler注册到security的loginForm里边
+```java
+http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
+```

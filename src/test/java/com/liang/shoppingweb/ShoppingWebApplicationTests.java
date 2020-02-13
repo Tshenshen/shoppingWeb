@@ -1,6 +1,7 @@
 package com.liang.shoppingweb;
 
 import com.liang.shoppingweb.mapper.UserMapper;
+import com.liang.shoppingweb.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,9 @@ class ShoppingWebApplicationTests {
 
     @Resource
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     void r() throws SQLException {
@@ -63,5 +67,10 @@ class ShoppingWebApplicationTests {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encode = encoder.encode("123");
         System.out.println(encode);
+    }
+
+    @Test
+    void updatelastdate(){
+        userService.updateLastLoginDateByUsername("444");
     }
 }

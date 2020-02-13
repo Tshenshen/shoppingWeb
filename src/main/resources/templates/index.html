@@ -18,7 +18,7 @@
 
 </div>
 <div th:replace="toolBar/topNavBar :: topNavBar"></div>
-    <div style="width: 100%;margin-top: 74px" sec:authorize="isAuthenticated()">
+    <div style="width: 100%;margin-top: 74px" >
         <div class="view grid-nosku " style="margin: auto">
             <div class="product " th:each="good:${pageInfo.list}">
                 <div class="product-iWrap">

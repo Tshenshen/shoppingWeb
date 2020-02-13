@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.config;
+package com.liang.shoppingweb.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,6 +15,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private MyLoginSuccessHandler myLoginSuccessHandler;
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        super.configure(auth);
@@ -29,13 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        super.configure(http);
-//        http.authorizeRequests()
-//                .antMatchers("/index","/","/index.html")
-//                .hasAnyAuthority(AuthorityConstant.user,AuthorityConstant.shop);
         http.authorizeRequests().antMatchers("/index", "/", "/index.html").permitAll();
-        http.formLogin().loginPage("/userLogin");
-        http.logout();
+        http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
+        http.logout().logoutSuccessUrl("/index");
         http.rememberMe().rememberMeParameter("isRemember");
     }
 
