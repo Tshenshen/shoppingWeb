@@ -1,0 +1,19 @@
+.outsideFrame {
+    width: 70%;
+    margin: auto;
+}
+.outsideFrame.imageFrame{
+
+}
+.goods-detail-price{
+    margin-left: 10px ;
+    margin-right: 10px;
+    color: red;
+
+}
+.goods-detail-name{
+    font-size: large;
+    margin-top: 10px ;
+    margin-bottom: 10px;
+    color: red;
+}

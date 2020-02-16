@@ -45,3 +45,8 @@
 ```java
 http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
 ```
+
+# 四、加入商品详细页面
+* 引入element ui
+* 编写商品详细页面
+* 添加跳转链接

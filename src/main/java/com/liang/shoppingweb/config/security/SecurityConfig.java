@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/index", "/", "/index.html").permitAll();
         http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
-        http.logout().logoutSuccessUrl("/index");
+        http.logout();
         http.rememberMe().rememberMeParameter("isRemember");
     }
 

@@ -28,4 +28,8 @@ public class GoodsService {
         PageInfo<Goods> pageInfo = new PageInfo<>(goods,PageConstant.navigatePages);
         return pageInfo;
     }
+
+    public Goods getGoodsById(Integer id) {
+        return goodsMapper.getGoodsById(id);
+    }
 }

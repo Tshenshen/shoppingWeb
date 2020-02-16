@@ -11,4 +11,7 @@ public interface GoodsMapper {
 
     @Select("select * from tbl_goods")
     List<Goods> getAll();
+
+    @Select("select * from tbl_goods where id = #{id}")
+    Goods getGoodsById(Integer id);
 }
