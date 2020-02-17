@@ -9,23 +9,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-
 @Controller
 public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
 
-    @GetMapping("/goodsDetailPage/{id}")
-    public String goodsDetailPage(@PathVariable Integer id ,Model model){
+    @GetMapping("/goods/goodsDetailPage/{id}")
+    public String goodsDetailPage(@PathVariable Integer id, Model model) {
         model.addAttribute("goodsId", id);
-        return "goodsDetail";
+        return "goods/goodsDetail";
     }
 
-    @GetMapping("/goodsDetail/{id}")
+    @GetMapping("/goods/goodsDetail/{id}")
     @ResponseBody
-    public Goods goodsDetail(@PathVariable Integer id ){
+    public Goods goodsDetail(@PathVariable Integer id) {
         return goodsService.getGoodsById(id);
     }
 

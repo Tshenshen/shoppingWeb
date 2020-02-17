@@ -19,4 +19,7 @@ public interface UserMapper {
 
     @Update("update tbl_user set last_login_date = #{lastLoginDate} where username = #{username}")
     void updateLastLoginDateByUsername(User user);
+
+    @Select("select id,username,role,sex from tbl_user where username = #{username}")
+    User getUserByName(String username);
 }

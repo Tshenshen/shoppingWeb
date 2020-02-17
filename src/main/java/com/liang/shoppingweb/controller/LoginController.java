@@ -20,12 +20,12 @@ public class LoginController {
 
     @GetMapping("/userLogin")
     public String loginPage() {
-        return "login";
+        return "/user/login";
     }
 
     @GetMapping("/userRegister")
     public String userRegisterPage() {
-        return "register";
+        return "/user/register";
     }
 
     @PostMapping("/userRegister")
@@ -35,11 +35,11 @@ public class LoginController {
         user.setCreateDate(new Date());
         try {
             userService.insertUser(user);
-        }catch (MyException e){
+        } catch (MyException e) {
             e.printStackTrace();
-            model.addAttribute("errMsg",e.getErrMsg());
-            return "register";
+            model.addAttribute("errMsg", e.getErrMsg());
+            return "/user/register";
         }
-        return "login";
+        return "/user/login";
     }
 }

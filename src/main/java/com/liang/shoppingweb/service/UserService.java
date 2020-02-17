@@ -23,9 +23,9 @@ public class UserService {
     public void insertUser(User user) throws MyException {
         try {
             userMapper.insertUser(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             MyException exception = new MyException(e);
-            exception.addErrMsg("username","用户名已存在");
+            exception.addErrMsg("username", "用户名已存在");
             throw exception;
         }
     }
@@ -36,5 +36,9 @@ public class UserService {
         user.setLastLoginDate(new Date());
         System.out.println(new Date());
         userMapper.updateLastLoginDateByUsername(user);
+    }
+
+    public User getUserByName(String username) {
+        return userMapper.getUserByName(username);
     }
 }

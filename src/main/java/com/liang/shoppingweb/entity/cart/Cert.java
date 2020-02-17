@@ -18,7 +18,7 @@ public class Cert {
     /**
      * 储存者id
      */
-    private int userId;
+    private String username;
     /**
      * 商品id
      */
