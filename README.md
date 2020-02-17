@@ -42,11 +42,16 @@
 * 编写*MyLoginSuccessHandler* 继承*SavedRequestAwareAuthenticationSuccessHandler*
 * 编写相应的mapper和service 
 * 将MyLoginSuccessHandler注册到security的loginForm里边
-```java
+```text
 http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
 ```
 
 # 四、加入商品详细页面
 * 引入element ui
 * 编写商品详细页面
+* 添加跳转链接
+
+# 五、加入购物车页面
+* 添加加入购物车功能
+* 编写购物车页面
 * 添加跳转链接

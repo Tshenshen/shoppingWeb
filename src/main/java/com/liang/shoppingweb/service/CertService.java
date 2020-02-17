@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CertService {
@@ -16,5 +17,9 @@ public class CertService {
     public void addGoods(Cert cert){
         cert.setCreateDate(new Date());
         certMapper.addGoods(cert);
+    }
+
+    public List<Cert> getCertsByUsername(String username){
+        return certMapper.getCertsByUsername(username);
     }
 }

@@ -1,25 +1,27 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
 >
+<head>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link th:href="@{/css/goodsDetail.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
 
-<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-<script src="" th:src="@{/js/jquery-3.4.1.js}"></script>
-<script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
-<script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
-<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-<script src="" th:src="@{/js/bootstrap.js}"></script>
-<link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
 
-
-<link rel="stylesheet"
-      href="//g.alicdn.com/??mui/global/3.0.31/global.css"/>
-<link rel="stylesheet"
-      href="//g.alicdn.com/??tm/list/2.25.18/mods/srp/cells/pin.css,tm/list/2.25.18/pages/layout.css,tm/list/2.25.18/pages/base.css,tm/list/2.25.18/pages/mui.css,tm/list/2.25.18/mods/error/error.css,tm/list/2.25.18/mods/tmall-rec.css,tm/list/2.25.18/mods/crumb/crumb.css,tm/list/2.25.18/mods/attr/attr.css,tm/list/2.25.18/mods/related/related.css,tm/list/2.25.18/mods/filter/filter.css,tm/list/2.25.18/mods/filter/couponfilter.css,tm/list/2.25.18/mods/locData.css,tm/list/2.25.18/mods/srp/grid.css,tm/list/2.25.18/pages/bts.css"/>
+    <link rel="stylesheet"
+          href="//g.alicdn.com/??mui/global/3.0.31/global.css"/>
+    <link rel="stylesheet"
+          href="//g.alicdn.com/??tm/list/2.25.18/mods/srp/cells/pin.css,tm/list/2.25.18/pages/layout.css,tm/list/2.25.18/pages/base.css,tm/list/2.25.18/pages/mui.css,tm/list/2.25.18/mods/error/error.css,tm/list/2.25.18/mods/tmall-rec.css,tm/list/2.25.18/mods/crumb/crumb.css,tm/list/2.25.18/mods/attr/attr.css,tm/list/2.25.18/mods/related/related.css,tm/list/2.25.18/mods/filter/filter.css,tm/list/2.25.18/mods/filter/couponfilter.css,tm/list/2.25.18/mods/locData.css,tm/list/2.25.18/mods/srp/grid.css,tm/list/2.25.18/pages/bts.css"/>
+</head>
 <body>
 
 </div>
 <div th:replace="toolBar/topNavBar :: topNavBar"></div>
-<div >
+<div>
     <div class="view grid-nosku " style="margin: auto">
         <div class="product " th:each="good:${pageInfo.list}">
             <div class="product-iWrap">
@@ -63,4 +65,6 @@
 
 </div>
 </body>
+<script th:src="@{/js/toolBar.js}"></script>
+</html>
 

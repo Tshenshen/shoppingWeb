@@ -35,6 +35,7 @@ public class MyLoginSuccessHandler extends SavedRequestAwareAuthenticationSucces
         //获得用户详情
         String username = authentication.getName();
         logger.info(" 用户登录 username = " + username);
+        System.out.println(" 用户登录 username = " + username);
         userService.updateLastLoginDateByUsername(username);
     }
 }

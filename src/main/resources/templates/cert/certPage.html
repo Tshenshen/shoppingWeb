@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}">
     <title>Title</title>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
 </head>
 <body>
+<div id="app">
 
+</div>
 </body>
+
+<script>
+    new Vue({
+        el:"app",
+        data:{
+
+        },
+        mounted(){
+            axios.get("ShopWeb/cert/Certs/{username}")
+        },
+        method:{
+
+        }
+    })
+</script>
 </html>
