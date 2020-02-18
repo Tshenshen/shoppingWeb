@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liang.shoppingweb.mapper.CertGoodsMapper">
+    <sql id="properties">
+        c.id AS id,
+        c.username AS username,
+        c.goods_id AS goods_id,
+        c.goods_num AS goods_num,
+        c.create_date AS create_date,
+        c.update_date AS create_date,
+        g.`name` AS goods_name,
+        g.price AS goods_price,
+        g.stock AS goods_stock,
+        g.`describe` AS goods_describe,
+        g.pic_paths AS goods_pic_paths,
+        g.create_date AS goods_create_date,
+        g.update_date AS goods_update_date
+    </sql>
+
+    <resultMap id="CertVoMap" type="com.liang.shoppingweb.entity.cart.CertVo">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_num" property="goodsNum"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <association property="goods" resultMap="GoodsMap"/>
+    </resultMap>
+
+    <resultMap id="GoodsMap" type="com.liang.shoppingweb.entity.goods.Goods">
+        <id column="goods_id" property="id"/>
+        <result column="goods_name" property="name"/>
+        <result column="goods_price" property="price"/>
+        <result column="goods_stock" property="stock"/>
+        <result column="goods_describe" property="describe"/>
+        <result column="goods_pic_paths" property="picPaths"/>
+        <result column="goods_create_date" property="createDate"/>
+        <result column="goods_update_date" property="updateDate"/>
+    </resultMap>
+
+    <select id="getCertWithGoodsInfoByUsername" resultMap="CertVoMap">
+      SELECT
+        c.id id,
+        c.username username,
+        c.goods_id goods_id,
+        c.goods_num goods_num,
+        g.`name` goods_name,
+        g.price goods_price,
+        g.stock goods_stock,
+        g.`describe` goods_describe,
+        g.pic_paths goods_pic_paths
+      FROM
+        tbl_cert AS c
+        INNER JOIN tbl_goods AS g ON c.goods_id = g.id
+      WHERE
+        c.username = #{username}
+    </select>
+
+</mapper>

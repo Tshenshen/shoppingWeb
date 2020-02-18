@@ -1,6 +1,7 @@
 package com.liang.shoppingweb.controller;
 
 import com.liang.shoppingweb.entity.cart.Cert;
+import com.liang.shoppingweb.entity.cart.CertVo;
 import com.liang.shoppingweb.service.CertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ public class CertController {
 
     @GetMapping("/cert/Certs/{username}")
     @ResponseBody
-    public List<Cert> getCertsByUsername(@PathVariable("username") String username){
-        return certService.getCertsByUsername(username);
+    public List<CertVo> getCertsByUsername(@PathVariable("username") String username){
+        return certService.getCertWithGoodsInfoByUsername(username);
     }
 }

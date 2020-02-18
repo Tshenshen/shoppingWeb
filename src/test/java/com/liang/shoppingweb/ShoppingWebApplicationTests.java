@@ -1,5 +1,7 @@
 package com.liang.shoppingweb;
 
+import com.liang.shoppingweb.entity.cart.CertVo;
+import com.liang.shoppingweb.mapper.CertGoodsMapper;
 import com.liang.shoppingweb.mapper.UserMapper;
 import com.liang.shoppingweb.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 @SpringBootTest
 class ShoppingWebApplicationTests {
@@ -27,6 +30,9 @@ class ShoppingWebApplicationTests {
 
     @Autowired
     private UserService userService;
+
+    @Resource
+    private CertGoodsMapper certGoodsMapper;
 
     @Test
     void r() throws SQLException {
@@ -72,5 +78,11 @@ class ShoppingWebApplicationTests {
     @Test
     void updatelastdate(){
         userService.updateLastLoginDateByUsername("444");
+    }
+
+    @Test
+    void testCertGoodsMapper(){
+        List<CertVo> certs = certGoodsMapper.getCertWithGoodsInfoByUsername("444");
+        System.out.println(certs);
     }
 }
