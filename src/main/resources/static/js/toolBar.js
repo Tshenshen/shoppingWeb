@@ -1,25 +1,11 @@
 const topNavBar = new Vue({
     el: "#topNavBar",
     data: {
-        userInfo:{},
-        isAuthenticated:false
+        isAuthenticated:"false"
     },
     mounted(){
-        var _that = this
-        _that.isAuthenticated = "true" === document.querySelector("#isAuthenticated").getAttribute("value");
-        if (_that.isAuthenticated) {
-            axios.get("/ShopWeb/getCurrentUser").then(function (response) {
-                _that.userInfo = response.data;
-                sessionStorage.setItem("isAuthenticated","true");
-                sessionStorage.setItem("userInfo",JSON.stringify(_that.userInfo));
-            }).catch(function () {
-                // handle error
-                _that.$message.error('获取用户信息失败！！');
-            })
-        }else {
-            sessionStorage.setItem("isAuthenticated","false");
-        }
-
+        this.isAuthenticated = (document.querySelector("#isAuthenticated").getAttribute("value").toString());
+        sessionStorage.setItem("isAuthenticated",this.isAuthenticated);
     },
     methods: {
         logout() {
@@ -32,10 +18,8 @@ const topNavBar = new Vue({
                 console.log("注销失败");
                 console.log(reason);
             }).finally(function () {
-                sessionStorage.removeItem("userInfo");
                 sessionStorage.setItem("isAuthenticated","false");
                 document.querySelector("#isAuthenticated").setAttribute("value", "false");
-                _that.userInfo={};
                 _that.isAuthenticated=false;
             })
 

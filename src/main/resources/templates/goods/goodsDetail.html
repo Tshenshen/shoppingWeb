@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title v-model="goodsDetail.name"></title>
+    <title>[[${goods.name}]]</title>
     <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
     <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
@@ -18,7 +18,7 @@
 <body>
 <div>
     <div th:replace="toolBar/topNavBar :: topNavBar"></div>
-    <input id="goodId" hidden="hidden" th:value="${goodsId}">
+    <input id="goodId" hidden="hidden" th:value="${goods.id}">
     <el-container id="app" style="width: 70% ;margin: auto">
 
         <el-container direction="horizontal">
@@ -87,25 +87,6 @@
                 _that.$message.error('获取商品信息失败！！');
             });
 
-            // // 获取用户信息
-            // debugger
-            // console.log(sessionStorage)
-            // if (sessionStorage.getItem("userInfo")!=null){
-            //     console.log(sessionStorage);
-            //     console.log(sessionStorage.getItem("userInfo"));
-            //     console.log(sessionStorage.getItem("userInfo").name);
-            //     _that.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-            //     console.log(_that.userInfo.name);
-            // }
-            // else if (document.querySelector("#isAuthenticated").getAttribute("value")==="true") {
-            //     axios.get("/ShopWeb/getCurrentUser").then(function (response) {
-            //         _that.userInfo = response.data;
-            //         sessionStorage.setItem("userInfo",JSON.stringify(_that.userInfo));
-            //     }).catch(function () {
-            //         // handle error
-            //         _that.$message.error('获取用户信息失败！！');
-            //     })
-            // }
         },
         computed: {
             goodsImgUrl() {
@@ -118,23 +99,24 @@
         methods:{
             addGoods(){
                 var _that = this;
-                if (sessionStorage.getItem("isAuthenticated") === "false") {
+                if (sessionStorage.getItem("isAuthenticated") !== "true") {
                     _that.$message.error('请先登录！！');
                     return;
                 }
-                _that.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-                console.log(_that.userInfo);
                 let url = "/ShopWeb/cert/addGoods";
                 axios({
                     method:"post",
                     url:url,
                     data:{
-                        username:_that.userInfo.username,
                         goodsNum:_that.goodsNum,
                         goodsId:_that.goodsDetail.id
                     }
-                }).then(function () {
-                    _that.$message.success('添加购物车成功！！');
+                }).then(function (value) {
+                    if(value.data.success){
+                        _that.$message.success(value.data.message);
+                    }else{
+                        _that.$message.error(value.data.message);
+                    }
                 }).catch(function () {
                     // handle error
                     _that.$message.error('添加购物车失败！！');

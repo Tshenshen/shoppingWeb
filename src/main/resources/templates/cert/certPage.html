@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}">
-    <title>Title</title>
+    <title>购物车</title>
     <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
     <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
@@ -23,7 +23,7 @@
             </h1>
         </el-header>
         <el-main style="height: fit-content">
-            <div v-if="isEmpty">
+            <div v-if="certIsEmpty">
                 <div>
                     <ul>
                         <li class="txt">
@@ -50,7 +50,7 @@
                         <!--商品信息头-->
                         <div class="barBorder">
                             <div class="select-all">
-                                <div><input type="checkbox"> 全选</div>
+                                <div><input type="checkbox" :checked="select_all" @click="select_all_click"> 全选</div>
                             </div>
                             <div class="t-column t-goods">商品</div>
                             <div class="t-column t-props"></div>
@@ -63,30 +63,34 @@
                         <!--商品信息栏-->
                         <div class="cartBarBorder" v-for="(cert,index) in certList" :key="index">
                             <div class="selectItem">
-                                <input type="checkbox">
+                                <input type="checkbox" v-model="selectedList" :value="cert.id">
                             </div>
                             <div class="column cert-goods">
                                 <el-image :src="picUrl(index)" lazy></el-image>
                             </div>
                             <div class="column cert-props">
-                                <a >{{cert.goods.name}}</a></div>
+                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cert.goods.id" target="_blank">{{cert.goods.name}}</a>
+                            </div>
                             <div class="column cert-price">{{cert.goods.price}}</div>
                             <div class="column cert-quantity">
-                                <el-input-number size="mini" v-model="cert.goodsNum"></el-input-number>
+                                <el-input-number size="mini" v-model="cert.goodsNum" :min="1" :max="cert.goods.stock"
+                                                 @change="updateNum(index)"></el-input-number>
                             </div>
                             <div class="column cert-sum">{{ItemsSum(index)}}</div>
                             <div class="column cert-action">
-                                <a ><i class="el-icon-delete"></i>删除</a>
+                                <a @click="deleteItem(index)">
+                                    <i class="el-icon-delete"></i>删除
+                                </a>
                             </div>
                         </div>
 
                         <!--结算栏-->
                         <div class="barBorder">
                             <div class="select-all">
-                                <div><input type="checkbox"> 全选</div>
+                                <div><input type="checkbox" :checked="select_all" @click="select_all_click"> 全选</div>
                             </div>
                             <div class="operation">
-                                <a href="#none">删除选中商品</a>
+                                <a @click.prvent="delete_selected">删除选中商品</a>
                             </div>
                             <div class="normal">
                                 <div class="btn-area">
@@ -94,14 +98,12 @@
                                 </div>
                                 <div class="price-sum">
                                     <div>
-                                        <span class="txt txt-new">总价：</span>
-                                        <span class="price sumPrice">
-										<em data-bind="199.00">¥199.00</em>
-                                        </span>
+                                        <span>总价：</span>
+                                        <span><em>¥{{sumPrice}}</em></span>
                                     </div>
                                 </div>
                                 <div class="amount-sum">
-                                    已选择<em>1</em>件商品
+                                    已选择<em style="color: red"> {{selectedListNum}} </em>件商品
                                 </div>
                             </div>
                         </div><!--结算栏-->
@@ -120,36 +122,129 @@
     new Vue({
         el: "#app",
         data: {
-            isEmpty: true,
-            certList: []
+            certList: [],
+            selectedList: []
         },
         mounted() {
-            var username = JSON.parse(sessionStorage.getItem("userInfo")).username;
-            console.log(username);
             var _that = this;
-            axios.get("Certs/" + username).then(function (response) {
-                _that.certList = response.data;
-                if (_that.certList.length !== 0) {
-                    _that.isEmpty = false;
+            axios.get("CertsList").then(function (response) {
+                if (response.data.success) {
+                    _that.certList = response.data.content;
+                } else {
+                    _that.$message.error(response.data.message);
                 }
             }).catch(function (reason) {
                 console.log(reason);
-                _that.$message.error("获取购物车列表失败！");
+                _that.$message.error("获取购物车列表错误！");
             })
         },
         computed: {
-            picUrl(){
-                 return function (index) {
+            picUrl() {
+                return function (index) {
                     return "/ShopWeb/image/" + this.certList[index].goods.id + ".jpg";
                 }
             },
-            ItemsSum(){
+            ItemsSum() {
                 return function (index) {
-                    return (this.certList[index].goodsNum*this.certList[index].goods.price).toFixed(2);
+                    return (this.certList[index].goodsNum * this.certList[index].goods.price).toFixed(2);
                 }
+            },
+            select_all() {
+                return this.certList.length === this.selectedList.length
+            },
+            selectedListNum() {
+                return this.selectedList.length;
+            },
+            sumPrice() {
+                var _that = this;
+                var sum = 0.00;
+                _that.certList.forEach(function (cert) {
+                    if (_that.selectedList.indexOf(cert.id) >= 0) {
+                        sum = sum + cert.goodsNum * cert.goods.price;
+                    }
+                });
+                return sum.toFixed(2);
+            },
+            certIsEmpty() {
+                return !(this.certList.length > 0);
             }
         },
-        method: {}
+        methods: {
+            select_all_click(event) {
+                if (event.target.checked) {
+                    var ids = [];
+                    this.certList.forEach(
+                        function (item) {
+                            ids.push(item.id);
+                        }
+                    );
+                    this.selectedList = ids;
+                }
+                else {
+                    this.selectedList = [];
+                }
+            },
+            deleteItem(index) {
+                var _that = this;
+                axios.delete("deleteItem/" + _that.certList[index].id).then(function (value) {
+                    if (value.data.success) {
+                        let s_index = _that.selectedList.indexOf(_that.certList[index].id);
+                        if (s_index >= 0) {
+                            _that.selectedList.splice(s_index, 1);
+                        }
+                        _that.certList.splice(index, 1);
+                        _that.$message.success("删除成功！");
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("删除物品错误！");
+                })
+            },
+            delete_selected() {
+                var _that = this;
+                axios({
+                    method: "delete",
+                    url: "deleteItems",
+                    data: {
+                        itemIds: _that.selectedList
+                    }
+                }).then(function (response) {
+                    if (response.data.success) {
+                        let tempList = [];
+                        _that.certList.forEach(function (item) {
+                            if (_that.selectedList.indexOf(item.id) < 0) {
+                                tempList.push(item);
+                            }
+                        });
+                        _that.certList = tempList;
+                        _that.selectedList = [];
+                        _that.$message.success(response.data.message);
+                    } else {
+                        _that.$message.error(response.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("删除物品错误！");
+                })
+            },
+            updateNum(index) {
+                var _that = this;
+                axios({
+                    method: "put",
+                    url: "updateItemNum",
+                    data:_that.certList[index]
+                }).then(function (value) {
+                    if (!value.data.success) {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("更新购物车物品数量错误！");
+                })
+            }
+        }
     })
 </script>
 </html>

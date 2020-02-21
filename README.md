@@ -55,3 +55,8 @@ http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
 * 添加加入购物车功能
 * 编写购物车页面
 * 添加跳转链接
+
+# 五、加入订单页面
+* 添加购物车结算功能，进入订单页面
+* 编写订单页面
+* 添加跳转链接

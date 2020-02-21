@@ -17,7 +17,7 @@ public class GoodsController {
 
     @GetMapping("/goods/goodsDetailPage/{id}")
     public String goodsDetailPage(@PathVariable Integer id, Model model) {
-        model.addAttribute("goodsId", id);
+        model.addAttribute("goods",goodsService.getGoodsById(id));
         return "goods/goodsDetail";
     }
 

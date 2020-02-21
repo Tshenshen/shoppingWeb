@@ -38,8 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/index", "/").permitAll()
-                .mvcMatchers("/cert").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers(HttpMethod.POST, "/cert").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
+                .mvcMatchers("/cert/*").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
         http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
         http.logout();
         http.rememberMe().rememberMeParameter("isRemember");
