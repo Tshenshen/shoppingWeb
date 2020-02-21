@@ -10,4 +10,6 @@ public interface CertGoodsMapper {
 
     List<CertVo> getCertWithGoodsInfoByUsername(String username);
 
+    List<CertVo> getCertWithGoodsInfoByIds(String ids);
+
 }

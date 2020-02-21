@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}">
+    <title>订单确认</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link th:href="@{/css/certPageStyle.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app">
+    <el-container id="app" style="width: 70% ;margin: auto">
+        <el-header style="margin-bottom: 15px">
+            <h1 style="color: red">
+                <div style="margin: auto ;width: fit-content">订单<i class="el-icon-s-order"></i></div>
+            </h1>
+        </el-header>
+        <el-main style="height: fit-content">
+            <div>
+                <div>
+                    <div class="cart-filter-bar">
+                        <div class="switch-cart-item curr">
+                            <h3 style="color: red">全部商品<span class="number"> {{orderList.length}}</span></h3>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <!--商品信息头-->
+                        <div class="barBorder">
+                            <div class="select-all">
+                            </div>
+                            <div class="t-column t-goods">商品</div>
+                            <div class="t-column t-props"></div>
+                            <div class="t-column t-price">单价</div>
+                            <div class="t-column t-quantity">数量</div>
+                            <div class="t-column t-sum">小计</div>
+                            <div class="t-column t-action">操作</div>
+                        </div>
+
+                        <!--商品信息栏-->
+                        <div class="cartBarBorder" v-for="(cert,index) in orderList" :key="index">
+                            <div class="selectItem">
+                                {{index+1}}
+                            </div>
+                            <div class="column cert-goods">
+                                <el-image :src="picUrl(index)" lazy></el-image>
+                            </div>
+                            <div class="column cert-props">
+                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cert.goods.id" target="_blank">{{cert.goods.name}}</a>
+                            </div>
+                            <div class="column cert-price">{{cert.goods.price}}</div>
+                            <div class="column cert-quantity">{{cert.goodsNum}}</div>
+                            <div class="column cert-sum">{{ItemsSum(index)}}</div>
+                            <div class="column cert-action">
+                                <a @click="deleteItem(index)">
+                                    <i class="el-icon-delete"></i>删除
+                                </a>
+                            </div>
+                        </div>
+
+                        <!--结算栏-->
+                        <div class="barBorder">
+                            <div class="select-all">
+                            </div>
+                            <div class="operation">
+                            </div>
+                            <div class="normal">
+                                <div class="btn-area">
+                                    <el-button type="danger" icon="el-icon-s-claim" @click="createOrder">确认订单
+                                    </el-button>
+                                </div>
+                                <div class="price-sum">
+                                    <div>
+                                        <span>总价：</span>
+                                        <span><em>¥{{sumPrice}}</em></span>
+                                    </div>
+                                </div>
+                                <div class="amount-sum">
+                                    共有<em style="color: red"> {{orderListNum}} </em>件商品
+                                </div>
+                            </div>
+                        </div><!--结算栏-->
+                    </div>
+                </div>
+            </div>
+
+
+        </el-main>
+    </el-container>
+</div>
+</body>
+
+<script th:src="@{/js/toolBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            orderList: []
+        },
+        mounted() {
+            this.orderList = JSON.parse(sessionStorage.getItem("orderList"));
+        },
+        computed: {
+            picUrl() {
+                return function (index) {
+                    return "/ShopWeb/image/" + this.orderList[index].goods.id + ".jpg";
+                }
+            },
+            ItemsSum() {
+                return function (index) {
+                    return (this.orderList[index].goodsNum * this.orderList[index].goods.price).toFixed(2);
+                }
+            },
+            orderListNum() {
+                return this.orderList.length;
+            },
+            sumPrice() {
+                var _that = this;
+                var sum = 0.00;
+                _that.orderList.forEach(function (cert) {
+                    sum = sum + cert.goodsNum * cert.goods.price;
+                });
+                return sum.toFixed(2);
+            }
+
+        },
+        methods: {
+            createOrder() {
+                var _that = this;
+                let ids = [];
+                _that.orderList.forEach(function (order) {
+                    ids.push(order.id);
+                });
+                axios({
+                    method: "post",
+                    url: "/ShopWeb/order/createOrder",
+                    data: {
+                        itemIds: ids
+                    }
+                }).then(function (value) {
+                    if (!value.data.success) {
+                        _that.$message.error(value.data.message);
+                        return;
+                    }
+                    //todo 创建跳转支付页面的a标签
+                    console.log(value.data.content.id)
+                    sessionStorage.removeItem("orderList");
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("确认订单错误！！");
+                })
+
+            }
+
+        }
+    })
+</script>
+</html>

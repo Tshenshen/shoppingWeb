@@ -16,9 +16,13 @@ public class Order {
      */
     private int id;
     /**
-     * 订购者id
+     * 订购者用户名
      */
-    private int userId;
+    private String username;
+    /**
+     * 总价格
+     */
+    private double sumPrice;
     /**
      * 收件信息id
      */

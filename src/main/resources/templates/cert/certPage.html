@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}">
+    <!--<meta name="ctx" th:content="${#httpServletRequest.getContextPath()}">-->
     <title>购物车</title>
     <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
@@ -94,7 +94,7 @@
                             </div>
                             <div class="normal">
                                 <div class="btn-area">
-                                    <el-button type="danger" icon="el-icon-s-claim">结算</el-button>
+                                    <el-button type="danger" icon="el-icon-s-order" @click="asOrder">结算</el-button>
                                 </div>
                                 <div class="price-sum">
                                     <div>
@@ -243,6 +243,23 @@
                     console.log(reason);
                     _that.$message.error("更新购物车物品数量错误！");
                 })
+            },
+            asOrder(){
+                var _that = this;
+                let orderList = [];
+                if (_that.selectedList.length === 0 ){
+                    _that.$message.error("亲~，还没选择商品哦~");
+                    return;
+                }
+                _that.certList.forEach(function (item) {
+                    if (_that.selectedList.indexOf(item.id) >= 0) {
+                        orderList.push(item);
+                    }
+                });
+                sessionStorage.setItem("orderList",JSON.stringify(orderList));
+                var a = document.createElement("a");
+                a.setAttribute('href',"/ShopWeb/order/orderPage");
+                a.click();
             }
         }
     })

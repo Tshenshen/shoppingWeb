@@ -14,9 +14,9 @@ public class ReceiveInfo {
      */
     private int id;
     /**
-     * 绑定的用户id
+     * 绑定的用户名
      */
-    private int userId;
+    private String username;
     /**
      * 收货人名字
      */

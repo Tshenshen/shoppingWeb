@@ -1,5 +1,6 @@
 package com.liang.shoppingweb.entity.cart;
 
+import com.liang.shoppingweb.entity.order.OrderCell;
 import lombok.Data;
 
 import java.util.Date;
@@ -36,5 +37,11 @@ public class Cert {
      */
     private Date updateDate;
 
+    public OrderCell convertToOrderCell(){
+        OrderCell orderCell = new OrderCell();
+        orderCell.setGoodsId(this.getGoodsId());
+        orderCell.setGoodsNum(this.getGoodsNum());
+        return orderCell;
+    }
 
 }

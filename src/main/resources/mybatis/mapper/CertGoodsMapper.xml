@@ -58,4 +58,22 @@
         c.username = #{username}
     </select>
 
+    <select id="getCertWithGoodsInfoByIds" resultMap="CertVoMap">
+      SELECT
+        c.id id,
+        c.username username,
+        c.goods_id goods_id,
+        c.goods_num goods_num,
+        g.`name` goods_name,
+        g.price goods_price,
+        g.stock goods_stock,
+        g.`describe` goods_describe,
+        g.pic_paths goods_pic_paths
+      FROM
+        tbl_cert AS c
+        INNER JOIN tbl_goods AS g ON c.goods_id = g.id
+      WHERE
+        c.id in ${ids}
+    </select>
+
 </mapper>
