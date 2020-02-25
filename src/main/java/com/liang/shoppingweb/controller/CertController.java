@@ -26,12 +26,16 @@ public class CertController {
     public MyResponse addGoods(@RequestBody Cert cert) {
         MyResponse myResponse;
         User user = LoginUtils.getCurrentUser();
-        if (user != null) {
-            cert.setUsername(user.getUsername());
+        if (user == null) {
+            return MyResponse.getFailedResponse("用户未登录");
+        }
+        cert.setUsername(user.getUsername());
+        try {
             certService.addGoods(cert);
             myResponse = MyResponse.getSuccessResponse("物品添加成功");
-        } else {
-            myResponse = MyResponse.getFailedResponse("用户未登录");
+        }catch (Exception e){
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
         }
         return myResponse;
     }

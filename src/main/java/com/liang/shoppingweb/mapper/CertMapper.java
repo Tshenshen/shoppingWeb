@@ -22,4 +22,7 @@ public interface CertMapper {
 
     @Update("update tbl_cert set goods_num = #{goodsNum},update_date = #{updateDate} where id = #{id}")
     void updateCert(Cert cert);
+
+    @Select("select * from tbl_cert where username = #{username} and goods_id = #{goodsId}")
+    Cert getCertByUsernameAndGoodsId(Cert cert);
 }
