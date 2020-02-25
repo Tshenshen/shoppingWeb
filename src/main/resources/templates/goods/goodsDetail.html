@@ -49,15 +49,22 @@
                     规格选择
                 </div>
                 <!--规格信息-->
-                <div>
+                <div style="margin-bottom: 15px">
                     规格信息
                 </div>
                 <!--加入购物车模块-->
-                <el-input-number v-model="goodsNum" :min="1" :max="goodsDetail.stock" label="描述文字" controls-position="right" size="mini"
-                                 style="margin-right: 15px"></el-input-number>
-                <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
-                <el-button type="danger" size="small">立即购买</el-button>
-
+                <div>
+                    <div v-if="isNoStock">
+                        <h4>商品太抢手~已经没有库存啦~</h4>
+                    </div>
+                    <div v-else>
+                        <el-input-number v-model="goodsNum" :min="1" :max="goodsDetail.stock"
+                                         controls-position="right" size="mini"
+                                         style="margin-right: 15px"></el-input-number>
+                        <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
+                        <el-button type="danger" size="small">立即购买</el-button>
+                    </div>
+                </div>
             </el-main>
         </el-container>
         <!--评论-->
@@ -72,7 +79,8 @@
         data: {
             goodsDetail: {},
             goodsImgUrlList: [],
-            goodsNum: 1
+            goodsNum: 1,
+            isNoStock:true
         },
         mounted() {
             let url = "/ShopWeb/goods/goodsDetail/" + document.querySelector("#goodId").getAttribute("value");
@@ -81,12 +89,12 @@
             // 获取商品信息
             axios.get(url).then(function (response) {
                 _that.goodsDetail = response.data;
-                _that.goodsImgUrlList.unshift("/ShopWeb/image/" + _that.goodsDetail.id + ".jpg")
+                _that.goodsImgUrlList.unshift("/ShopWeb/image/" + _that.goodsDetail.id + ".jpg");
+                _that.isNoStock = _that.goodsDetail.stock <= 0;
             }).catch(function () {
                 // handle error
                 _that.$message.error('获取商品信息失败！！');
             });
-
         },
         computed: {
             goodsImgUrl() {
@@ -96,8 +104,8 @@
                 return ""
             }
         },
-        methods:{
-            addGoods(){
+        methods: {
+            addGoods() {
                 var _that = this;
                 if (sessionStorage.getItem("isAuthenticated") !== "true") {
                     _that.$message.error('请先登录！！');
@@ -105,16 +113,16 @@
                 }
                 let url = "/ShopWeb/cert/addGoods";
                 axios({
-                    method:"post",
-                    url:url,
-                    data:{
-                        goodsNum:_that.goodsNum,
-                        goodsId:_that.goodsDetail.id
+                    method: "post",
+                    url: url,
+                    data: {
+                        goodsNum: _that.goodsNum,
+                        goodsId: _that.goodsDetail.id
                     }
                 }).then(function (value) {
-                    if(value.data.success){
+                    if (value.data.success) {
                         _that.$message.success(value.data.message);
-                    }else{
+                    } else {
                         _that.$message.error(value.data.message);
                     }
                 }).catch(function () {
