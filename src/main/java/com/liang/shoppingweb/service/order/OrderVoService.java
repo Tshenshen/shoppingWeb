@@ -1,8 +1,8 @@
-package com.liang.shoppingweb.service;
+package com.liang.shoppingweb.service.order;
 
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.OrderWithCellMapper;
+import com.liang.shoppingweb.mapper.order.OrderWithCellMapper;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.stereotype.Service;
 

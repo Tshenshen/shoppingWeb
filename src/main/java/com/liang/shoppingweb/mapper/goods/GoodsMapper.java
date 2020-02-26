@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.mapper;
+package com.liang.shoppingweb.mapper.goods;
 
 import com.liang.shoppingweb.entity.goods.Goods;
 import org.apache.ibatis.annotations.Mapper;

@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.mapper;
+package com.liang.shoppingweb.mapper.order;
 
 import com.liang.shoppingweb.entity.order.OrderVo;
 import org.apache.ibatis.annotations.Mapper;

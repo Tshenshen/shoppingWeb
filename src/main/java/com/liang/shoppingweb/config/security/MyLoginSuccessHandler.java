@@ -1,7 +1,7 @@
 package com.liang.shoppingweb.config.security;
 
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.service.UserService;
+import com.liang.shoppingweb.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

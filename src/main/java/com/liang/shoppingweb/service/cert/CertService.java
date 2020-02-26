@@ -1,11 +1,11 @@
-package com.liang.shoppingweb.service;
+package com.liang.shoppingweb.service.cert;
 
 import com.liang.shoppingweb.entity.cart.Cert;
 import com.liang.shoppingweb.entity.cart.CertVo;
 import com.liang.shoppingweb.entity.goods.Goods;
-import com.liang.shoppingweb.mapper.CertGoodsMapper;
-import com.liang.shoppingweb.mapper.CertMapper;
-import com.liang.shoppingweb.mapper.GoodsMapper;
+import com.liang.shoppingweb.mapper.cert.CertGoodsMapper;
+import com.liang.shoppingweb.mapper.cert.CertMapper;
+import com.liang.shoppingweb.mapper.goods.GoodsMapper;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.springframework.stereotype.Service;
 

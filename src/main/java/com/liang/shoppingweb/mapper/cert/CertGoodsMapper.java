@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.mapper;
+package com.liang.shoppingweb.mapper.cert;
 
 import com.liang.shoppingweb.entity.cart.CertVo;
 import org.apache.ibatis.annotations.Mapper;

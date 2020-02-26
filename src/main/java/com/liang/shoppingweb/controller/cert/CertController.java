@@ -1,10 +1,10 @@
-package com.liang.shoppingweb.controller;
+package com.liang.shoppingweb.controller.cert;
 
 import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.cart.Cert;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.service.CertService;
+import com.liang.shoppingweb.service.cert.CertService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

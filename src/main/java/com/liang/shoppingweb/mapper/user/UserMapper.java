@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.mapper;
+package com.liang.shoppingweb.mapper.user;
 
 import com.liang.shoppingweb.entity.user.User;
 import org.apache.ibatis.annotations.Insert;

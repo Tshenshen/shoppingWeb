@@ -1,10 +1,10 @@
-package com.liang.shoppingweb.service;
+package com.liang.shoppingweb.service.goods;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.goods.Goods;
-import com.liang.shoppingweb.mapper.GoodsMapper;
+import com.liang.shoppingweb.mapper.goods.GoodsMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

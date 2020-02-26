@@ -1,8 +1,8 @@
-package com.liang.shoppingweb.controller;
+package com.liang.shoppingweb.controller.user;
 
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.exception.MyException;
-import com.liang.shoppingweb.service.UserService;
+import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.EncodeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

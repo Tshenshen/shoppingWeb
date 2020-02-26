@@ -1,7 +1,7 @@
-package com.liang.shoppingweb.controller;
+package com.liang.shoppingweb.controller.goods;
 
 import com.liang.shoppingweb.entity.goods.Goods;
-import com.liang.shoppingweb.service.GoodsService;
+import com.liang.shoppingweb.service.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

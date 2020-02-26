@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.liang.shoppingweb.mapper.OrderWithCellMapper">
+<mapper namespace="com.liang.shoppingweb.mapper.order.OrderWithCellMapper">
     <resultMap id="orderVo" type="com.liang.shoppingweb.entity.order.OrderVo">
         <id column="id" property="id" />
         <result column="username" property="username"/>
