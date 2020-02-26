@@ -13,7 +13,7 @@
     <script src="" th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
-    <link href="" rel="stylesheet" th:href="@{/css/userCenter.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/user/userCenter.css}">
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -188,7 +188,7 @@
 
 </div>
 </body>
-<script th:src="@{/js/toolBar.js}"></script>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
 <script>
     new Vue({
         el: "#app",
