@@ -32,9 +32,9 @@ public class Order {
      */
     private Date createDate;
     /**
-     * 订单状态，0为未完成，1为完成，2为取消
+     * 订单状态，0为取消，1为代付款，2为待收货，3为完成
      */
-    private char state;
+    private int state;
     /**
      * 订单状态更新时间
      */

@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/index", "/").permitAll()
                 .mvcMatchers("/cert/*").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
+        //todo 店家绑定在用户上
         http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
         http.logout();
         http.rememberMe().rememberMeParameter("isRemember");

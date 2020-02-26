@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liang.shoppingweb.mapper.OrderWithCellMapper">
+    <resultMap id="orderVo" type="com.liang.shoppingweb.entity.order.OrderVo">
+        <id column="id" property="id" />
+        <result column="username" property="username"/>
+        <result column="sum_price" property="sumPrice"/>
+        <result column="receive_infoId" property="receiveInfoId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="state" property="state"/>
+        <result column="update_date" property="updateDate"/>
+        <collection property="orderCells"  ofType="com.liang.shoppingweb.entity.order.OrderCellVo" resultMap="orderCellVoMap" columnPrefix="cell_" />
+    </resultMap>
+    <resultMap id="orderCellVoMap" type="com.liang.shoppingweb.entity.order.OrderCellVo">
+        <id column="id" property="id" />
+        <result column="order_id" property="orderId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_num" property="goodsNum"/>
+        <association property="goods" resultMap="GoodsMap" columnPrefix="goods_"/>
+    </resultMap>
+
+    <resultMap id="GoodsMap" type="com.liang.shoppingweb.entity.goods.Goods">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="stock" property="stock"/>
+        <result column="describe" property="describe"/>
+        <result column="pic_paths" property="picPaths"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+    </resultMap>
+
+    <select id="getUnFinishOrderVoByUsername" resultMap="orderVo">
+        SELECT
+            o.id id,
+            o.username username,
+            o.sum_price sum_price,
+            o.receive_info_id receive_info_id,
+            o.state state,
+            o.create_date create_date,
+            o.update_date update_date,
+            c.id cell_id,
+            c.order_id cell_order_id,
+            c.goods_id cell_goods_id,
+            c.goods_num cell_goods_num,
+            g.id cell_goods_id,
+            g.`name` cell_goods_name,
+            g.price cell_goods_price,
+            g.stock cell_goods_stock,
+            g.`describe` cell_goods_describe,
+            g.pic_paths cell_goods_pic_paths,
+            g.create_date cell_goods_create_date,
+            g.update_date cell_goods_update_date
+            FROM
+            tbl_order AS o
+            INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
+            INNER JOIN tbl_goods AS g ON c.goods_id = g.id
+            WHERE
+            o.username = #{username} and
+            o.state &lt; 3
+            order by o.create_date asc
+    </select>
+</mapper>

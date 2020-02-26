@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
 public class OrderVo extends Order {
-    private OrderCellVo[] orderCells;
+    private List<OrderCellVo> orderCells;
 }

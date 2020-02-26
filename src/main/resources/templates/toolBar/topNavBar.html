@@ -54,7 +54,7 @@
                     <!--已登陆-->
                     <li>
                         <div style="padding: 15px;line-height: 20px;">
-                            欢迎你,<a href="#" sec:authentication="name"></a>
+                            欢迎你,<a href="#" th:href="@{/user/getUserCenterPage}" sec:authentication="name"></a>
                         </div>
                     </li>
                     <li>

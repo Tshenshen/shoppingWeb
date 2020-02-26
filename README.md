@@ -60,3 +60,9 @@ http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
 * 添加购物车结算功能，进入订单页面
 * 编写订单页面
 * 添加跳转链接
+
+#编写个人主页
+* 编写个人主页页面
+* 添加链接
+* 添加收货地址功能
+* 添加订单查询功能

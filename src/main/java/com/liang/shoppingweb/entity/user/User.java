@@ -35,6 +35,10 @@ public class User {
      */
     private String password;
     /**
+     * 余额
+     */
+    private double balance;
+    /**
      * 邮箱
      */
     private String email;

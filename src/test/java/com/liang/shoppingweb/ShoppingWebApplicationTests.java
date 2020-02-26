@@ -2,11 +2,14 @@ package com.liang.shoppingweb;
 
 import com.liang.shoppingweb.entity.cart.CertVo;
 import com.liang.shoppingweb.entity.order.OrderCell;
+import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.mapper.CertGoodsMapper;
 import com.liang.shoppingweb.mapper.OrderCellMapper;
+import com.liang.shoppingweb.mapper.OrderWithCellMapper;
 import com.liang.shoppingweb.mapper.UserMapper;
 import com.liang.shoppingweb.service.OrderService;
+import com.liang.shoppingweb.service.OrderVoService;
 import com.liang.shoppingweb.service.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -52,14 +55,23 @@ class ShoppingWebApplicationTests {
     @Resource
     private OrderCellMapper orderCellMapper;
 
+    @Resource
+    private OrderVoService orderVoService;
+
     @BeforeAll
     @Test
     void initLogin(){
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();
         User user = new User();
-        user.setUsername("root");
+        user.setUsername("444");
         session.setAttribute("SW_USER",user);
+    }
+
+    @Test
+    void testOrderVoService() throws Exception {
+        List<OrderVo> orderVo = orderVoService.getUnFinishOrderVoByUsername();
+        System.out.println(orderVo);
     }
 
     @Test

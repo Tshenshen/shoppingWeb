@@ -10,6 +10,6 @@ public interface OrderMapper {
 
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     @Insert("insert into tbl_order(username, sum_price, receive_info_id, create_date, state) " +
-            "values(#{username},#{sumPrice},#{receiveInfoId},#{createDate},'0') ")
+            "values(#{username},#{sumPrice},#{receiveInfoId},#{createDate},'1') ")
     void insertOrder(Order order);
 }

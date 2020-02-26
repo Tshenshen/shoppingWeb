@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 >
 <head>
+    <title>购物网站ShopWeb</title>
     <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
     <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
@@ -41,7 +42,7 @@
         </div>
 
     </div>
-    <nav aria-label="Page navigation" style="display: flex;justify-content: center;height: 31px">
+    <nav aria-label="Page navigation" style="display: flex;justify-content: center">
         <ul class="pagination" style="margin-top: 0px">
             <li th:class="${pageInfo.isFirstPage}?disabled">
                 <a href="#" th:href="@{/index/}+${pageInfo.pageNum - 1}" th:if="${!pageInfo.isFirstPage}"

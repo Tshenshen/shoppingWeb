@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/userCenter.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div style="width: 70%;margin: auto; height: 660px" id="app">
+    <!--center_header-->
+    <div class="center_header">
+        <!--钱包-->
+        <div class=" wallet left-order">
+            <div>
+                <span style="font-size: 20px">我的钱包</span>
+            </div>
+            <el-divider style="margin: 10px 0"></el-divider>
+            <div class="item left-order">
+                <h3>
+                    [[${userInfo.balance}]]
+                </h3>
+                <div style="margin-top: 15px">余额</div>
+            </div>
+            <div class="text-item left-order">
+                <!--todo 充值链接-->
+                <a>充值</a>
+            </div>
+        </div>
+        <!--头像-->
+        <div class=" headImg left-order">
+            <el-avatar icon="el-icon-user-solid" :size="100" style="font-size: 80px; margin-left: 30px"></el-avatar>
+            <!--<div>todo 使用用户上传的头像-->
+            <!--<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>-->
+            <!--</div>-->
+            <div class="userName">
+                <a sec:authentication="name" style="color: white;"></a>
+            </div>
+        </div>
+        <!--设置-->
+        <div class=" right-bar left-order">
+            <div class="left-order concerned">
+                <div>
+                    <span style="font-size: 20px">我的收藏</span>
+                </div>
+                <el-divider style="margin: 10px 0"></el-divider>
+                <div class="item left-order">
+                    <h3>
+                        <a>0<!--todo 需要补充收藏功能--></a>
+                    </h3>
+                    <div style="margin-top: 15px">收藏的商品</div>
+                </div>
+                <div class="item left-order">
+                    <h3>
+                        <a>0<!--todo 需要补充收藏功能--></a>
+                    </h3>
+                    <div style="margin-top: 15px">收藏的商家</div>
+                </div>
+            </div>
+            <el-divider direction="vertical"></el-divider>
+            <div class="left-order setting">
+                <div>
+                    <span style="font-size: 20px">我的设置</span>
+                </div>
+                <el-divider style="margin: 10px 0"></el-divider>
+                <div class="text-item left-order">
+                    <!--todo 个人信息链接-->
+                    <a>个人信息</a>
+                </div>
+                <div class="text-item left-order">
+                    <!--todo 收货地址链接 -->
+                    <a th:href="@{/user/getReceiveSettingPage}">收货地址</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--center_order-->
+    <div class=" order-fra">
+        <div>
+            <span style="font-size: 20px">我的订单</span>
+            <a class="order-more"><i class="el-icon-more"> 所有订单</i></a>
+        </div>
+        <el-divider style="margin: 10px 0"></el-divider>
+
+        <el-tabs type="border-card">
+            <el-tab-pane label="待付款">
+                <div v-if="orderList.unPayList.length === 0" class="none-fra">
+                    钱包很满，手很痒~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList.unPayList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].goodsId)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            {{order.orderCells[0].goods.name}}等
+                            <!--todo 链接到订单详情-->
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px">
+                            去支付
+                        </a>
+                        <a>
+                            取消订单
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="待收货">
+                <div v-if="orderList.unReceiveList.length === 0" class="none-fra">
+                    钱包空空，货不来~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList.unReceiveList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].goodsId)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            {{order.orderCells[0].goods.name}}等
+                            <!--todo 链接到订单详情-->
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px">
+                            确认收件
+                        </a>
+                        <a>
+                            申请退款<!--todo 添加退款功能-->
+                        </a>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+            <el-tab-pane label="待评价">待评价</el-tab-pane>
+            <el-tab-pane label="退款">退款</el-tab-pane>
+        </el-tabs>
+    </div>
+
+</div>
+</body>
+<script th:src="@{/js/toolBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            orderList: {
+                unPayList: [],
+                unReceiveList: []
+            }
+        },
+        mounted() {
+            var _that = this;
+            axios.get("/ShopWeb/order/getUnFinishOrders").then(function (value) {
+                if (value.data.success) {
+                    value.data.content.forEach(function (order) {
+                        if (order.state === 1) {
+                            _that.orderList.unPayList.push(order);
+                        } else if (order.state === 2) {
+                            _that.orderList.unReceiveList.push(order);
+                        }
+                    })
+                } else {
+                    _that.$message.error(value.data.message)
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("获取订单列表错误！！")
+            })
+        },
+        computed: {
+            picUrl() {
+                return function (id) {
+                    return "/ShopWeb/image/" + id + ".jpg";
+                }
+            }
+        }
+    })
+</script>
+</html>
