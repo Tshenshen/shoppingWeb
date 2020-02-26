@@ -22,52 +22,81 @@
         <!--外部框-->
         <div class="outsideFrame">
             <!--内容-->
-            <div>
-                <!--<el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>-->
-
-                <!--<el-dialog title="收货地址" :visible.sync="dialogFormVisible">-->
-                    <!--<el-form :model="form">-->
-                        <!--<el-form-item label="活动名称" :label-width="formLabelWidth">-->
-                            <!--<el-input v-model="form.name" autocomplete="off"></el-input>-->
-                        <!--</el-form-item>-->
-                        <!--<el-form-item label="活动区域" :label-width="formLabelWidth">-->
-                            <!--<el-select v-model="form.region" placeholder="请选择活动区域">-->
-                                <!--<el-option label="区域一" value="shanghai"></el-option>-->
-                                <!--<el-option label="区域二" value="beijing"></el-option>-->
-                            <!--</el-select>-->
-                        <!--</el-form-item>-->
-                    <!--</el-form>-->
-                    <!--<div slot="footer" class="dialog-footer">-->
-                        <!--<el-button @click="dialogFormVisible = false">取 消</el-button>-->
-                        <!--<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-                    <!--</div>-->
-                <!--</el-dialog>-->
+            <div class="item-fra" v-for="(item,index) in receivers" :key="index">
+                <div class="item-receiveInfo">
+                    <el-row :gutter="20">
+                        <el-col :span="3" style="text-align: right ">姓名 :</el-col>
+                        <el-col :span="5">{{item.receiver}}</el-col>
+                        <el-col :span="3" :offset="11">
+                            <el-button type="primary" icon="el-icon-edit" circle size="mini"
+                                       @click="openUpdateDialog(index)"></el-button>
+                            <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                                       @click="deleteReceiver(item.id,index)"></el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter="20">
+                        <el-col :span="3" style="text-align: right ">电话 :</el-col>
+                        <el-col :span="5">{{item.phoneNumber}}</el-col>
+                    </el-row>
+                    <el-row :gutter="20">
+                        <el-col :span="3" style="text-align: right ">地址 :</el-col>
+                        <el-col :span="21">{{item.address}}</el-col>
+                    </el-row>
+                </div>
             </div>
             <!--添加栏-->
             <div>
-                <el-button type="text" @click="newDialogFormVisible = true">添加新的收货地址</el-button>
-
-                <el-dialog title="收货地址" :visible.sync="newDialogFormVisible">
-                    <el-form :model="newReceiverInfo" status-icon :rules="rules">
-                        <el-form-item label="活动名称" :label-width="formLabelWidth" prop="receiver">
-                            <el-input v-model="newReceiverInfo.receiver"></el-input>
-                        </el-form-item>
-                        <el-form-item label="电话" :label-width="formLabelWidth" prop="phoneNumber">
-                            <el-input v-model="newReceiverInfo.phoneNumber"></el-input>
-                        </el-form-item>
-                        <el-form-item label="地址" :label-width="formLabelWidth" prop="address">
-                            <el-input v-model="newReceiverInfo.address"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="newDialogFormVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="addNewReceiverInfo">确 定</el-button>
-                    </div>
-                </el-dialog>
+                <div class="add-receiver" v-if="receivers.length < 10">
+                    <el-button type="text" @click="newDialogFormVisible = true" icon="el-icon-plus" style="padding:0">
+                        添加新的收货地址,当前有{{receivers.length}}个，最多10个
+                    </el-button>
+                </div>
+                <div class="add-receiver" v-else>
+                    收货地址数量达到上限
+                </div>
             </div>
         </div>
     </div>
+
+    <!--新增收货地址对话框-->
+    <el-dialog title="收货地址" :visible.sync="newDialogFormVisible">
+        <el-form :model="newReceiverInfo" status-icon :rules="rules" ref="newReceiverForm">
+            <el-form-item label="收件人" :label-width="formLabelWidth" prop="receiver">
+                <el-input v-model="newReceiverInfo.receiver"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" :label-width="formLabelWidth" prop="phoneNumber">
+                <el-input v-model="newReceiverInfo.phoneNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="地址" :label-width="formLabelWidth" prop="address">
+                <el-input v-model="newReceiverInfo.address"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="newDialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addNewReceiverInfo">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <!--更新收货地址对话框-->
+    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+        <el-form :model="updateReceiverInfo" :rules="rules" ref="updateReceiverForm" status-icon>
+            <el-form-item label="收件人" :label-width="formLabelWidth" prop="receiver">
+                <el-input v-model="updateReceiverInfo.receiver"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" :label-width="formLabelWidth" prop="phoneNumber">
+                <el-input v-model="updateReceiverInfo.phoneNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="地址" :label-width="formLabelWidth" prop="address">
+                <el-input v-model="updateReceiverInfo.address"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateReceiver()">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
+
 </body>
 <script>
     new Vue({
@@ -75,38 +104,129 @@
         data: {
             dialogFormVisible: false,
             newDialogFormVisible: false,
+            receivers: [],
+            updateItemIndex: '',
+            updateReceiverInfo: {
+                id: '',
+                receiver: '',
+                address: '',
+                phoneNumber: ''
+            },
             newReceiverInfo: {
                 receiver: '',
                 address: '',
                 phoneNumber: ''
             },
             formLabelWidth: '120px'
-            ,rules:{
+            , rules: {
                 receiver: [
-                    { required: true, message: '请输入收件人姓名', trigger: 'blur' },
-                    { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur' }
-                ],address: [
-                    { required: true, message: '请输收件地址', trigger: 'blur' },
-                    { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' }
-                ],phoneNumber: [
-                    { required: true, message: '请输入收件人电话', trigger: 'blur' },
-                    { min: 8, max: 11, message: '长度在 8 到 11 个字符', trigger: 'blur' }
+                    {required: true, message: '请输入收件人姓名', trigger: 'blur'},
+                    {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur'}
+                ], address: [
+                    {required: true, message: '请输收件地址', trigger: 'blur'},
+                    {min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur'}
+                ], phoneNumber: [
+                    {required: true, message: '请输入收件人电话', trigger: 'blur'},
+                    {min: 8, max: 11, message: '长度在 8 到 11 个字符', trigger: 'blur'}
                 ]
             }
         },
-        methods:{
-            addNewReceiverInfo(){
+        mounted() {
+            var _that = this;
+            axios.get("/ShopWeb/user/getReceivers").then(function (value) {
+                if (value.data.success) {
+                    _that.receivers = value.data.content;
+                } else {
+                    _that.$message.error(value.data.message);
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("获取收件地址错误！")
+            })
+        },
+        methods: {
+            addNewReceiverInfo() {
                 var _that = this;
-                _that.newDialogFormVisible = false;
-                axios({
-                    method:"post",
-                    url:"/ShopWeb/user/addNewReceiver",
-                    data: _that.newReceiverInfo
-                }).then(function (value) {
-                    console.log(value.data.content);
-                }).catch(function (reason) {
+                _that.$refs.newReceiverForm.validate().then(
+                    function () {
+                        _that.newDialogFormVisible = false;
+                        axios({
+                            method: "post",
+                            url: "/ShopWeb/user/addNewReceiver",
+                            data: _that.newReceiverInfo
+                        }).then(function (value) {
+                            if (value.data.success) {
+                                _that.receivers.push(value.data.content)
+                            } else {
+                                _that.$message.error(value.data.message);
+                            }
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            _that.$message.error("添加新收件地址错误！！");
+                        })
+                    }
+                ).catch(function (reason) {
                     console.log(reason);
-                    _that.$message.error("添加新收件地址错误！！");
+                    _that.$message.error("123123");
+                })
+            },
+            deleteReceiver(id, index) {
+                var _that = this;
+                _that.$confirm('确认删除该收件地址?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    _that.newDialogFormVisible = false;
+                    axios({
+                        method: "delete",
+                        url: "/ShopWeb/user/deleteReceiver/" + id
+                    }).then(function (value) {
+                        if (value.data.success) {
+                            _that.receivers.splice(index, 1);
+                        } else {
+                            _that.$message.error(value.data.message);
+                        }
+                    }).catch(function (reason) {
+                        console.log(reason);
+                        _that.$message.error("删除收件地址错误！！");
+                    })
+                });
+
+            },
+            openUpdateDialog(index) {
+                var _that = this;
+                var temp = _that.receivers[index];
+                _that.updateItemIndex = index;
+                _that.updateReceiverInfo.id = temp.id;
+                _that.updateReceiverInfo.receiver = temp.receiver;
+                _that.updateReceiverInfo.phoneNumber = temp.phoneNumber;
+                _that.updateReceiverInfo.address = temp.address;
+                _that.dialogFormVisible = true;
+            },
+            updateReceiver() {
+                var _that = this;
+                _that.$refs.updateReceiverForm.validate().then(
+                    function () {
+                        _that.dialogFormVisible = false;
+                        axios({
+                            method: "put",
+                            url: "/ShopWeb/user/updateReceiver",
+                            data: _that.updateReceiverInfo
+                        }).then(function (value) {
+                            if (value.data.success) {
+                                _that.receivers.splice(_that.updateItemIndex, 1, value.data.content);
+                            } else {
+                                _that.$message.error(value.data.message);
+                            }
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            _that.$message.error("更新新收件地址错误！！");
+                        })
+                    }
+                ).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("字段有误，请填充正确后再提交");
                 })
             }
         }

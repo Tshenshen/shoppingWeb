@@ -3,6 +3,8 @@ package com.liang.shoppingweb.entity.user;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * 收件信息
  */
@@ -29,4 +31,12 @@ public class ReceiveInfo {
      * 配送地址
      */
     private String address;
+    /**
+     * 创建时间
+     */
+    private Date createDate;
+    /**
+     * 修改时间
+     */
+    private Date updateDate;
 }

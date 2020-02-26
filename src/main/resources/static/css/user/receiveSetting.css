@@ -1,5 +1,5 @@
 .main-fra {
-    width: 70%;
+    width: 50%;
     margin: auto;
 }
 
@@ -10,4 +10,27 @@
 
 .outsideFrame{
 
+}
+.item-fra{
+    height: 120px;
+    padding: 15px;
+    margin: 5px 0;
+    border: 1px solid gray;
+}
+.item-receiveInfo{
+    font-size: 20px;
+    overflow: hidden;
+}
+
+.add-receiver{
+    height: 30px;
+    padding: 5px;
+    margin: 5px 0;
+    text-align: center;
+    border: 1px solid gray;
+}
+.action-button{
+    position: absolute;
+    top: 0;
+    right: 0;
 }
