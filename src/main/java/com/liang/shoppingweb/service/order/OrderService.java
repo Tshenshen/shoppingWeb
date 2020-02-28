@@ -39,7 +39,7 @@ public class OrderService {
      * 创建订单
      */
     @Transactional
-    public Order createOrder(Integer[] ids) throws Exception {
+    public Order createOrder(Integer[] ids, Integer receiverInfoId) throws Exception {
         User currentUser = LoginUtils.getCurrentUser();
         if (currentUser == null) {
             throw new Exception("用户未登录！！");
@@ -69,7 +69,7 @@ public class OrderService {
         Order order = new Order();
         order.setCreateDate(new Date());
         order.setUsername(currentUser.getUsername());
-//        order.setReceiveInfoId();todo 收件人
+        order.setReceiveInfoId(receiverInfoId);
         order.setSumPrice(sumPrice);
         orderMapper.insertOrder(order);
         //插入子订单

@@ -1,0 +1,137 @@
+.selectItem {
+    float: left;
+    padding: 16px 0 16px 9px;
+    height: 120px;
+    width: 4%;
+}
+.cert-goods {
+    height: 120px;
+    width: 10%;
+}
+
+.cert-props {
+    padding-top: 15px;
+    height: 120px;
+    width: 20%;
+}
+
+.cert-price {
+    padding-top: 45px;
+    height: 120px;
+    width: 16%;
+    text-align: center;
+}
+
+.cert-quantity {
+    padding-top: 42px;
+    height: 120px;
+    width: 20%;
+    text-align: center;
+}
+
+.cert-sum {
+    padding-top: 45px;
+    height: 120px;
+    width: 20%;
+    text-align: center;
+}
+
+.cert-action {
+    padding-top: 45px;
+    height: 120px;
+    width: 10%;
+    text-align: center;
+}
+.t-goods {
+    width: 8%;
+}
+
+.t-props {
+    width: 20%;
+}
+
+.t-price {
+    width: 16%;
+}
+
+.t-quantity {
+    width: 20%;
+}
+
+.t-sum {
+    width: 20%;
+}
+
+.t-action {
+    width: 10%;
+}
+
+.t-column {
+    float: left;
+    padding: 16px 0 16px 0;
+    text-align: center;
+}
+.column {
+    float: left;
+}
+
+
+.cartBarBorder {
+    border: 1px solid #d0d0d0;
+    height: 120px;
+    width: 100%;
+}
+
+.barBorder {
+    border: 1px solid #d0d0d0;
+    height: 50px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.select-all {
+    width: 6%;
+    float: left;
+    padding: 16px 0 16px 9px;
+}
+
+.operation {
+    width: 10%;
+    float: left;
+    padding: 16px 0 16px 9px;
+}
+
+.normal {
+    width: 40%;
+    float: left;
+}
+
+.btn-area {
+    margin: 5px;
+    float: right;
+}
+
+.price-sum {
+    /*margin-top: 5px;*/
+    /*margin-right: 15px;*/
+    margin-top: 15px;
+    margin-right: 20px;
+    float: right;
+}
+
+.amount-sum {
+    margin-top: 15px;
+    margin-right: 20px;
+    float: right;
+}
+.receiver-label{
+    width: 8%;
+    float: left;
+    padding: 16px 0 16px 9px;
+}
+.receiver-ops{
+    width: 52%;
+    float: left;
+    padding: 9px 0 9px 9px;
+}

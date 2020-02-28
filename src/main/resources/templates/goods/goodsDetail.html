@@ -80,7 +80,7 @@
             goodsDetail: {},
             goodsImgUrlList: [],
             goodsNum: 1,
-            isNoStock:true
+            isNoStock: true
         },
         mounted() {
             let url = "/ShopWeb/goods/goodsDetail/" + document.querySelector("#goodId").getAttribute("value");
@@ -92,7 +92,7 @@
                 _that.goodsImgUrlList.unshift("/ShopWeb/image/" + _that.goodsDetail.id + ".jpg");
                 _that.isNoStock = _that.goodsDetail.stock <= 0;
             }).catch(function () {
-                // handle error
+                // handle 4xx
                 _that.$message.error('获取商品信息失败！！');
             });
         },
@@ -107,28 +107,33 @@
         methods: {
             addGoods() {
                 var _that = this;
-                if (sessionStorage.getItem("isAuthenticated") !== "true") {
-                    _that.$message.error('请先登录！！');
-                    return;
-                }
-                let url = "/ShopWeb/cert/addGoods";
-                axios({
-                    method: "post",
-                    url: url,
-                    data: {
-                        goodsNum: _that.goodsNum,
-                        goodsId: _that.goodsDetail.id
-                    }
-                }).then(function (value) {
+                axios.get("/ShopWeb/isAuthenticated").then(function (value) {
                     if (value.data.success) {
-                        _that.$message.success(value.data.message);
+                        axios({
+                            method: "post",
+                            url: "/ShopWeb/cert/addGoods",
+                            data: {
+                                goodsNum: _that.goodsNum,
+                                goodsId: _that.goodsDetail.id
+                            }
+                        }).then(function (value) {
+                            if (value.data.success) {
+                                _that.$message.success(value.data.message);
+                            } else {
+                                _that.$message.error(value.data.message);
+                            }
+                        }).catch(function () {
+                            console.log(reason);
+                            _that.$message.error('添加购物车错误！！');
+                        });
                     } else {
                         _that.$message.error(value.data.message);
                     }
-                }).catch(function () {
-                    // handle error
-                    _that.$message.error('添加购物车失败！！');
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error('获取用户登录信息错误！！');
                 });
+
 
             }
         }

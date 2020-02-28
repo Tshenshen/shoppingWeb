@@ -50,8 +50,8 @@ class ShoppingWebApplicationTests {
     @Autowired
     private OrderService orderService;
 
-    @Resource
-    private OrderCellMapper orderCellMapper;
+//    @Resource
+//    private OrderCellMapper orderCellMapper;
 
     @Resource
     private OrderVoService orderVoService;
@@ -76,13 +76,12 @@ class ShoppingWebApplicationTests {
     void testCreateOrder() {
         Integer[] ids = {41};
         try {
-            orderService.createOrder(ids);
+            orderService.createOrder(ids, 1);
         } catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
-
     @Test
     void testMultiInsert() {
         List<CertVo> certVos = certGoodsMapper.getCertWithGoodsInfoByIds("(35,38)");

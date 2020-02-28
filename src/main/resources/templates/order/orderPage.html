@@ -10,7 +10,7 @@
     <script src="" th:src="@{/js/bootstrap.js}"></script>
     <script src="" th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
-    <link th:href="@{/css/certPageStyle.css}" rel="stylesheet">
+    <link th:href="@{/css/order/orderPage.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
 <body>
@@ -68,9 +68,18 @@
 
                         <!--结算栏-->
                         <div class="barBorder">
-                            <div class="select-all">
+                            <div class="receiver-label">
+                                收件地址：
                             </div>
-                            <div class="operation">
+                            <div class="receiver-ops">
+                                <el-select v-model="receiveInfoId" placeholder="请选择" size="small" style="width: 550px">
+                                    <el-option
+                                            v-for="(receiver,index) in receivers"
+                                            :key="index"
+                                            :label="receiverLabel(receiver)"
+                                            :value="receiver.id">
+                                    </el-option>
+                                </el-select>
                             </div>
                             <div class="normal">
                                 <div class="btn-area">
@@ -103,10 +112,23 @@
     new Vue({
         el: "#app",
         data: {
-            orderList: []
+            orderList: [],
+            receivers: [],
+            receiveInfoId: ''
         },
         mounted() {
-            this.orderList = JSON.parse(sessionStorage.getItem("orderList"));
+            var _that = this;
+            _that.orderList = JSON.parse(sessionStorage.getItem("orderList"));
+            axios.get("/ShopWeb/user/getReceivers").then(function (value) {
+                if (!value.data.success) {
+                    _that.$message.error(value.data.message);
+                    return;
+                }
+                _that.receivers = value.data.content;
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("获取收件地址错误！！");
+            })
         },
         computed: {
             picUrl() {
@@ -129,8 +151,14 @@
                     sum = sum + cert.goodsNum * cert.goods.price;
                 });
                 return sum.toFixed(2);
+            },
+            receiverLabel() {
+                return function (receiver) {
+                    let address = receiver.address.length <= 15 ? receiver.address : receiver.address.substr(0, 15) + "...";
+                    var label = "收件人: " + receiver.receiver + " 电话: " + receiver.phoneNumber + " 地址: " + address;
+                    return label;
+                }
             }
-
         },
         methods: {
             createOrder() {
@@ -143,7 +171,8 @@
                     method: "post",
                     url: "/ShopWeb/order/createOrder",
                     data: {
-                        itemIds: ids
+                        itemIds: ids,
+                        receiveInfoId: _that.receiveInfoId
                     }
                 }).then(function (value) {
                     if (!value.data.success) {

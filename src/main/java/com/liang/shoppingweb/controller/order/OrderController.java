@@ -35,7 +35,8 @@ public class OrderController {
         MyResponse myResponse;
         try {
             Integer[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new Integer[0]);
-            Order order = orderService.createOrder(itemIds);
+            Integer receiveInfoId = (Integer) map.get("receiveInfoId");
+            Order order = orderService.createOrder(itemIds,receiveInfoId);
             myResponse = MyResponse.getSuccessResponse("创建订单成功", order);
         } catch (Exception e) {
             e.printStackTrace();
