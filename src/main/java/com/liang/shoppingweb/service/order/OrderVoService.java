@@ -24,6 +24,7 @@ public class OrderVoService {
     }
 
     public OrderVo getOrderVoById(Integer id) {
-        return orderWithCellMapper.getOrderVoById(id);
+        User userInfo = LoginUtils.getCurrentUser();
+        return orderWithCellMapper.getOrderVoById(id, userInfo.getUsername());
     }
 }

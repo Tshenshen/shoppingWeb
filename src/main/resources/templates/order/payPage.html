@@ -1,10 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>支付页面</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
 <body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app">
+    <el-container style="width: 50% ;margin: auto">
+        <el-header style="margin-bottom: 15px">
+            <h1 style="color: red;text-align: center">
+                <div style="margin: auto ">支付<i class="el-icon-s-finance"></i></div>
+            </h1>
+        </el-header>
+        <el-main>
+            <div style="font-size:20px">订单金额：<em style="font-size: 30px;color: red">&yen;[[${order.sumPrice}]]</em>
+            </div>
+            <div style="margin-top: 10px">
+                <div style="font-size:20px ">支付方式：</div>
+                <el-radio-group v-model="payType" style="margin-top: 5px">
+                    <el-radio-button label="余额"></el-radio-button>
+                    <el-radio-button label="微信"></el-radio-button>
+                    <el-radio-button label="支付宝"></el-radio-button>
+                    <el-radio-button label="QQ"></el-radio-button>
+                </el-radio-group>
+            </div>
+            <el-button style="font-size:15px;margin-top: 10px " type="danger" @click="payWithWalletDialog = true">支付</el-button>
+        </el-main>
+    </el-container>
 
+    <!--余额支付对话框-->
+    <el-dialog title="余额支付" :visible.sync="payWithWalletDialog">
+        <div>
+            <div style="font-size:20px"> 当前余额：<em style="font-size: 30px;color: red">&yen;[[${user.balance}]]</em>
+            </div>
+            <div style="font-size:20px"> 订单金额：<em style="font-size: 30px;color: red">&yen;[[${order.sumPrice}]]</em>
+            </div>
+            <div style="font-size:20px">支付后余额：<em style="font-size: 30px;color: red">&yen;[[${#numbers.formatDecimal(user.balance - order.sumPrice,0,2)}]]</em>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="payWithWalletDialog = false">取 消</el-button>
+            <el-button type="primary" @click="payWithWallet">确 定</el-button>
+        </div>
+    </el-dialog>
+    <form th:action="@{/order/payWithWallet}" method="post" ref="payWithWalletForm">
+        <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
+        <input hidden="hidden" th:value="${order.id}" name="orderId">
+    </form>
+
+</div>
 </body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            payType: '余额',
+            payWithWalletDialog: false
+        },
+        methods: {
+            payWithWallet() {
+                this.payWithWalletDialog = false;
+                this.$refs.payWithWalletForm.submit();
+            }
+        }
+    })
+</script>
 </html>

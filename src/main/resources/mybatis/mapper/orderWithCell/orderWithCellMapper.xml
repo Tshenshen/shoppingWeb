@@ -89,7 +89,8 @@
             INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
             INNER JOIN tbl_goods AS g ON c.goods_id = g.id
         WHERE
-            o.id = #{id} and
+            o.id = #{arg0} and
+            o.username = #{arg1} and
             o.state = 1
     </select>
 </mapper>

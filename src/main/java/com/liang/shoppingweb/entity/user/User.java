@@ -16,7 +16,7 @@ public class User {
     /**
      * 用户id
      */
-    private int id;
+    private String id;
     /**
      * 用户名
      */
@@ -58,6 +58,9 @@ public class User {
      * 创建日期
      */
     private Date createDate;
-
+    /**
+     * 更新日期
+     */
+    private Date updateDate;
 
 }

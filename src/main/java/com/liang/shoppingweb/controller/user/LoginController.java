@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.UUID;
 
 @Controller
 public class LoginController {
@@ -36,6 +37,7 @@ public class LoginController {
         user.setPassword(EncodeUtils.encodeByBCrypt(user.getPassword()));
         user.setEnable('1');
         user.setCreateDate(new Date());
+        user.setId(UUID.randomUUID().toString());
         try {
             userService.insertUser(user);
         } catch (MyException e) {

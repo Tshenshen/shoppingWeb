@@ -78,7 +78,6 @@
                     <a>个人信息</a>
                 </div>
                 <div class="text-item left-order">
-                    <!--todo 收货地址链接 -->
                     <a th:href="@{/user/getReceiveSettingPage}">收货地址</a>
                 </div>
             </div>
@@ -127,7 +126,7 @@
                         <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
                     </div>
                     <div class="left-order th-action item-height">
-                        <a style="margin: 15px 15px">
+                        <a style="margin: 15px 15px" @click.prevent="toPayPage(order.id)">
                             去支付
                         </a>
                         <a>
@@ -184,6 +183,11 @@
         </el-tabs>
     </div>
 
+    <form th:action="@{/order/payPage}" method="get" ref="toPayPageForm">
+        <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
+        <input hidden="hidden" name="orderId" ref="orderId" value="">
+    </form>
+
 </div>
 </body>
 <script th:src="@{/js/toolBar/topNavBar.js}"></script>
@@ -225,6 +229,12 @@
                 return function (id) {
                     return "/ShopWeb/order/orderDetail/" + id ;
                 }
+            }
+        },
+        methods:{
+            toPayPage(id){
+                this.$refs.orderId.setAttribute("value",id);
+                this.$refs.toPayPageForm.submit();
             }
         }
     })

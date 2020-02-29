@@ -4,6 +4,7 @@ import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.user.ReceiveInfo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.user.ReceiveInfoService;
+import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,8 @@ public class UserController {
 
     @Autowired
     private ReceiveInfoService receiveInfoService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/getReceiveSettingPage")
     public String getReceiveSettingPage() {
@@ -83,7 +86,8 @@ public class UserController {
 
     @GetMapping("/getUserCenterPage")
     public String getUserCenterPage(Model model) {
-        User userInfo = LoginUtils.getCurrentUser();
+        User user = LoginUtils.getCurrentUser();
+        User userInfo = userService.getUserByName(user.getUsername());
         model.addAttribute("userInfo", userInfo);
         return "/user/center";
     }

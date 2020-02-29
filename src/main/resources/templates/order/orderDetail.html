@@ -81,7 +81,7 @@
                             </div>
                             <div class="normal">
                                 <div class="btn-area">
-                                    <el-button type="danger" icon="el-icon-bank-card" >去支付
+                                    <el-button type="danger" icon="el-icon-bank-card" @click="toPayPage">去支付
                                     </el-button>
                                 </div>
                                 <div class="price-sum">
@@ -98,8 +98,10 @@
                     </div>
                 </div>
             </div>
-
-
+            <form th:action="@{/order/payPage}" method="get" ref="toPayPageForm">
+                <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
+                <input hidden="hidden" th:value="${orderId}" name="orderId" >
+            </form>
         </el-main>
     </el-container>
 </div>
@@ -162,7 +164,9 @@
             }
         },
         methods: {
-
+            toPayPage(){
+                this.$refs.toPayPageForm.submit();
+            }
         }
     })
 </script>

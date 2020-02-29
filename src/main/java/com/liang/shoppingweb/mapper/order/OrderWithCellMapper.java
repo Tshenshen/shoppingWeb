@@ -10,5 +10,5 @@ public interface OrderWithCellMapper {
 
     List<OrderVo> getUnFinishOrderVoByUsername(String username);
 
-    OrderVo getOrderVoById(Integer id);
+    OrderVo getOrderVoById(Integer id, String username);
 }

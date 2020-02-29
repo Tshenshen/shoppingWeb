@@ -3,8 +3,10 @@ package com.liang.shoppingweb.controller.order;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderVo;
+import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
+import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +30,21 @@ public class OrderController {
         return "order/orderPage";
     }
 
+    @GetMapping("/payPage")
+    public String getPayPage(int orderId, String SW_USER_TOKEN, Model model) {
+        if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
+            return "redirect:/";
+        }
+        User user = LoginUtils.getCurrentUser();
+        model.addAttribute("user",user);
+        Order order = orderService.getOrderById(orderId);
+        model.addAttribute("order",order);
+        return "order/payPage";
+    }
+
     @GetMapping("/orderDetail/{orderId}")
-    public String getOrderDetail(@PathVariable("orderId") Integer orderId , Model model) {
-        model.addAttribute("orderId",orderId);
+    public String getOrderDetail(@PathVariable("orderId") Integer orderId, Model model) {
+        model.addAttribute("orderId", orderId);
         return "order/orderDetail";
     }
 
@@ -41,7 +55,7 @@ public class OrderController {
         try {
             Integer[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new Integer[0]);
             Integer receiveInfoId = (Integer) map.get("receiveInfoId");
-            Order order = orderService.createOrder(itemIds,receiveInfoId);
+            Order order = orderService.createOrder(itemIds, receiveInfoId);
             myResponse = MyResponse.getSuccessResponse("创建订单成功", order);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +66,7 @@ public class OrderController {
 
     @GetMapping("/getUnFinishOrders")
     @ResponseBody
-    public MyResponse getUnFinishOrders(){
+    public MyResponse getUnFinishOrders() {
         MyResponse myResponse;
         try {
             List<OrderVo> unFinishOrders = orderVoService.getUnFinishOrderVoByUsername();
@@ -66,7 +80,7 @@ public class OrderController {
 
     @GetMapping("/getOrderVoById/{orderId}")
     @ResponseBody
-    public MyResponse getOrderVoById(@PathVariable("orderId") Integer orderId){
+    public MyResponse getOrderVoById(@PathVariable("orderId") Integer orderId) {
         MyResponse myResponse;
         try {
             OrderVo orderDetail = orderVoService.getOrderVoById(orderId);
@@ -76,6 +90,23 @@ public class OrderController {
             myResponse = MyResponse.getFailedResponse(e.getMessage());
         }
         return myResponse;
+    }
+
+    @PostMapping("/payWithWallet")
+    public String payWithWallet(int orderId, String SW_USER_TOKEN, Model model) {
+        MyResponse myResponse;
+        if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
+            return "redirect:/";
+        }
+        try {
+            orderService.payWithWallet(orderId);
+            myResponse = MyResponse.getSuccessResponse("支付成功","订单支付成功！！感谢您的购买！！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("支付失败",e.getMessage());
+        }
+        model.addAttribute("payResult",myResponse);
+        return "order/payResult";
     }
 
 }

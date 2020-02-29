@@ -8,10 +8,12 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class MyLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -22,13 +24,17 @@ public class MyLoginSuccessHandler extends SavedRequestAwareAuthenticationSucces
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         updateLastLoginDate(authentication);
-        addUserInfoInfoSession(authentication,request.getSession());
+        addUserInfoInfoSession(authentication, request.getSession(), response);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
-    private void addUserInfoInfoSession(Authentication authentication, HttpSession session) {
+    private void addUserInfoInfoSession(Authentication authentication, HttpSession session, HttpServletResponse response) {
         User user = userService.getUserByName(authentication.getName());
-        session.setAttribute("SW_USER",user);
+        session.setAttribute("SW_USER", user);
+        String userToken = UUID.fromString(user.getId()).toString();
+        String userToken1 = UUID.fromString(user.getId()).toString();
+        response.addCookie(new Cookie("SW_USER_TOKEN", userToken));
+        session.setAttribute("SW_USER_TOKEN", userToken);
     }
 
     private void updateLastLoginDate(Authentication authentication) {

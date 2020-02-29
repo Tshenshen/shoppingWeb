@@ -10,8 +10,10 @@ import com.liang.shoppingweb.mapper.cert.CertMapper;
 import com.liang.shoppingweb.mapper.goods.GoodsMapper;
 import com.liang.shoppingweb.mapper.order.OrderCellMapper;
 import com.liang.shoppingweb.mapper.order.OrderMapper;
+import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +35,13 @@ public class OrderService {
     private OrderMapper orderMapper;
     @Resource
     private OrderCellMapper orderCellMapper;
+    @Autowired
+    private UserService userService;
 
+
+    public Order getOrderById(int id) {
+        return orderMapper.getOrderById(id);
+    }
 
     /**
      * 创建订单
@@ -73,8 +81,23 @@ public class OrderService {
         order.setSumPrice(sumPrice);
         orderMapper.insertOrder(order);
         //插入子订单
-        orderCellMapper.insertOrderCells(order.getId(),orderCells);
+        orderCellMapper.insertOrderCells(order.getId(), orderCells);
         return order;
     }
 
+    @Transactional
+    public void payWithWallet(int orderId) throws Exception {
+        Order order;
+        try {
+            order = orderMapper.getOrderById(orderId);
+            order.setState(2);
+            order.setUpdateDate(new Date());
+            orderMapper.updateOrderState(order);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("支付失败！！");
+        }
+        userService.payWithWallet(order.getSumPrice());
+    }
 }
