@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="username" property="username"/>
         <result column="sum_price" property="sumPrice"/>
-        <result column="receive_infoId" property="receiveInfoId"/>
+        <result column="receive_info_id" property="receiveInfoId"/>
         <result column="create_date" property="createDate"/>
         <result column="state" property="state"/>
         <result column="update_date" property="updateDate"/>
@@ -61,5 +61,35 @@
             o.username = #{username} and
             o.state &lt; 3
             order by o.create_date asc
+    </select>
+
+    <select id="getOrderVoById" resultMap="orderVo">
+        SELECT
+            o.id id,
+            o.username username,
+            o.sum_price sum_price,
+            o.receive_info_id receive_info_id,
+            o.state state,
+            o.create_date create_date,
+            o.update_date update_date,
+            c.id cell_id,
+            c.order_id cell_order_id,
+            c.goods_id cell_goods_id,
+            c.goods_num cell_goods_num,
+            g.id cell_goods_id,
+            g.`name` cell_goods_name,
+            g.price cell_goods_price,
+            g.stock cell_goods_stock,
+            g.`describe` cell_goods_describe,
+            g.pic_paths cell_goods_pic_paths,
+            g.create_date cell_goods_create_date,
+            g.update_date cell_goods_update_date
+        FROM
+            tbl_order AS o
+            INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
+            INNER JOIN tbl_goods AS g ON c.goods_id = g.id
+        WHERE
+            o.id = #{id} and
+            o.state = 1
     </select>
 </mapper>

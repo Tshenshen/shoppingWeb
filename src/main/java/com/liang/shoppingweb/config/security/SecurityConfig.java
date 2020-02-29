@@ -38,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/index", "/").permitAll()
-                .mvcMatchers("/cert/*").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers("/order/*").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers("/user/*").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
+                .mvcMatchers(HttpMethod.GET,"/cert/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
+                .mvcMatchers(HttpMethod.GET,"/order/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
+                .mvcMatchers(HttpMethod.GET,"/user/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
         //todo 店家绑定在用户上
         http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
         http.logout();

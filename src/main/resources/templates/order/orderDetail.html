@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}">
+    <title>订单详细</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link th:href="@{/css/order/orderPage.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app">
+    <input id="orderId" hidden="hidden" th:value="${orderId}">
+    <el-container  style="width: 70% ;margin: auto">
+        <el-header style="margin-bottom: 15px">
+            <h1 style="color: red">
+                <div style="margin: auto ;width: fit-content">订单<i class="el-icon-s-order"></i></div>
+            </h1>
+        </el-header>
+        <el-main style="height: fit-content">
+            <div>
+                <div>
+                    <div class="cart-filter-bar">
+                        <div class="switch-cart-item curr">
+                            <!--<h3 style="color: red">全部商品<span class="number"> {{order.orderCells.length}}</span></h3>-->
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <!--商品信息头-->
+                        <div class="barBorder">
+                            <div class="select-all">
+                            </div>
+                            <div class="t-column t-goods">商品</div>
+                            <div class="t-column t-props"></div>
+                            <div class="t-column t-price">单价</div>
+                            <div class="t-column t-quantity">数量</div>
+                            <div class="t-column t-sum">小计</div>
+                            <div class="t-column t-action">操作</div>
+                        </div>
+
+                        <!--商品信息栏-->
+                        <div class="cartBarBorder" v-for="(cert,index) in order.orderCells" :key="index">
+                            <div class="selectItem">
+                                {{index+1}}
+                            </div>
+                            <div class="column cert-goods">
+                                <el-image :src="picUrl(index)" lazy></el-image>
+                            </div>
+                            <div class="column cert-props">
+                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cert.goods.id" target="_blank">{{cert.goods.name}}</a>
+                            </div>
+                            <div class="column cert-price">{{cert.goods.price}}</div>
+                            <div class="column cert-quantity">{{cert.goodsNum}}</div>
+                            <div class="column cert-sum">{{ItemsSum(index)}}</div>
+                            <div class="column cert-action">
+                            </div>
+                        </div>
+
+                        <!--结算栏-->
+                        <div class="barBorder">
+                            <div class="receiver-label">
+                                收件地址：
+                            </div>
+                            <div class="receiver-ops">
+                                <el-select v-model="order.receiveInfoId" placeholder="请选择" size="small" style="width: 550px" disabled>
+                                    <el-option
+                                            v-for="(receiver,index) in receivers"
+                                            :key="index"
+                                            :label="receiverLabel(receiver)"
+                                            :value="receiver.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <div class="normal">
+                                <div class="btn-area">
+                                    <el-button type="danger" icon="el-icon-bank-card" >去支付
+                                    </el-button>
+                                </div>
+                                <div class="price-sum">
+                                    <div>
+                                        <span>总价：</span>
+                                        <span><em>¥{{order.sumPrice}}</em></span>
+                                    </div>
+                                </div>
+                                <div class="amount-sum">
+                                    共有<em style="color: red"> {{order.orderCells.length}} </em>件商品
+                                </div>
+                            </div>
+                        </div><!--结算栏-->
+                    </div>
+                </div>
+            </div>
+
+
+        </el-main>
+    </el-container>
+</div>
+</body>
+
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            order: {
+                orderCells:[]
+            },
+            receivers: [],
+            receiveInfoId: ''
+        },
+        mounted() {
+            var _that = this;
+            //获取收件信息
+            axios.get("/ShopWeb/user/getReceivers").then(function (value) {
+                if (!value.data.success) {
+                    _that.$message.error(value.data.message);
+                    return;
+                }
+                _that.receivers = value.data.content;
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("获取收件地址错误！！");
+            });
+            //获取订单详细信息
+            let url = "/ShopWeb/order/getOrderVoById/" + document.querySelector("#orderId").getAttribute("value");
+            axios.get(url).then(function (value) {
+                if (!value.data.success) {
+                    _that.$message.error(value.data.message);
+                    return;
+                }
+                _that.order = value.data.content;
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("获取订单详细信息错误！！");
+            })
+        },
+        computed: {
+            picUrl() {
+                return function (index) {
+                    return "/ShopWeb/image/" + this.order.orderCells[index].goods.id + ".jpg";
+                }
+            },
+            ItemsSum() {
+                return function (index) {
+                    return (this.order.orderCells[index].goodsNum * this.order.orderCells[index].goods.price).toFixed(2);
+                }
+            },
+            receiverLabel() {
+                return function (receiver) {
+                    let address = receiver.address.length <= 15 ? receiver.address : receiver.address.substr(0, 15) + "...";
+                    var label = "收件人: " + receiver.receiver + " 电话: " + receiver.phoneNumber + " 地址: " + address;
+                    return label;
+                }
+            }
+        },
+        methods: {
+
+        }
+    })
+</script>
+</html>

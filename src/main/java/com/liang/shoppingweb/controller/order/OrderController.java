@@ -7,16 +7,15 @@ import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/order")
 public class OrderController {
 
     @Autowired
@@ -24,12 +23,18 @@ public class OrderController {
     @Autowired
     private OrderVoService orderVoService;
 
-    @GetMapping("/order/orderPage")
+    @GetMapping("/orderPage")
     public String getOrderPage() {
         return "order/orderPage";
     }
 
-    @PostMapping("/order/createOrder")
+    @GetMapping("/orderDetail/{orderId}")
+    public String getOrderDetail(@PathVariable("orderId") Integer orderId , Model model) {
+        model.addAttribute("orderId",orderId);
+        return "order/orderDetail";
+    }
+
+    @PostMapping("/createOrder")
     @ResponseBody
     public MyResponse createOrder(@RequestBody Map map) {
         MyResponse myResponse;
@@ -45,13 +50,27 @@ public class OrderController {
         return myResponse;
     }
 
-    @GetMapping("/order/getUnFinishOrders")
+    @GetMapping("/getUnFinishOrders")
     @ResponseBody
     public MyResponse getUnFinishOrders(){
         MyResponse myResponse;
         try {
             List<OrderVo> unFinishOrders = orderVoService.getUnFinishOrderVoByUsername();
             myResponse = MyResponse.getSuccessResponse("获取订单列表成功", unFinishOrders);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
+        }
+        return myResponse;
+    }
+
+    @GetMapping("/getOrderVoById/{orderId}")
+    @ResponseBody
+    public MyResponse getOrderVoById(@PathVariable("orderId") Integer orderId){
+        MyResponse myResponse;
+        try {
+            OrderVo orderDetail = orderVoService.getOrderVoById(orderId);
+            myResponse = MyResponse.getSuccessResponse("获取订单详细信息成功", orderDetail);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());

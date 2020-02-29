@@ -117,8 +117,7 @@
                             <el-image :src="picUrl(order.orderCells[0].goodsId)" lazy></el-image>
                         </div>
                         <div class="item-name">
-                            {{order.orderCells[0].goods.name}}等
-                            <!--todo 链接到订单详情-->
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].goods.name}}等</a>
                         </div>
                     </div>
                     <div class="left-order th-quantity item-height">
@@ -160,8 +159,7 @@
                             <el-image :src="picUrl(order.orderCells[0].goodsId)" lazy></el-image>
                         </div>
                         <div class="item-name">
-                            {{order.orderCells[0].goods.name}}等
-                            <!--todo 链接到订单详情-->
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].goods.name}}等</a>
                         </div>
                     </div>
                     <div class="left-order th-quantity item-height">
@@ -221,6 +219,11 @@
             picUrl() {
                 return function (id) {
                     return "/ShopWeb/image/" + id + ".jpg";
+                }
+            },
+            orderDetailUrl(){
+                return function (id) {
+                    return "/ShopWeb/order/orderDetail/" + id ;
                 }
             }
         }
