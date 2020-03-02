@@ -3,6 +3,7 @@ package com.liang.shoppingweb.controller.cert;
 import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.cart.Cert;
+import com.liang.shoppingweb.entity.cart.CertVo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.cert.CertService;
 import com.liang.shoppingweb.utils.LoginUtils;
@@ -33,6 +34,21 @@ public class CertController {
         try {
             certService.addGoods(cert);
             myResponse = MyResponse.getSuccessResponse("物品添加成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
+        }
+        return myResponse;
+    }
+
+    @PostMapping("/cert/buySingleGoods")
+    @ResponseBody
+    public MyResponse buySingleGoods(@RequestBody Cert cert) {
+        MyResponse myResponse;
+        cert.setUsername(LoginUtils.getCurrentUsername());
+        try {
+            CertVo certVo = certService.buySingleGoods(cert);
+            myResponse = MyResponse.getSuccessResponse("物品添加成功", certVo);
         }catch (Exception e){
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());

@@ -48,12 +48,36 @@ public class OrderService {
      */
     @Transactional
     public Order createOrder(Integer[] ids, Integer receiverInfoId) throws Exception {
+
+        String in_ids = QueryPramFormatUtils.toIn(ids);
+        List<CertVo> certVoList = certGoodsMapper.getCertWithGoodsInfoByIds(in_ids);
+        Order order;
+        order = createOrder(certVoList, receiverInfoId);
+        //删除购物车
+        certMapper.deleteItems(in_ids);
+        return order;
+    }
+
+    /**
+     * 创建订单(单件物品）
+     */
+    @Transactional
+    public Order createSingleOrder(int goodsId, int goodsNum, Integer receiverInfoId) throws Exception {
+        List<CertVo> certVoList = new ArrayList<>();
+        CertVo certVo = new CertVo();
+        certVo.setGoodsNum(goodsNum);
+        certVo.setGoodsId(goodsId);
+        certVo.setGoods(goodsMapper.getGoodsById(goodsId));
+        certVoList.add(certVo);
+        return createOrder(certVoList, receiverInfoId);
+    }
+
+    @Transactional
+    public Order createOrder(List<CertVo> certVoList, Integer receiverInfoId) throws Exception {
         User currentUser = LoginUtils.getCurrentUser();
         if (currentUser == null) {
             throw new Exception("用户未登录！！");
         }
-        String in_ids = QueryPramFormatUtils.toIn(ids);
-        List<CertVo> certVoList = certGoodsMapper.getCertWithGoodsInfoByIds(in_ids);
         List<OrderCell> orderCells = new ArrayList<>();
         double sumPrice = 0.0;
 
@@ -70,8 +94,6 @@ public class OrderService {
             }
             sumPrice = sumPrice + certVo.getGoodsNum() * goods.getPrice();
         }
-        //删除购物车
-        certMapper.deleteItems(in_ids);
 
         //创建总订单
         Order order = new Order();

@@ -100,7 +100,10 @@
                     </div>
                 </div>
             </div>
-
+            <form th:action="@{/order/payPage}" method="get" ref="toPayPageForm">
+                <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
+                <input hidden="hidden" name="orderId" ref="orderId" value="">
+            </form>
 
         </el-main>
     </el-container>
@@ -125,6 +128,8 @@
                     return;
                 }
                 _that.receivers = value.data.content;
+                if (value.data.content.length > 0)
+                _that.receiveInfoId = value.data.content[0].id;
             }).catch(function (reason) {
                 console.log(reason);
                 _that.$message.error("获取收件地址错误！！");
@@ -179,14 +184,17 @@
                         _that.$message.error(value.data.message);
                         return;
                     }
-                    //todo 创建跳转支付页面的a标签
-                    console.log(value.data.content.id)
                     sessionStorage.removeItem("orderList");
+                    _that.toPayPage(value.data.content.id);
                 }).catch(function (reason) {
                     console.log(reason);
                     _that.$message.error("确认订单错误！！");
                 })
 
+            },
+            toPayPage(id){
+                this.$refs.orderId.setAttribute("value",id);
+                this.$refs.toPayPageForm.submit();
             }
 
         }

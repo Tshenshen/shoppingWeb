@@ -43,6 +43,32 @@ public class CertService {
         certMapper.updateCert(cert);
     }
 
+    public CertVo buySingleGoods(Cert newCert) throws Exception {
+        CertVo certVo = new CertVo();
+        Goods goods = goodsMapper.getGoodsById(newCert.getGoodsId());
+        certVo.setGoods(goods);
+        //根据用户名和goodsId获取cert记录
+        Cert cert = certMapper.getCertByUsernameAndGoodsId(newCert);
+        //没有就插入新纪录
+        if (cert == null) {
+            newCert.setCreateDate(new Date());
+            certMapper.addGoods(newCert);
+            certVo.setCertPro(newCert);
+            return certVo;
+        }
+        //如果有就更新数量
+        int newGoodsNum = newCert.getGoodsNum();
+        if (newGoodsNum > goods.getStock()){
+            throw new Exception("库存不足");
+        }
+        cert.setUpdateDate(new Date());
+        cert.setGoodsNum(newGoodsNum);
+        certMapper.updateCert(cert);
+        certVo.setCertPro(cert);
+        return certVo;
+    }
+
+
     public List<Cert> getCertsByUsername(String username) {
         return certMapper.getCertsByUsername(username);
     }

@@ -62,9 +62,10 @@
                                          controls-position="right" size="mini"
                                          style="margin-right: 15px"></el-input-number>
                         <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
-                        <el-button type="danger" size="small">立即购买</el-button>
+                        <el-button type="danger" size="small" @click="buySingleGoods">立即购买</el-button>
                     </div>
                 </div>
+                <a hidden="hidden" th:href="@{/order/orderPage}" ref="toOrderPage"></a>
             </el-main>
         </el-container>
         <!--评论-->
@@ -78,6 +79,7 @@
         el: '#app',
         data: {
             goodsDetail: {},
+            orderList: [],
             goodsImgUrlList: [],
             goodsNum: 1,
             isNoStock: true
@@ -107,34 +109,46 @@
         methods: {
             addGoods() {
                 var _that = this;
-                axios.get("/ShopWeb/isAuthenticated").then(function (value) {
+                axios({
+                    method: "post",
+                    url: "/ShopWeb/cert/addGoods",
+                    data: {
+                        goodsNum: _that.goodsNum,
+                        goodsId: _that.goodsDetail.id
+                    }
+                }).then(function (value) {
                     if (value.data.success) {
-                        axios({
-                            method: "post",
-                            url: "/ShopWeb/cert/addGoods",
-                            data: {
-                                goodsNum: _that.goodsNum,
-                                goodsId: _that.goodsDetail.id
-                            }
-                        }).then(function (value) {
-                            if (value.data.success) {
-                                _that.$message.success(value.data.message);
-                            } else {
-                                _that.$message.error(value.data.message);
-                            }
-                        }).catch(function () {
-                            console.log(reason);
-                            _that.$message.error('添加购物车错误！！');
-                        });
+                        _that.$message.success(value.data.message);
                     } else {
                         _that.$message.error(value.data.message);
                     }
                 }).catch(function (reason) {
                     console.log(reason);
-                    _that.$message.error('获取用户登录信息错误！！');
+                    _that.$message.error('添加购物车错误！！');
                 });
 
-
+            },
+            buySingleGoods() {
+                var _that = this;
+                axios({
+                    method: "post",
+                    url: "/ShopWeb/cert/buySingleGoods",
+                    data: {
+                        goodsNum: _that.goodsNum,
+                        goodsId: _that.goodsDetail.id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.orderList.push(value.data.content);
+                        sessionStorage.setItem("orderList", JSON.stringify(_that.orderList));
+                        _that.$refs.toOrderPage.click();
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error('立即购买错误！！');
+                });
             }
         }
 

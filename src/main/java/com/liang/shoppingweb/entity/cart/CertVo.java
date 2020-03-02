@@ -14,4 +14,11 @@ public class CertVo extends Cert {
      * 商品信息（根据GoodId获取）
      */
     private Goods goods ;
+
+    public void setCertPro(Cert cert){
+        setGoodsId(cert.getGoodsId());
+        setGoodsNum(cert.getGoodsNum());
+        setId(cert.getId());
+        setUsername(getUsername());
+    }
 }
