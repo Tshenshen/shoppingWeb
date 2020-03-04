@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.entity.goods;
+package com.liang.shoppingweb.entity.shop;
 
 import lombok.Data;
 
@@ -14,7 +14,11 @@ public class Goods {
     /**
      * 商品 id
      */
-    private int id;
+    private String id;
+    /**
+     * 店铺id
+     */
+    private String shopId;
     /**
      * 商品名字
      */
@@ -39,9 +43,5 @@ public class Goods {
      * 商品 更新时间
      */
     private Date updateDate;
-    /**
-     * 商品 图片路径
-     */
-    private String picPaths;
 
 }

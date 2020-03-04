@@ -34,10 +34,6 @@ public class LoginController {
 
     @PostMapping("/userRegister")
     public String userRegister(User user, Model model) {
-        user.setPassword(EncodeUtils.encodeByBCrypt(user.getPassword()));
-        user.setEnable('1');
-        user.setCreateDate(new Date());
-        user.setId(UUID.randomUUID().toString());
         try {
             userService.insertUser(user);
         } catch (MyException e) {

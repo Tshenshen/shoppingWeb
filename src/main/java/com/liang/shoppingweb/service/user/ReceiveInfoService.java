@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ReceiveInfoService {
@@ -18,7 +19,8 @@ public class ReceiveInfoService {
 
     public ReceiveInfo addNewReceiver(ReceiveInfo receiveInfo) {
         User user = LoginUtils.getCurrentUser();
-        receiveInfo.setUsername(user.getUsername());
+        receiveInfo.setId(UUID.randomUUID().toString());
+        receiveInfo.setUserId(user.getId());
         receiveInfo.setCreateDate(new Date());
         receiveInfoMapper.addNewReceiver(receiveInfo);
         return receiveInfo;
@@ -29,9 +31,8 @@ public class ReceiveInfoService {
         receiveInfoMapper.deleteReceiver(id);
     }
 
-    public List<ReceiveInfo> getReceiversByUsername(){
-        User user = LoginUtils.getCurrentUser();
-        return receiveInfoMapper.getReceiversByUsername(user.getUsername());
+    public List<ReceiveInfo> getReceiversByUserId(){
+        return receiveInfoMapper.getReceiversByUserId(LoginUtils.getCurrentUserId());
     }
 
     public ReceiveInfo updateReceiver(ReceiveInfo receiveInfo){

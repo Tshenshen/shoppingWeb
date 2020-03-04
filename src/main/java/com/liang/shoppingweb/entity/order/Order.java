@@ -14,11 +14,11 @@ public class Order {
     /**
      * 订单id
      */
-    private int id;
+    private String id;
     /**
      * 订购者用户名
      */
-    private String username;
+    private String userId;
     /**
      * 总价格
      */
@@ -26,7 +26,7 @@ public class Order {
     /**
      * 收件信息id
      */
-    private int receiveInfoId;
+    private String receiveInfoId;
     /**
      * 创建订单时间
      */

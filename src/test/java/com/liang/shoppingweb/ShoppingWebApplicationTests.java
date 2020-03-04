@@ -1,11 +1,10 @@
 package com.liang.shoppingweb;
 
-import com.liang.shoppingweb.entity.cart.CertVo;
+import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.cert.CertGoodsMapper;
-import com.liang.shoppingweb.mapper.order.OrderCellMapper;
+import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
@@ -45,7 +44,7 @@ class ShoppingWebApplicationTests {
     private UserService userService;
 
     @Resource
-    private CertGoodsMapper certGoodsMapper;
+    private CartGoodsMapper cartGoodsMapper;
 
     @Autowired
     private OrderService orderService;
@@ -68,15 +67,15 @@ class ShoppingWebApplicationTests {
 
     @Test
     void testOrderVoService() throws Exception {
-        List<OrderVo> orderVo = orderVoService.getUnFinishOrderVoByUsername();
+        List<OrderVo> orderVo = orderVoService.getUnFinishOrderVoByUserId();
         System.out.println(orderVo);
     }
 
     @Test
     void testCreateOrder() {
-        Integer[] ids = {41};
+        String[] ids = {"41"};
         try {
-            orderService.createOrder(ids, 1);
+            orderService.createOrder(ids, "1");
         } catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -84,10 +83,10 @@ class ShoppingWebApplicationTests {
     }
     @Test
     void testMultiInsert() {
-        List<CertVo> certVos = certGoodsMapper.getCertWithGoodsInfoByIds("(35,38)");
+        List<CartVo> cartVos = cartGoodsMapper.getCartWithGoodsInfoByIds("(35,38)");
         List<OrderCell> orderCells = new ArrayList<>();
-        for (CertVo certVo : certVos) {
-            orderCells.add(certVo.convertToOrderCell());
+        for (CartVo cartVo : cartVos) {
+            orderCells.add(cartVo.convertToOrderCell());
         }
 //        orderCellMapper.insertOrderCells(orderCells);
     }
@@ -139,9 +138,9 @@ class ShoppingWebApplicationTests {
     }
 
     @Test
-    void testCertGoodsMapper() {
-        List<CertVo> certs = certGoodsMapper.getCertWithGoodsInfoByUsername("444");
-        System.out.println(certs);
+    void testCartGoodsMapper() {
+        List<CartVo> carts = cartGoodsMapper.getCartWithGoodsInfoByUserId("7ba510b1-9bc9-4748-9fe1-cff83eafeb28");
+        System.out.println(carts);
     }
 
 

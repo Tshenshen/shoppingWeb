@@ -1,6 +1,6 @@
 package com.liang.shoppingweb.entity.cart;
 
-import com.liang.shoppingweb.entity.goods.Goods;
+import com.liang.shoppingweb.entity.shop.Goods;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -8,17 +8,17 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class CertVo extends Cert {
+public class CartVo extends Cart {
 
     /**
      * 商品信息（根据GoodId获取）
      */
     private Goods goods ;
 
-    public void setCertPro(Cert cert){
-        setGoodsId(cert.getGoodsId());
-        setGoodsNum(cert.getGoodsNum());
-        setId(cert.getId());
-        setUsername(getUsername());
+    public void setCartPro(Cart cart){
+        setGoodsId(cart.getGoodsId());
+        setGoodsNum(cart.getGoodsNum());
+        setId(cart.getId());
+        setUserId(getUserId());
     }
 }

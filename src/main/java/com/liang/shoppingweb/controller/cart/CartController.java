@@ -1,11 +1,11 @@
-package com.liang.shoppingweb.controller.cert;
+package com.liang.shoppingweb.controller.cart;
 
 import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.common.MyResponse;
-import com.liang.shoppingweb.entity.cart.Cert;
-import com.liang.shoppingweb.entity.cart.CertVo;
+import com.liang.shoppingweb.entity.cart.Cart;
+import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.service.cert.CertService;
+import com.liang.shoppingweb.service.cart.CartService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,25 +14,27 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Controller
-public class CertController {
+@RequestMapping("/cart")
+public class CartController {
 
     @Autowired
-    private CertService certService;
+    private CartService cartService;
 
-    @PostMapping("/cert/addGoods")
+    @PostMapping("/addGoods")
     @ResponseBody
-    public MyResponse addGoods(@RequestBody Cert cert) {
+    public MyResponse addGoods(@RequestBody Cart cart) {
         MyResponse myResponse;
         User user = LoginUtils.getCurrentUser();
         if (user == null) {
             return MyResponse.getFailedResponse("用户未登录");
         }
-        cert.setUsername(user.getUsername());
+        cart.setUserId(user.getId());
         try {
-            certService.addGoods(cert);
+            cartService.addGoods(cart);
             myResponse = MyResponse.getSuccessResponse("物品添加成功");
         }catch (Exception e){
             e.printStackTrace();
@@ -41,14 +43,14 @@ public class CertController {
         return myResponse;
     }
 
-    @PostMapping("/cert/buySingleGoods")
+    @PostMapping("/buySingleGoods")
     @ResponseBody
-    public MyResponse buySingleGoods(@RequestBody Cert cert) {
+    public MyResponse buySingleGoods(@RequestBody Cart cart) {
         MyResponse myResponse;
-        cert.setUsername(LoginUtils.getCurrentUsername());
+        cart.setUserId(LoginUtils.getCurrentUserId());
         try {
-            CertVo certVo = certService.buySingleGoods(cert);
-            myResponse = MyResponse.getSuccessResponse("物品添加成功", certVo);
+            CartVo cartVo = cartService.buySingleGoods(cart);
+            myResponse = MyResponse.getSuccessResponse("物品添加成功", cartVo);
         }catch (Exception e){
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());
@@ -56,33 +58,31 @@ public class CertController {
         return myResponse;
     }
 
-    @GetMapping("/cert/certPage")
-    public String certPage() {
-        return "cert/certPage";
+    @GetMapping("/cartPage")
+    public String cartPage() {
+        return "cart/cartPage";
     }
 
-    @GetMapping("/cert/CertsList")
+    @GetMapping("/cartsList")
     @ResponseBody
-    public MyResponse getCertsByUsername(HttpSession session) {
-        MyResponse myResponse = new MyResponse();
-        User user = (User) session.getAttribute(AuthorityConstant.session_user_key);
-        if (user != null) {
-            myResponse.setSuccess(true);
-            myResponse.setContent(certService.getCertWithGoodsInfoByUsername(user.getUsername()));
-            myResponse.setMessage("获取购物车列表成功");
-        } else {
-            myResponse.setSuccess(false);
-            myResponse.setMessage("获取购物车列表失败（用户未登录）！！！");
+    public MyResponse getCartsByUserId() {
+        MyResponse myResponse;
+        try {
+            List<CartVo> cartVoList = cartService.getCartWithGoodsInfoByUserId();
+            myResponse = MyResponse.getSuccessResponse("获取购物车列表成功",cartVoList);
+        } catch (Exception e){
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取购物车列表失败!");
         }
         return myResponse;
     }
 
-    @DeleteMapping("/cert/deleteItem/{id}")
+    @DeleteMapping("/deleteItem/{id}")
     @ResponseBody
-    public MyResponse deleteCertItem(@PathVariable("id") Integer id) {
+    public MyResponse deleteCartItem(@PathVariable("id") Integer id) {
         MyResponse myResponse = new MyResponse();
         try {
-            certService.deleteCertItem(id);
+            cartService.deleteCartItem(id);
             myResponse.setSuccess(true);
         } catch (Exception e) {
             myResponse.setSuccess(false);
@@ -91,13 +91,13 @@ public class CertController {
         return myResponse;
     }
 
-    @DeleteMapping("/cert/deleteItems")
+    @DeleteMapping("/deleteItems")
     @ResponseBody
-    public MyResponse deleteCertItem(@RequestBody Map map) {
+    public MyResponse deleteCartItem(@RequestBody Map map) {
         MyResponse myResponse;
         try {
-            Integer[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new Integer[0]);
-            certService.deleteCertItems(itemIds);
+            String[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new String[0]);
+            cartService.deleteCartItems(itemIds);
             myResponse = MyResponse.getSuccessResponse("删除选中物品成功！");
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,13 +106,13 @@ public class CertController {
         return myResponse;
     }
 
-    @PutMapping("/cert/updateItemNum")
+    @PutMapping("/updateItemNum")
     @ResponseBody
-    public MyResponse updateNum(@RequestBody Cert cert) {
+    public MyResponse updateNum(@RequestBody Cart cart) {
         MyResponse myResponse;
         try {
-            cert.setUpdateDate(new Date());
-            certService.updateItemNum(cert);
+            cart.setUpdateDate(new Date());
+            cartService.updateItemNum(cart);
             myResponse = MyResponse.getSuccessResponse("更新购物车物品数量成功！");
         } catch (Exception e) {
             e.printStackTrace();

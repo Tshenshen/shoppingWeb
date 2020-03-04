@@ -15,16 +15,11 @@ public class OrderVoService {
     @Resource
     private OrderWithCellMapper orderWithCellMapper;
 
-    public List<OrderVo> getUnFinishOrderVoByUsername() throws Exception {
-        User userInfo = LoginUtils.getCurrentUser();
-        if (userInfo == null) {
-            throw new Exception("用户未登录！！");
-        }
-        return orderWithCellMapper.getUnFinishOrderVoByUsername(userInfo.getUsername());
+    public List<OrderVo> getUnFinishOrderVoByUserId() {
+        return orderWithCellMapper.getUnFinishOrderVoByUserId(LoginUtils.getCurrentUserId());
     }
 
-    public OrderVo getOrderVoById(Integer id) {
-        User userInfo = LoginUtils.getCurrentUser();
-        return orderWithCellMapper.getOrderVoById(id, userInfo.getUsername());
+    public OrderVo getOrderVoById(String id) {
+        return orderWithCellMapper.getOrderVoById(id);
     }
 }

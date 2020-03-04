@@ -1,6 +1,6 @@
 package com.liang.shoppingweb.mapper.goods;
 
-import com.liang.shoppingweb.entity.goods.Goods;
+import com.liang.shoppingweb.entity.shop.Goods;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -14,7 +14,7 @@ public interface GoodsMapper {
     List<Goods> getAll();
 
     @Select("select * from tbl_goods where id = #{id}")
-    Goods getGoodsById(Integer id);
+    Goods getGoodsById(String id);
 
     @Update("update tbl_goods set stock = #{stock}, update_date = #{updateDate} where id = #{id}")
     void updateGoodsStock(Goods goods);

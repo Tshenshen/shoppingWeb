@@ -32,7 +32,6 @@ public class MyLoginSuccessHandler extends SavedRequestAwareAuthenticationSucces
         User user = userService.getUserByName(authentication.getName());
         session.setAttribute("SW_USER", user);
         String userToken = UUID.fromString(user.getId()).toString();
-        String userToken1 = UUID.fromString(user.getId()).toString();
         response.addCookie(new Cookie("SW_USER_TOKEN", userToken));
         session.setAttribute("SW_USER_TOKEN", userToken);
     }

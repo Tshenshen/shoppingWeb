@@ -21,21 +21,21 @@
         <association property="goods" resultMap="GoodsMap" columnPrefix="goods_"/>
     </resultMap>
 
-    <resultMap id="GoodsMap" type="com.liang.shoppingweb.entity.goods.Goods">
+    <resultMap id="GoodsMap" type="com.liang.shoppingweb.entity.shop.Goods">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="price" property="price"/>
         <result column="stock" property="stock"/>
         <result column="describe" property="describe"/>
-        <result column="pic_paths" property="picPaths"/>
+        <result column="shop_id" property="shopId"/>
         <result column="create_date" property="createDate"/>
         <result column="update_date" property="updateDate"/>
     </resultMap>
 
-    <select id="getUnFinishOrderVoByUsername" resultMap="orderVo">
+    <select id="getUnFinishOrderVoByUserId" resultMap="orderVo">
         SELECT
             o.id id,
-            o.username username,
+            o.user_id user_id,
             o.sum_price sum_price,
             o.receive_info_id receive_info_id,
             o.state state,
@@ -50,7 +50,7 @@
             g.price cell_goods_price,
             g.stock cell_goods_stock,
             g.`describe` cell_goods_describe,
-            g.pic_paths cell_goods_pic_paths,
+            g.shop_id cell_goods_shop_id,
             g.create_date cell_goods_create_date,
             g.update_date cell_goods_update_date
             FROM
@@ -58,7 +58,7 @@
             INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
             INNER JOIN tbl_goods AS g ON c.goods_id = g.id
             WHERE
-            o.username = #{username} and
+            o.user_id = #{userId} and
             o.state &lt; 3
             order by o.create_date asc
     </select>
@@ -66,7 +66,7 @@
     <select id="getOrderVoById" resultMap="orderVo">
         SELECT
             o.id id,
-            o.username username,
+            o.user_id user_id,
             o.sum_price sum_price,
             o.receive_info_id receive_info_id,
             o.state state,
@@ -81,7 +81,7 @@
             g.price cell_goods_price,
             g.stock cell_goods_stock,
             g.`describe` cell_goods_describe,
-            g.pic_paths cell_goods_pic_paths,
+            g.shop_id cell_goods_shop_id,
             g.create_date cell_goods_create_date,
             g.update_date cell_goods_update_date
         FROM
@@ -89,8 +89,6 @@
             INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
             INNER JOIN tbl_goods AS g ON c.goods_id = g.id
         WHERE
-            o.id = #{arg0} and
-            o.username = #{arg1} and
-            o.state = 1
+            o.id = #{id}
     </select>
 </mapper>

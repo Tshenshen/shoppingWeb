@@ -10,7 +10,7 @@
     <script src="" th:src="@{/js/bootstrap.js}"></script>
     <script src="" th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
-    <link th:href="@{/css/cert/certPage.css}" rel="stylesheet">
+    <link th:href="@{/css/cart/cartPage.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
 <body>
@@ -23,7 +23,7 @@
             </h1>
         </el-header>
         <el-main style="height: fit-content">
-            <div v-if="certIsEmpty">
+            <div v-if="cartIsEmpty">
                 <div>
                     <ul>
                         <li class="txt">
@@ -41,7 +41,7 @@
                 <div>
                     <div class="cart-filter-bar">
                         <div class="switch-cart-item curr">
-                            <h3 style="color: red">全部商品<span class="number"> {{certList.length}}</span></h3>
+                            <h3 style="color: red">全部商品<span class="number"> {{cartList.length}}</span></h3>
                         </div>
                     </div>
                 </div>
@@ -61,23 +61,23 @@
                         </div>
 
                         <!--商品信息栏-->
-                        <div class="cartBarBorder" v-for="(cert,index) in certList" :key="index">
+                        <div class="cartBarBorder" v-for="(cart,index) in cartList" :key="index">
                             <div class="selectItem">
-                                <input type="checkbox" v-model="selectedList" :value="cert.id">
+                                <input type="checkbox" v-model="selectedList" :value="cart.id">
                             </div>
-                            <div class="column cert-goods">
+                            <div class="column cart-goods">
                                 <el-image :src="picUrl(index)" lazy></el-image>
                             </div>
-                            <div class="column cert-props">
-                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cert.goods.id" target="_blank">{{cert.goods.name}}</a>
+                            <div class="column cart-props">
+                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cart.goods.id" target="_blank">{{cart.goods.name}}</a>
                             </div>
-                            <div class="column cert-price">{{cert.goods.price}}</div>
-                            <div class="column cert-quantity">
-                                <el-input-number size="mini" v-model="cert.goodsNum" :min="1" :max="cert.goods.stock"
+                            <div class="column cart-price">{{cart.goods.price}}</div>
+                            <div class="column cart-quantity">
+                                <el-input-number size="mini" v-model="cart.goodsNum" :min="1" :max="cart.goods.stock"
                                                  @change="updateNum(index)"></el-input-number>
                             </div>
-                            <div class="column cert-sum">{{ItemsSum(index)}}</div>
-                            <div class="column cert-action">
+                            <div class="column cart-sum">{{ItemsSum(index)}}</div>
+                            <div class="column cart-action">
                                 <a @click="deleteItem(index)">
                                     <i class="el-icon-delete"></i>删除
                                 </a>
@@ -122,14 +122,14 @@
     new Vue({
         el: "#app",
         data: {
-            certList: [],
+            cartList: [],
             selectedList: []
         },
         mounted() {
             var _that = this;
-            axios.get("CertsList").then(function (response) {
+            axios.get("cartsList").then(function (response) {
                 if (response.data.success) {
-                    _that.certList = response.data.content;
+                    _that.cartList = response.data.content;
                 } else {
                     _that.$message.error(response.data.message);
                 }
@@ -141,16 +141,16 @@
         computed: {
             picUrl() {
                 return function (index) {
-                    return "/ShopWeb/image/" + this.certList[index].goods.id + ".jpg";
+                    return "/ShopWeb/image/" + this.cartList[index].goods.id + ".jpg";
                 }
             },
             ItemsSum() {
                 return function (index) {
-                    return (this.certList[index].goodsNum * this.certList[index].goods.price).toFixed(2);
+                    return (this.cartList[index].goodsNum * this.cartList[index].goods.price).toFixed(2);
                 }
             },
             select_all() {
-                return this.certList.length === this.selectedList.length
+                return this.cartList.length === this.selectedList.length
             },
             selectedListNum() {
                 return this.selectedList.length;
@@ -158,22 +158,22 @@
             sumPrice() {
                 var _that = this;
                 var sum = 0.00;
-                _that.certList.forEach(function (cert) {
-                    if (_that.selectedList.indexOf(cert.id) >= 0) {
-                        sum = sum + cert.goodsNum * cert.goods.price;
+                _that.cartList.forEach(function (cart) {
+                    if (_that.selectedList.indexOf(cart.id) >= 0) {
+                        sum = sum + cart.goodsNum * cart.goods.price;
                     }
                 });
                 return sum.toFixed(2);
             },
-            certIsEmpty() {
-                return !(this.certList.length > 0);
+            cartIsEmpty() {
+                return !(this.cartList.length > 0);
             }
         },
         methods: {
             select_all_click(event) {
                 if (event.target.checked) {
                     var ids = [];
-                    this.certList.forEach(
+                    this.cartList.forEach(
                         function (item) {
                             ids.push(item.id);
                         }
@@ -186,13 +186,13 @@
             },
             deleteItem(index) {
                 var _that = this;
-                axios.delete("deleteItem/" + _that.certList[index].id).then(function (value) {
+                axios.delete("deleteItem/" + _that.cartList[index].id).then(function (value) {
                     if (value.data.success) {
-                        let s_index = _that.selectedList.indexOf(_that.certList[index].id);
+                        let s_index = _that.selectedList.indexOf(_that.cartList[index].id);
                         if (s_index >= 0) {
                             _that.selectedList.splice(s_index, 1);
                         }
-                        _that.certList.splice(index, 1);
+                        _that.cartList.splice(index, 1);
                         _that.$message.success("删除成功！");
                     } else {
                         _that.$message.error(value.data.message);
@@ -213,12 +213,12 @@
                 }).then(function (response) {
                     if (response.data.success) {
                         let tempList = [];
-                        _that.certList.forEach(function (item) {
+                        _that.cartList.forEach(function (item) {
                             if (_that.selectedList.indexOf(item.id) < 0) {
                                 tempList.push(item);
                             }
                         });
-                        _that.certList = tempList;
+                        _that.cartList = tempList;
                         _that.selectedList = [];
                         _that.$message.success(response.data.message);
                     } else {
@@ -234,7 +234,7 @@
                 axios({
                     method: "put",
                     url: "updateItemNum",
-                    data:_that.certList[index]
+                    data:_that.cartList[index]
                 }).then(function (value) {
                     if (!value.data.success) {
                         _that.$message.error(value.data.message);
@@ -251,7 +251,7 @@
                     _that.$message.error("亲~，还没选择商品哦~");
                     return;
                 }
-                _that.certList.forEach(function (item) {
+                _that.cartList.forEach(function (item) {
                     if (_that.selectedList.indexOf(item.id) >= 0) {
                         orderList.push(item);
                     }

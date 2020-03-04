@@ -1,6 +1,6 @@
 package com.liang.shoppingweb.controller.goods;
 
-import com.liang.shoppingweb.entity.goods.Goods;
+import com.liang.shoppingweb.entity.shop.Goods;
 import com.liang.shoppingweb.service.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,14 +16,14 @@ public class GoodsController {
     private GoodsService goodsService;
 
     @GetMapping("/goods/goodsDetailPage/{id}")
-    public String goodsDetailPage(@PathVariable Integer id, Model model) {
+    public String goodsDetailPage(@PathVariable String id, Model model) {
         model.addAttribute("goods",goodsService.getGoodsById(id));
         return "goods/goodsDetail";
     }
 
     @GetMapping("/goods/goodsDetail/{id}")
     @ResponseBody
-    public Goods goodsDetail(@PathVariable Integer id) {
+    public Goods goodsDetail(@PathVariable String id) {
         return goodsService.getGoodsById(id);
     }
 

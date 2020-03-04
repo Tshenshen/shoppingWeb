@@ -12,15 +12,15 @@ public class OrderCell {
     /**
      * 订单单元ID
      */
-    private int id;
+    private String id;
     /**
      * 总订单ID
      */
-    private int orderId;
+    private String orderId;
     /**
      * 商品id
      */
-    private int goodsId;
+    private String goodsId;
     /**
      * 商品数量
      */

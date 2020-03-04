@@ -1,12 +1,12 @@
 package com.liang.shoppingweb.service.order;
 
-import com.liang.shoppingweb.entity.cart.CertVo;
-import com.liang.shoppingweb.entity.goods.Goods;
+import com.liang.shoppingweb.entity.cart.CartVo;
+import com.liang.shoppingweb.entity.shop.Goods;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.cert.CertGoodsMapper;
-import com.liang.shoppingweb.mapper.cert.CertMapper;
+import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
+import com.liang.shoppingweb.mapper.cart.CartMapper;
 import com.liang.shoppingweb.mapper.goods.GoodsMapper;
 import com.liang.shoppingweb.mapper.order.OrderCellMapper;
 import com.liang.shoppingweb.mapper.order.OrderMapper;
@@ -21,16 +21,17 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderService {
 
     @Resource
-    private CertGoodsMapper certGoodsMapper;
+    private CartGoodsMapper cartGoodsMapper;
     @Resource
     private GoodsMapper goodsMapper;
     @Resource
-    private CertMapper certMapper;
+    private CartMapper cartMapper;
     @Resource
     private OrderMapper orderMapper;
     @Resource
@@ -39,7 +40,7 @@ public class OrderService {
     private UserService userService;
 
 
-    public Order getOrderById(int id) {
+    public Order getOrderById(String id) {
         return orderMapper.getOrderById(id);
     }
 
@@ -47,14 +48,14 @@ public class OrderService {
      * 创建订单
      */
     @Transactional
-    public Order createOrder(Integer[] ids, Integer receiverInfoId) throws Exception {
+    public Order createOrder(String[] ids, String receiverInfoId) throws Exception {
 
-        String in_ids = QueryPramFormatUtils.toIn(ids);
-        List<CertVo> certVoList = certGoodsMapper.getCertWithGoodsInfoByIds(in_ids);
+        String in_ids = QueryPramFormatUtils.strToIn(ids);
+        List<CartVo> cartVoList = cartGoodsMapper.getCartWithGoodsInfoByIds(in_ids);
         Order order;
-        order = createOrder(certVoList, receiverInfoId);
+        order = createOrder(cartVoList, receiverInfoId);
         //删除购物车
-        certMapper.deleteItems(in_ids);
+        cartMapper.deleteItems(in_ids);
         return order;
     }
 
@@ -62,43 +63,47 @@ public class OrderService {
      * 创建订单(单件物品）
      */
     @Transactional
-    public Order createSingleOrder(int goodsId, int goodsNum, Integer receiverInfoId) throws Exception {
-        List<CertVo> certVoList = new ArrayList<>();
-        CertVo certVo = new CertVo();
-        certVo.setGoodsNum(goodsNum);
-        certVo.setGoodsId(goodsId);
-        certVo.setGoods(goodsMapper.getGoodsById(goodsId));
-        certVoList.add(certVo);
-        return createOrder(certVoList, receiverInfoId);
+    public Order createSingleOrder(String goodsId, int goodsNum, String receiverInfoId) throws Exception {
+        List<CartVo> cartVoList = new ArrayList<>();
+        CartVo cartVo = new CartVo();
+        cartVo.setGoodsNum(goodsNum);
+        cartVo.setGoodsId(goodsId);
+        cartVo.setGoods(goodsMapper.getGoodsById(goodsId));
+        cartVoList.add(cartVo);
+        return createOrder(cartVoList, receiverInfoId);
     }
 
     @Transactional
-    public Order createOrder(List<CertVo> certVoList, Integer receiverInfoId) throws Exception {
+    public Order createOrder(List<CartVo> cartVoList, String receiverInfoId) throws Exception {
         User currentUser = LoginUtils.getCurrentUser();
         if (currentUser == null) {
             throw new Exception("用户未登录！！");
         }
         List<OrderCell> orderCells = new ArrayList<>();
         double sumPrice = 0.0;
+        OrderCell orderCell;
 
         //更新库存,生成子订单
-        for (CertVo certVo : certVoList) {
-            orderCells.add(certVo.convertToOrderCell());
-            Goods goods = certVo.getGoods();
-            int newStock = goods.getStock() - certVo.getGoodsNum();
+        for (CartVo cartVo : cartVoList) {
+            orderCell = cartVo.convertToOrderCell();
+            orderCell.setId(UUID.randomUUID().toString());
+            orderCells.add(orderCell);
+            Goods goods = cartVo.getGoods();
+            int newStock = goods.getStock() - cartVo.getGoodsNum();
             goods.setStock(newStock);
             goods.setUpdateDate(new Date());
             goodsMapper.updateGoodsStock(goods);
             if (newStock < 0) {
-                throw new Exception(certVo.getGoods().getName() + " 库存不足！！！");
+                throw new Exception(cartVo.getGoods().getName() + " 库存不足！！！");
             }
-            sumPrice = sumPrice + certVo.getGoodsNum() * goods.getPrice();
+            sumPrice = sumPrice + cartVo.getGoodsNum() * goods.getPrice();
         }
 
         //创建总订单
         Order order = new Order();
+        order.setId(UUID.randomUUID().toString());
         order.setCreateDate(new Date());
-        order.setUsername(currentUser.getUsername());
+        order.setUserId(currentUser.getId());
         order.setReceiveInfoId(receiverInfoId);
         order.setSumPrice(sumPrice);
         orderMapper.insertOrder(order);
@@ -107,15 +112,14 @@ public class OrderService {
         return order;
     }
 
-    @Transactional
-    public void payWithWallet(int orderId) throws Exception {
+    @Transactional(rollbackFor = Exception.class)
+    public void payWithWallet(String orderId) throws Exception {
         Order order;
         try {
             order = orderMapper.getOrderById(orderId);
             order.setState(2);
             order.setUpdateDate(new Date());
             orderMapper.updateOrderState(order);
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("支付失败！！");

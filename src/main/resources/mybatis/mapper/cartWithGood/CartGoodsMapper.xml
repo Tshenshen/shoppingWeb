@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.liang.shoppingweb.mapper.cert.CertGoodsMapper">
+<mapper namespace="com.liang.shoppingweb.mapper.cart.CartGoodsMapper">
     <sql id="properties">
         c.id AS id,
-        c.username AS username,
+        c.user_id AS user_id,
         c.goods_id AS goods_id,
         c.goods_num AS goods_num,
         c.create_date AS create_date,
@@ -14,12 +14,12 @@
         g.price AS goods_price,
         g.stock AS goods_stock,
         g.`describe` AS goods_describe,
-        g.pic_paths AS goods_pic_paths,
+        g.shop_id AS goods_shop_id,
         g.create_date AS goods_create_date,
         g.update_date AS goods_update_date
     </sql>
 
-    <resultMap id="CertVoMap" type="com.liang.shoppingweb.entity.cart.CertVo">
+    <resultMap id="CartVoMap" type="com.liang.shoppingweb.entity.cart.CartVo">
         <id column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="goods_id" property="goodsId"/>
@@ -29,48 +29,48 @@
         <association property="goods" resultMap="GoodsMap"/>
     </resultMap>
 
-    <resultMap id="GoodsMap" type="com.liang.shoppingweb.entity.goods.Goods">
+    <resultMap id="GoodsMap" type="com.liang.shoppingweb.entity.shop.Goods">
         <id column="goods_id" property="id"/>
         <result column="goods_name" property="name"/>
         <result column="goods_price" property="price"/>
         <result column="goods_stock" property="stock"/>
         <result column="goods_describe" property="describe"/>
-        <result column="goods_pic_paths" property="picPaths"/>
+        <result column="goods_shop_id" property="shopId"/>
         <result column="goods_create_date" property="createDate"/>
         <result column="goods_update_date" property="updateDate"/>
     </resultMap>
 
-    <select id="getCertWithGoodsInfoByUsername" resultMap="CertVoMap">
+    <select id="getCartWithGoodsInfoByUserId" resultMap="CartVoMap">
       SELECT
         c.id id,
-        c.username username,
+        c.user_id user_id,
         c.goods_id goods_id,
         c.goods_num goods_num,
         g.`name` goods_name,
         g.price goods_price,
         g.stock goods_stock,
         g.`describe` goods_describe,
-        g.pic_paths goods_pic_paths
+        g.shop_id goods_shop_id
       FROM
-        tbl_cert AS c
+        tbl_cart AS c
         INNER JOIN tbl_goods AS g ON c.goods_id = g.id
       WHERE
-        c.username = #{username}
+        c.user_id = #{userId}
     </select>
 
-    <select id="getCertWithGoodsInfoByIds" resultMap="CertVoMap">
+    <select id="getCartWithGoodsInfoByIds" resultMap="CartVoMap">
       SELECT
         c.id id,
-        c.username username,
+        c.user_id user_id,
         c.goods_id goods_id,
         c.goods_num goods_num,
         g.`name` goods_name,
         g.price goods_price,
         g.stock goods_stock,
         g.`describe` goods_describe,
-        g.pic_paths goods_pic_paths
+        g.shop_id goods_shop_id
       FROM
-        tbl_cert AS c
+        tbl_cart AS c
         INNER JOIN tbl_goods AS g ON c.goods_id = g.id
       WHERE
         c.id in ${ids}

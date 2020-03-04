@@ -10,20 +10,20 @@ import java.util.Date;
  */
 
 @Data
-public class Cert {
+public class Cart {
 
     /**
      * 购物车编号
      */
-    private int id;
+    private String id;
     /**
      * 储存者id
      */
-    private String username;
+    private String userId;
     /**
      * 商品id
      */
-    private int goodsId;
+    private String goodsId;
     /**
      * 商品数量
      */

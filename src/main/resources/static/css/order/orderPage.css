@@ -4,39 +4,41 @@
     height: 120px;
     width: 4%;
 }
-.cert-goods {
+.cart-goods {
+    padding-top: 7px;
     height: 120px;
     width: 10%;
 }
 
-.cert-props {
+.cart-props {
     padding-top: 15px;
+    padding-left: 10px;
     height: 120px;
     width: 20%;
 }
 
-.cert-price {
+.cart-price {
     padding-top: 45px;
     height: 120px;
     width: 16%;
     text-align: center;
 }
 
-.cert-quantity {
+.cart-quantity {
     padding-top: 42px;
     height: 120px;
     width: 20%;
     text-align: center;
 }
 
-.cert-sum {
+.cart-sum {
     padding-top: 45px;
     height: 120px;
     width: 20%;
     text-align: center;
 }
 
-.cert-action {
+.cart-action {
     padding-top: 45px;
     height: 120px;
     width: 10%;

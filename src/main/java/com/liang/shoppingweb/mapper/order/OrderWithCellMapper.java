@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface OrderWithCellMapper {
 
-    List<OrderVo> getUnFinishOrderVoByUsername(String username);
+    List<OrderVo> getUnFinishOrderVoByUserId(String userId);
 
-    OrderVo getOrderVoById(Integer id, String username);
+    OrderVo getOrderVoById(String id);
 }

@@ -14,11 +14,11 @@ public class ReceiveInfo {
     /**
      * 收件信息id
      */
-    private int id;
+    private String id;
     /**
      * 绑定的用户名
      */
-    private String username;
+    private String userId;
     /**
      * 收货人名字
      */

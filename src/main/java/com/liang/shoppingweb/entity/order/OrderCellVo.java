@@ -1,6 +1,6 @@
 package com.liang.shoppingweb.entity.order;
 
-import com.liang.shoppingweb.entity.goods.Goods;
+import com.liang.shoppingweb.entity.shop.Goods;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

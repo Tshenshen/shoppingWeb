@@ -31,7 +31,7 @@ public class OrderController {
     }
 
     @GetMapping("/payPage")
-    public String getPayPage(int orderId, String SW_USER_TOKEN, Model model) {
+    public String getPayPage(String orderId, String SW_USER_TOKEN, Model model) {
         if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
             return "redirect:/";
         }
@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @GetMapping("/orderDetail/{orderId}")
-    public String getOrderDetail(@PathVariable("orderId") Integer orderId, Model model) {
+    public String getOrderDetail(@PathVariable("orderId") String orderId, Model model) {
         model.addAttribute("orderId", orderId);
         return "order/orderDetail";
     }
@@ -53,8 +53,8 @@ public class OrderController {
     public MyResponse createOrder(@RequestBody Map map) {
         MyResponse myResponse;
         try {
-            Integer[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new Integer[0]);
-            Integer receiveInfoId = (Integer) map.get("receiveInfoId");
+            String[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new String[0]);
+            String receiveInfoId = (String) map.get("receiveInfoId");
             Order order = orderService.createOrder(itemIds, receiveInfoId);
             myResponse = MyResponse.getSuccessResponse("创建订单成功", order);
         } catch (Exception e) {
@@ -69,7 +69,7 @@ public class OrderController {
     public MyResponse getUnFinishOrders() {
         MyResponse myResponse;
         try {
-            List<OrderVo> unFinishOrders = orderVoService.getUnFinishOrderVoByUsername();
+            List<OrderVo> unFinishOrders = orderVoService.getUnFinishOrderVoByUserId();
             myResponse = MyResponse.getSuccessResponse("获取订单列表成功", unFinishOrders);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class OrderController {
 
     @GetMapping("/getOrderVoById/{orderId}")
     @ResponseBody
-    public MyResponse getOrderVoById(@PathVariable("orderId") Integer orderId) {
+    public MyResponse getOrderVoById(@PathVariable("orderId") String orderId) {
         MyResponse myResponse;
         try {
             OrderVo orderDetail = orderVoService.getOrderVoById(orderId);
@@ -93,7 +93,7 @@ public class OrderController {
     }
 
     @PostMapping("/payWithWallet")
-    public String payWithWallet(int orderId, String SW_USER_TOKEN, Model model) {
+    public String payWithWallet(String orderId, String SW_USER_TOKEN, Model model) {
         MyResponse myResponse;
         if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
             return "redirect:/";

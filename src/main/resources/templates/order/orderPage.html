@@ -46,20 +46,20 @@
                         </div>
 
                         <!--商品信息栏-->
-                        <div class="cartBarBorder" v-for="(cert,index) in orderList" :key="index">
+                        <div class="cartBarBorder" v-for="(cart,index) in orderList" :key="index">
                             <div class="selectItem">
                                 {{index+1}}
                             </div>
-                            <div class="column cert-goods">
+                            <div class="column cart-goods">
                                 <el-image :src="picUrl(index)" lazy></el-image>
                             </div>
-                            <div class="column cert-props">
-                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cert.goods.id" target="_blank">{{cert.goods.name}}</a>
+                            <div class="column cart-props">
+                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cart.goods.id" target="_blank">{{cart.goods.name}}</a>
                             </div>
-                            <div class="column cert-price">{{cert.goods.price}}</div>
-                            <div class="column cert-quantity">{{cert.goodsNum}}</div>
-                            <div class="column cert-sum">{{ItemsSum(index)}}</div>
-                            <div class="column cert-action">
+                            <div class="column cart-price">{{cart.goods.price}}</div>
+                            <div class="column cart-quantity">{{cart.goodsNum}}</div>
+                            <div class="column cart-sum">{{ItemsSum(index)}}</div>
+                            <div class="column cart-action">
                                 <a @click="deleteItem(index)">
                                     <i class="el-icon-delete"></i>删除
                                 </a>
@@ -152,8 +152,8 @@
             sumPrice() {
                 var _that = this;
                 var sum = 0.00;
-                _that.orderList.forEach(function (cert) {
-                    sum = sum + cert.goodsNum * cert.goods.price;
+                _that.orderList.forEach(function (cart) {
+                    sum = sum + cart.goodsNum * cart.goods.price;
                 });
                 return sum.toFixed(2);
             },

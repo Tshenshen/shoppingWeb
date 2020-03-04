@@ -29,6 +29,12 @@ public class LoginUtils {
         return ((User) session.getAttribute(AuthorityConstant.session_user_key)).getUsername();
     }
 
+    public static String getCurrentUserId() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        return ((User) session.getAttribute(AuthorityConstant.session_user_key)).getId();
+    }
+
     public static String getSessionUserToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();

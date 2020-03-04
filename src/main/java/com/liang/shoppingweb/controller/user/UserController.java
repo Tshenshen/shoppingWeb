@@ -33,7 +33,7 @@ public class UserController {
     public MyResponse getReceives() {
         MyResponse myResponse;
         try {
-            List<ReceiveInfo> receivers = receiveInfoService.getReceiversByUsername();
+            List<ReceiveInfo> receivers = receiveInfoService.getReceiversByUserId();
             myResponse = MyResponse.getSuccessResponse("获取收件地址成功！", receivers);
         } catch (Exception e) {
             e.printStackTrace();
