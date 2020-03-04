@@ -75,3 +75,10 @@ http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
 * 编写订单详细页面
 * 添加修改收货地址功能
 * 添加链接
+
+# 十、添加商家模块
+* 用户可注册为商家
+* 商家可以开店铺（若干）
+* 店铺中包含同类型的，不同规格的商品
+* 创建商家表，店铺表，商品表拆分出规格表
+* 编写我的店铺页面，注册商家页面，添加商品页面
