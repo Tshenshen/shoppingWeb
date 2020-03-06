@@ -1,9 +1,9 @@
-package com.liang.shoppingweb.controller.goods;
+package com.liang.shoppingweb.controller.shop;
 
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.shop.Goods;
-import com.liang.shoppingweb.service.goods.GoodsService;
+import com.liang.shoppingweb.service.shop.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -7,7 +7,7 @@ import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
-import com.liang.shoppingweb.mapper.goods.GoodsMapper;
+import com.liang.shoppingweb.mapper.shop.GoodsMapper;
 import com.liang.shoppingweb.mapper.order.OrderCellMapper;
 import com.liang.shoppingweb.mapper.order.OrderMapper;
 import com.liang.shoppingweb.service.user.UserService;

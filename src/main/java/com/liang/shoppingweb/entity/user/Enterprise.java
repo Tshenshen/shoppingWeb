@@ -1,0 +1,32 @@
+package com.liang.shoppingweb.entity.user;
+
+import lombok.Data;
+
+import java.util.Date;
+
+/**
+ * 商家表
+ */
+@Data
+public class Enterprise {
+    /**
+     * 商家id
+     */
+    private String id;
+    /**
+     * 绑定的用户
+     */
+    private String userId;
+    /**
+     * 商家名
+     */
+    private String enterpriseName;
+    /**
+     * 创建时间
+     */
+    private Date createDate;
+    /**
+     * 修改时间
+     */
+    private Date updateDate;
+}

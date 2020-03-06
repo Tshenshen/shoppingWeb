@@ -1,13 +1,11 @@
 package com.liang.shoppingweb.service.cart;
 
-import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.entity.cart.Cart;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.shop.Goods;
-import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
-import com.liang.shoppingweb.mapper.goods.GoodsMapper;
+import com.liang.shoppingweb.mapper.shop.GoodsMapper;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.springframework.stereotype.Service;
