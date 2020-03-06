@@ -1,6 +1,7 @@
 package com.liang.shoppingweb.controller.user;
 
 import com.liang.shoppingweb.common.MyResponse;
+import com.liang.shoppingweb.entity.user.Enterprise;
 import com.liang.shoppingweb.entity.user.ReceiveInfo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.user.ReceiveInfoService;
@@ -22,6 +23,29 @@ public class UserController {
     private ReceiveInfoService receiveInfoService;
     @Autowired
     private UserService userService;
+
+    @GetMapping("/getEnterprisePage")
+    public String getEnterprisePage() {
+        if (!LoginUtils.isEnterprise()){
+            return "/user/enterpriseRegister";
+        }
+        return "/user/enterprise";
+    }
+
+    @PostMapping("/enterpriseRegister")
+    @ResponseBody
+    public MyResponse enterpriseRegister(@RequestBody Enterprise enterprise) {
+        MyResponse myResponse;
+        try {
+            userService.enterpriseRegister(enterprise);
+            myResponse = MyResponse.getSuccessResponse("注册商家成功！");
+        }catch (Exception e){
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("注册商家失败！");
+        }
+        return myResponse;
+    }
+
 
     @GetMapping("/getReceiveSettingPage")
     public String getReceiveSettingPage() {

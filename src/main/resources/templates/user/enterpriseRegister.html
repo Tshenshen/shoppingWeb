@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册商家</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app" style="width: 40%;margin: auto;text-align: center">
+    <a th:href="@{/user/getEnterprisePage}" hidden="hidden" ref="getEnterprisePage"></a>
+    <h3 style="color: red;margin: 25px">注册商家，开启自己的店铺之旅~</h3>
+    <el-form label-width="80px" ref="enterpriseRegisterRef" :model="enterpriseRegisterForm" :rules="rules">
+        <el-form-item label="商家名称" prop="enterpriseName">
+            <el-input v-model="enterpriseRegisterForm.enterpriseName"></el-input>
+        </el-form-item>
+        <el-form-item label="商家电话" prop="phoneNumber">
+            <el-input v-model="enterpriseRegisterForm.phoneNumber"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="enterpriseRegister">注册</el-button>
+        </el-form-item>
+    </el-form>
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            enterpriseRegisterForm: {
+                enterpriseName: '',
+                phoneNumber: ''
+            },
+            rules: {
+                enterpriseName: [
+                    {required: true, message: '请输入商家名称', trigger: 'blur'},
+                    {max: 30, message: '最长30个字符', trigger: 'blur'}
+                ],
+                phoneNumber: [
+                    {required: true, message: '请输入商家电话', trigger: 'blur'},
+                    {min: 8, max: 11, message: '请输入正确的电话', trigger: 'blur'}
+                ]
+            }
+        },
+        methods: {
+            enterpriseRegister() {
+                var _that = this;
+                this.$refs.enterpriseRegisterRef.validate(function (isValid) {
+                    if (isValid) {
+                        axios({
+                            method: 'post',
+                            url: '/ShopWeb/user/enterpriseRegister',
+                            data: _that.enterpriseRegisterForm
+                        }).then(function (value) {
+                            if (value.data.success) {
+                                _that.$message.success(value.data.message + '1秒后跳转。。。');
+                                clearTimeout(_that.timer);
+                                _that.timer = setTimeout(function () {
+                                    _that.$refs.getEnterprisePage.click();
+                                }, 1000);
+                            } else {
+                                _that.$message.error(value.data.message);
+                            }
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            _that.$message.error("注册商家错误！！");
+                        })
+                    } else {
+                        _that.$message.error("请完善表单！！");
+                    }
+                });
+            }
+        }
+    })
+</script>
+</html>

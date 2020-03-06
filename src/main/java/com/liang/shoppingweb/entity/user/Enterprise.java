@@ -22,6 +22,10 @@ public class Enterprise {
      */
     private String enterpriseName;
     /**
+     * 商家电话
+     */
+    private String phoneNumber;
+    /**
      * 创建时间
      */
     private Date createDate;

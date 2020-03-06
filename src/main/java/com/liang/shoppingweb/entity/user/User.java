@@ -47,9 +47,14 @@ public class User {
      */
     private char enable;
     /**
-     * <@link>AuthorityConstant
+     * 角色
+     * {@link com.liang.shoppingweb.common.AuthorityConstant}
      */
     private String role;
+    /**
+     * 商家id
+     */
+    private String enterpriseId;
     /**
      * 最后登录时间
      */

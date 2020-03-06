@@ -1,7 +1,10 @@
 package com.liang.shoppingweb.service.user;
 
+import com.liang.shoppingweb.common.AuthorityConstant;
+import com.liang.shoppingweb.entity.user.Enterprise;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.exception.MyException;
+import com.liang.shoppingweb.mapper.user.EnterpriseMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.utils.EncodeUtils;
 import com.liang.shoppingweb.utils.LoginUtils;
@@ -19,6 +22,9 @@ public class UserService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private EnterpriseMapper enterpriseMapper;
+
 
 
     public List<User> getAll() {
@@ -67,5 +73,28 @@ public class UserService {
             throw new Exception("支付失败！！");
         }
 
+    }
+
+    @Transactional
+    public void enterpriseRegister(Enterprise enterprise) {
+        User user = new User();
+        user.setId(LoginUtils.getCurrentUserId());
+
+        //创建新商家
+        String enterpriseId = UUID.randomUUID().toString();
+        enterprise.setId(enterpriseId);
+        enterprise.setUserId(user.getId());
+        enterprise.setUpdateDate(new Date());
+        enterpriseMapper.addEnterprise(enterprise);
+
+        //更新数据库用户
+        user.setRole(AuthorityConstant.shop);
+        user.setEnterpriseId(enterpriseId);
+        user.setUpdateDate(new Date());
+        userMapper.enterpriseRegister(user);
+
+        //更新本地用户
+        user = userMapper.getUserById(user.getId());
+        LoginUtils.setCurrentUser(user);
     }
 }

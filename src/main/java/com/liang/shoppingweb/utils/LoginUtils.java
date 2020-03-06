@@ -63,4 +63,14 @@ public class LoginUtils {
         String sessionUserToken = getSessionUserToken();
         return sessionUserToken.equals(paramUserToken);
     }
+
+    public static String getCurrentUserRole() {
+        return getCurrentUser().getRole();
+    }
+
+    public static boolean isEnterprise() {
+        return AuthorityConstant.shop.equals(getCurrentUser().getRole());
+    }
+
+
 }
