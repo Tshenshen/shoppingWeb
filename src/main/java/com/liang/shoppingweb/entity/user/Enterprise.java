@@ -26,6 +26,10 @@ public class Enterprise {
      */
     private String phoneNumber;
     /**
+     * 商家余额
+     */
+    private double balance;
+    /**
      * 创建时间
      */
     private Date createDate;

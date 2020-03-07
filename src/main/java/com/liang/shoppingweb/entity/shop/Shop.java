@@ -25,11 +25,11 @@ public class Shop {
     /**
      * 最大价格
      */
-    private String priceMax;
+    private double priceMax;
     /**
      * 最小价格
      */
-    private String priceMin;
+    private double priceMin;
     /**
      * 创建时间
      */
