@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商家中心</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/user/enterprisePage.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app" style="width: 70%;margin: auto">
+    <!--center_header-->
+    <div class="center_header">
+        <!--钱包-->
+        <div class=" wallet left-order">
+            <div>
+                <span style="font-size: 20px">余额</span>
+            </div>
+            <el-divider style="margin: 10px 0"></el-divider>
+            <div class="balance-item left-order">
+                <h2 style="color: red">
+                    &yen;[[${enterpriseInfo.balance}]]
+                </h2>
+            </div>
+        </div>
+        <!--头像-->
+        <div class=" headImg left-order">
+            <el-avatar icon="el-icon-user-solid" :size="100" style="font-size: 80px; margin-left: 30px"></el-avatar>
+            <!--<div>todo 使用用户上传的头像-->
+            <!--<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>-->
+            <!--</div>-->
+            <div class="userName">
+                <a style="color: white;">
+                    <div style="font-size: 16px">商家<br></div>
+                    [[${enterpriseInfo.enterpriseName}]]
+                    <!--todo 修改商家信息-->
+                </a>
+            </div>
+        </div>
+        <!--设置-->
+        <div class=" right-bar left-order">
+            <div class="left-order concerned">
+                <div>
+                    <span style="font-size: 20px">待处理订单</span>
+                </div>
+                <el-divider style="margin: 10px 0"></el-divider>
+                <div class="item left-order">
+                    <h3>
+                        <a>0<!--todo 需要补充待发货功能--></a>
+                    </h3>
+                    <div style="margin-top: 15px">待发货</div>
+                </div>
+                <div class="item left-order">
+                    <h3>
+                        <a>0<!--todo 需要补充售后/退款功能--></a>
+                    </h3>
+                    <div style="margin-top: 15px">售后/退款</div>
+                </div>
+            </div>
+            <el-divider direction="vertical"></el-divider>
+            <div class="left-order setting">
+                <div>
+                    <span style="font-size: 20px">我的设置</span>
+                </div>
+                <el-divider style="margin: 10px 0"></el-divider>
+                <div class="text-item left-order">
+                    <a >商家信息</a>
+                    <!--todo 修改商家信息-->
+                </div>
+                <div class="text-item left-order">
+                    <a th:href="@{/enterprise/shopListPage}">我的店铺</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            orderList: {
+                unSendList: []
+            }
+        },
+        mounted(){
+
+        },
+        methods: {}
+    })
+</script>
+</html>

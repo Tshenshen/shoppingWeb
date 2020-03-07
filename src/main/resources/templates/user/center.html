@@ -74,10 +74,10 @@
                 </div>
                 <el-divider style="margin: 10px 0"></el-divider>
                 <div class="text-item left-order">
-                    <a th:href="@{/user/getEnterprisePage}">我的店铺</a>
+                    <a th:href="@{/user/getReceiveSettingPage}">收货地址</a>
                 </div>
                 <div class="text-item left-order">
-                    <a th:href="@{/user/getReceiveSettingPage}">收货地址</a>
+                    <a th:href="@{/enterprise/center}">商家中心</a>
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
                     <div class="left-order th-action">操作</div>
                 </div>
 
-                <div class="order-item-fra" v-for="(order,index) in orderList.unPayList" :key="index">
+                <div class="order-item-fra" v-for="(order,index) in orderList.unSendList" :key="index">
 
 
                     <div class="left-order th-order item-height">
@@ -241,6 +241,7 @@
         data: {
             orderList: {
                 unPayList: [],
+                unSendList: [],
                 unReceiveList: []
             }
         },
@@ -252,6 +253,8 @@
                         if (order.state === 1) {
                             _that.orderList.unPayList.push(order);
                         } else if (order.state === 2) {
+                            _that.orderList.unSendList.push(order);
+                        }else if (order.state === 3) {
                             _that.orderList.unReceiveList.push(order);
                         }
                     })

@@ -6,6 +6,7 @@ import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
+import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,8 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private OrderVoService orderVoService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/orderPage")
     public String getOrderPage() {
@@ -35,7 +38,7 @@ public class OrderController {
         if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
             return "redirect:/";
         }
-        User user = LoginUtils.getCurrentUser();
+        User user = userService.getUserByName(LoginUtils.getCurrentUsername());
         model.addAttribute("user",user);
         Order order = orderService.getOrderById(orderId);
         model.addAttribute("order",order);

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的店铺</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/enterprise/shopListPage.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app" style="width: 85% ; margin: auto">
+    <el-container>
+        <el-header>
+            <h1 style="color: red;text-align: center">我的店铺<i class="el-icon-s-shop"></i></h1>
+        </el-header>
+        <el-main>
+            <div class="product left-order" v-for="(shop,index) in shopList" :key="index">
+                <div class="product-iWrap">
+                    <div class="productImg-wrap">
+                        <!--<img src="/ShopWeb/image/+shop.id+/+shop.id"/>-->
+                    </div>
+
+                    <p class="productPrice">
+                        {{shop.price}}
+                    </p>
+
+                    <p class="productTittle">
+                    <div>{{shop.shopName}}</div>
+                    </p>
+                </div>
+            </div>
+            <div class="shop left-order">
+                <div class="shop-image left-order">
+                    <el-image th:src="@{/image/1.jpg}"></el-image>
+                </div>
+                <div class="shop-right left-order">
+                    <div class="shop-title">
+                        撒旦法撒旦法阿斯蒂芬阿萨德撒旦法撒旦法阿斯蒂芬阿萨德撒旦法撒旦法阿斯蒂芬阿萨德撒旦法撒旦法阿斯蒂芬阿萨德萨德撒旦法撒旦法阿斯蒂芬阿萨德
+                    </div>
+                    <div class="shop-edit">
+                        <div class="shop-edit-info left-order">
+                            <el-link type="primary" icon="el-icon-edit">店铺信息</el-link>
+                        </div>
+                        <div class="shop-edit-page left-order">
+                            <el-link type="primary" icon="el-icon-edit">店铺页面</el-link>
+                        </div>
+                    </div>
+                    <div class="shop-edit">
+                        <div class="shop-enable left-order">
+                            <el-switch
+                                    v-model="value1"
+                                    active-text="启用店铺"
+                                    active-value="1"
+                                    inactive-value="0">
+                            </el-switch>
+                        </div>
+                        <div class="shop-delete left-order">
+                            <el-link type="danger" icon="el-icon-delete">删除</el-link>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="shop left-order">
+                <div class="shop-create left-order">
+                    <el-link type="primary" icon="el-icon-plus" @click="createShopDialogVisible = true">添加新店铺</el-link>
+                </div>
+            </div>
+
+            <el-dialog title="添加新店铺" :visible.sync="createShopDialogVisible">
+                <el-form :model="createShopForm" :rules="rules" ref="createShopFormRef">
+                    <el-form-item label="店铺名（商品名）" prop="shopName">
+                        <el-input v-model="createShopForm.shopName" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品种类" prop="type">
+                        <el-select v-model="createShopForm.kind" placeholder="请选择商品种类">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="商品类型" prop="style">
+                        <el-select v-model="createShopForm.type" placeholder="请选择商品类型">
+                            <el-option label="区域一" value="shanghai"></el-option>
+                            <el-option label="区域二" value="beijing"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="价格区间" prop="price">
+                        <el-input v-model="createShopForm.price" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品描述" prop="describe">
+                        <el-input v-model="createShopForm.describe" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="createShopDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="createShopDialogVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
+        </el-main>
+    </el-container>
+
+
+</div>
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            createShopForm: {},
+            rules: {
+                shopName: [
+                    {required: true, message: "请输入店铺/商品名", trigger: 'blur'}
+                ],
+                type: [
+                    {required: true, message: "请选择商品种类", trigger: 'blur'}
+                ],
+                style: [
+                    {required: true, message: "请选择商品类型", trigger: 'blur'}
+                ],
+                price: [
+                    {required: true, message: "请输入商品价格区间", trigger: 'blur'}
+                ],
+                describe: [
+                    {required: true, message: "请输入商品描述", trigger: 'blur'}
+                ]
+            },
+            shopList: [],
+            value1: '0',
+            createShopDialogVisible: false
+
+        },
+        methods: {}
+    })
+</script>
+</html>

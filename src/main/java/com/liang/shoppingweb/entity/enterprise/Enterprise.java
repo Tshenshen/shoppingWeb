@@ -1,4 +1,4 @@
-package com.liang.shoppingweb.entity.user;
+package com.liang.shoppingweb.entity.enterprise;
 
 import lombok.Data;
 

@@ -1,15 +1,14 @@
 package com.liang.shoppingweb.service.user;
 
 import com.liang.shoppingweb.common.AuthorityConstant;
-import com.liang.shoppingweb.entity.user.Enterprise;
+import com.liang.shoppingweb.entity.enterprise.Enterprise;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.exception.MyException;
-import com.liang.shoppingweb.mapper.user.EnterpriseMapper;
+import com.liang.shoppingweb.mapper.enterprise.EnterpriseMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.utils.EncodeUtils;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;

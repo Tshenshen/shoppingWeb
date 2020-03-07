@@ -23,13 +23,25 @@ public class Shop {
      */
     private String describe;
     /**
-     * 最大价格
+     * 商品种类
      */
-    private double priceMax;
+    private String type;
     /**
-     * 最小价格
+     * 商品类型
      */
-    private double priceMin;
+    private String style;
+    /**
+     * 价格区间
+     */
+    private String price;
+    /**
+     * 图片id串
+     */
+    private String images;
+    /**
+     * 启用为1
+     */
+    private char enable;
     /**
      * 创建时间
      */

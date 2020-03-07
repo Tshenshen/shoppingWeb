@@ -1,0 +1,55 @@
+.left-order{
+    float: left;
+}
+.shop{
+    width: 30%;
+    margin: 10px 20px;
+    border: 1px solid gray;
+    border-radius: 4px;
+}
+.shop-create{
+    margin: 10px;
+    width: 95%;
+    height: 130px;
+    padding: 55px 5px 5px 5px;
+    border: 1px dashed gray;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.shop-image{
+    margin: 5px;
+    width: 140px;
+    height: 140px;
+}
+.shop-right{
+    margin: 5px 0 5px 5px;
+    width: 207px;
+    height: 140px;
+    padding: 5px;
+}
+.shop-title{
+    color: red;
+    overflow: hidden;
+    height: 60px;
+    margin-bottom: 10px;
+}
+.shop-edit{
+    width: 200px;
+    height: 26px;
+}
+.shop-edit-info{
+    margin: 5px 10px;
+}
+.shop-edit-page{
+    margin: 5px 10px;
+}
+.shop-enable{
+    width: 120px;
+    text-align: center;
+}
+.shop-delete{
+    width: 80px;
+    text-align: center;
+}

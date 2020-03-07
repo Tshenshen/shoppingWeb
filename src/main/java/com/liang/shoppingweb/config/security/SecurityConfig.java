@@ -40,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/index", "/").permitAll()
                 .mvcMatchers(HttpMethod.GET,"/cart/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
                 .mvcMatchers(HttpMethod.GET,"/order/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers(HttpMethod.GET,"/user/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
+                .mvcMatchers(HttpMethod.GET,"/user/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
+                .mvcMatchers(HttpMethod.GET,"/enterprise/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user);
         //todo 店家绑定在用户上
         http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
         http.logout();
