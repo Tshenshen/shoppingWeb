@@ -134,9 +134,54 @@
                     </div>
                 </div>
             </el-tab-pane>
+
+            <el-tab-pane label="待发货">
+                <div v-if="orderList.unSendList.length === 0" class="none-fra">
+                    还没付款，货不来~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList.unPayList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].goodsId)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].goods.name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px" >
+                            催他发货<!--todo 催他发货功能-->
+                        </a>
+                        <a>
+                            申请退款<!--todo 添加退款功能-->
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+
+
             <el-tab-pane label="待收货">
                 <div v-if="orderList.unReceiveList.length === 0" class="none-fra">
-                    钱包空空，货不来~
+                    还不发货，心很急~
                 </div>
                 <div v-else class="th-Border">
                     <div class="left-order th-order">序号</div>
@@ -224,15 +269,15 @@
                     return "/ShopWeb/image/" + id + ".jpg";
                 }
             },
-            orderDetailUrl(){
+            orderDetailUrl() {
                 return function (id) {
-                    return "/ShopWeb/order/orderDetail/" + id ;
+                    return "/ShopWeb/order/orderDetail/" + id;
                 }
             }
         },
-        methods:{
-            toPayPage(id){
-                this.$refs.orderId.setAttribute("value",id);
+        methods: {
+            toPayPage(id) {
+                this.$refs.orderId.setAttribute("value", id);
                 this.$refs.toPayPageForm.submit();
             }
         }
