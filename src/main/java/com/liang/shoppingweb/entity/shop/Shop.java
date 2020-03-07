@@ -11,13 +11,25 @@ public class Shop {
      */
     private String id;
     /**
-     * 商品id
+     * 商家id
      */
-    private String goodsId;
+    private String enterpriseId;
     /**
-     * 商家名
+     * 店铺名称
      */
-    private String enterpriseName;
+    private String shopName;
+    /**
+     * 商品描述
+     */
+    private String describe;
+    /**
+     * 最大价格
+     */
+    private String priceMax;
+    /**
+     * 最小价格
+     */
+    private String priceMin;
     /**
      * 创建时间
      */

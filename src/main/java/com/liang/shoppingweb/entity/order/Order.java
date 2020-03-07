@@ -32,7 +32,7 @@ public class Order {
      */
     private Date createDate;
     /**
-     * 订单状态，0为取消，1为代付款，2为待收货，3为完成
+     * 订单状态，1为待付款，2为待发货，3为待收货，4为完成，0为取消
      */
     private int state;
     /**

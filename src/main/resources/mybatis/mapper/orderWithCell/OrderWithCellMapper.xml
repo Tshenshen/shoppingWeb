@@ -59,7 +59,7 @@
             INNER JOIN tbl_goods AS g ON c.goods_id = g.id
             WHERE
             o.user_id = #{userId} and
-            o.state &lt; 3
+            o.state &lt; 4
             order by o.create_date asc
     </select>
 
