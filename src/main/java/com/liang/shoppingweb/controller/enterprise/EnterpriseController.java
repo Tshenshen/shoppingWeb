@@ -2,13 +2,17 @@ package com.liang.shoppingweb.controller.enterprise;
 
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
+import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.service.enterprise.EnterpriseService;
+import com.liang.shoppingweb.service.shop.ShopService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/enterprise")
@@ -18,12 +22,74 @@ public class EnterpriseController {
     private UserService userService;
     @Autowired
     private EnterpriseService enterpriseService;
+    @Autowired
+    private ShopService shopService;
+
+
+    @PostMapping("/createNewShop")
+    @ResponseBody
+    public MyResponse createNewShop(@RequestBody Shop shop) {
+        MyResponse myResponse;
+        try {
+            shopService.createNewShop(shop);
+            myResponse = MyResponse.getSuccessResponse("新建店铺成功！", shop);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("新建店铺失败！");
+        }
+        return myResponse;
+    }
+
+    @PutMapping("/updateShopEnable")
+    @ResponseBody
+    public MyResponse updateShopEnable(@RequestBody Shop shop) {
+        MyResponse myResponse;
+        try {
+            shopService.updateShopEnable(shop);
+            if ('1' == shop.getEnable()) {
+                myResponse = MyResponse.getSuccessResponse("店铺已开启！", shop);
+            } else {
+                myResponse = MyResponse.getSuccessResponse("店铺已关闭！", shop);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("设置店铺开启或关闭失败！");
+        }
+        return myResponse;
+    }
+
+    @DeleteMapping("/deleteShopById/{id}")
+    @ResponseBody
+    public MyResponse deleteShopById(@PathVariable String id) {
+        MyResponse myResponse;
+        try {
+            shopService.deleteShopById(id);
+            myResponse = MyResponse.getSuccessResponse("删除店铺成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("删除店铺失败！");
+        }
+        return myResponse;
+    }
 
 
     @GetMapping("/shopListPage")
-    public String getShopListPage(Model model) {
-
+    public String getShopListPage() {
         return "enterprise/shopListPage";
+    }
+
+    @GetMapping("/getMyShopList")
+    @ResponseBody
+    public MyResponse getMyShopList() {
+        MyResponse myResponse;
+        try {
+            List<Shop> shopList = shopService.getShopListByEnterpriseId();
+            myResponse = MyResponse.getSuccessResponse("获取店铺列表成功！", shopList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取店铺列表失败！");
+        }
+        return myResponse;
     }
 
     @GetMapping("/center")

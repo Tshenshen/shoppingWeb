@@ -72,5 +72,8 @@ public class LoginUtils {
         return AuthorityConstant.shop.equals(getCurrentUser().getRole());
     }
 
+    public static String getCurrentUserEnterpriseId() {
+        return getCurrentUser().getEnterpriseId();
+    }
 
 }

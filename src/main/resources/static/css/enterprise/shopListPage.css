@@ -23,6 +23,15 @@
     width: 140px;
     height: 140px;
 }
+.shop-image-error{
+    width: 140px;
+    height: 140px;
+    border: 1px dashed gray;
+    font-size: 10px;
+    border-radius: 7px;
+    text-align: center;
+    line-height: 140px;
+}
 .shop-right{
     margin: 5px 0 5px 5px;
     width: 207px;

@@ -12,4 +12,6 @@ public interface EnterpriseMapper {
 
     @Select("select * from tbl_enterprise where user_id = #{userId}")
     Enterprise getEnterpriseByUserId(String userId);
+
+
 }

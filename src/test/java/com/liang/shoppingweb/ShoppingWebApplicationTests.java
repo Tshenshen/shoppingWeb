@@ -1,11 +1,13 @@
 package com.liang.shoppingweb;
 
 import com.liang.shoppingweb.entity.cart.CartVo;
+import com.liang.shoppingweb.entity.common.Dictionary;
 import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
+import com.liang.shoppingweb.service.common.DictionaryService;
 import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
 import com.liang.shoppingweb.service.user.UserService;
@@ -28,7 +30,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -55,14 +59,45 @@ class ShoppingWebApplicationTests {
     @Resource
     private OrderVoService orderVoService;
 
+    @Autowired
+    private DictionaryService dictionaryService;
+
     @BeforeAll
     @Test
-    void initLogin(){
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    void initLogin() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();
         User user = new User();
         user.setUsername("444");
-        session.setAttribute("SW_USER",user);
+        session.setAttribute("SW_USER", user);
+    }
+
+    @Test
+    void insertDictionary() {
+        List<Dictionary> dictionaries1 = new ArrayList<>();
+        List<Dictionary> dictionaries2;
+        for (int i = 0; i < 10; i++) {
+            Dictionary dictionary = new Dictionary();
+            dictionary.setName("种类" + i);
+            dictionary.setId(UUID.randomUUID().toString());
+            dictionary.setCreateDate(new Date());
+            dictionary.setValue(i + "");
+            dictionary.setOrder(i+1);
+            dictionaries1.add(dictionary);
+            dictionaries2 = new ArrayList<>();
+            for (int j = 0; j < 10; j++) {
+                Dictionary dictionary2 = new Dictionary();
+                dictionary2.setName("类型" + j);
+                dictionary2.setId(UUID.randomUUID().toString());
+                dictionary2.setCreateDate(new Date());
+                dictionary2.setValue(j + "");
+                dictionary2.setOrder(j+1);
+                dictionary2.setParentId(dictionary.getId());
+                dictionaries2.add(dictionary2);
+            }
+            dictionaryService.batchAddDictionary(dictionaries2, 2);
+        }
+        dictionaryService.batchAddDictionary(dictionaries1, 1);
     }
 
     @Test
@@ -76,11 +111,12 @@ class ShoppingWebApplicationTests {
         String[] ids = {"41"};
         try {
             orderService.createOrder(ids, "1");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
+
     @Test
     void testMultiInsert() {
         List<CartVo> cartVos = cartGoodsMapper.getCartWithGoodsInfoByIds("(35,38)");

@@ -37,7 +37,7 @@ public class Shop {
     /**
      * 图片id串
      */
-    private String images;
+    private String images = "";
     /**
      * 启用为1
      */
