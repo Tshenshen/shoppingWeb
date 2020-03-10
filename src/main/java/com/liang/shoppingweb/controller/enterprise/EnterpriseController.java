@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,6 +26,48 @@ public class EnterpriseController {
     @Autowired
     private ShopService shopService;
 
+    @PutMapping("/updateShopInfo")
+    @ResponseBody
+    public MyResponse updateShopInfo(@RequestBody Shop shop) {
+        MyResponse myResponse;
+        try {
+            shopService.updateShopInfoById(shop);
+            myResponse = MyResponse.getSuccessResponse("修改店铺信息成功！",shop);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("修改店铺信息失败！");
+        }
+        return myResponse;
+    }
+
+
+    @DeleteMapping("/deleteShopImage/{shopId}")
+    @ResponseBody
+    public MyResponse deleteShopImage(@PathVariable String shopId, @RequestParam String imageName) {
+        MyResponse myResponse;
+        try {
+            String images = shopService.deleteShopImage(shopId, imageName);
+            myResponse = MyResponse.getSuccessResponse("删除图片成功！", images);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("删除图片失败！");
+        }
+        return myResponse;
+    }
+
+    @PostMapping("/uploadShopImage/{shopId}")
+    @ResponseBody
+    public MyResponse uploadShopImage(@PathVariable String shopId, MultipartFile file) {
+        MyResponse myResponse;
+        try {
+            String images = shopService.uploadShopImage(shopId, file);
+            myResponse = MyResponse.getSuccessResponse("上传图片成功！", images);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("上传图片失败！");
+        }
+        return myResponse;
+    }
 
     @PostMapping("/createNewShop")
     @ResponseBody

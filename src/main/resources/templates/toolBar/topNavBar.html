@@ -15,7 +15,7 @@
 
 </head>
 <body>
-<div th:fragment="topNavBar" style="height: 51px; margin-bottom: 20px" id="topNavBar">
+<div th:fragment="topNavBar" style="height: 51px; margin-bottom: 20px;font-size: 13px;" id="topNavBar">
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <!--回到首页-->
@@ -59,6 +59,9 @@
                     </li>
                     <li>
                         <a  th:href="@{/cart/cartPage}" style="color: red" target="_blank"><i class="el-icon-shopping-cart-full"></i>购物车</a>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_SHOP')">
+                        <a  th:href="@{/enterprise/center}" style="color: red"  >商家中心</a>
                     </li>
                     <li>
                         <a href="#" @click.prevent="logout">注销</a>

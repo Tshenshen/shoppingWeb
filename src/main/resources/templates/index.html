@@ -25,7 +25,7 @@
     <div class="view grid-nosku " style="margin: auto">
         <div class="product " th:each="good:${pageInfo.list}">
             <div class="product-iWrap">
-                <a class="productImg-wrap" th:href="@{/goods/goodsDetailPage/}+${good.id}" target="_blank">
+                <a class="productImg-wrap" th:href="@{/shop/goodsDetailPage/}+${good.id}" target="_blank">
                     <img src="" th:src="@{/image/}+${good.id}+.jpg"/>
                 </a>
 
@@ -34,7 +34,7 @@
                 </p>
 
                 <p class="productTittle">
-                    <a th:href="@{/goods/goodsDetailPage/}+${good.id}" target="_blank">[[${good.name}]]</a>
+                    <a th:href="@{/shop/goodsDetailPage/}+${good.id}" target="_blank">[[${good.name}]]</a>
                 </p>
             </div>
 
