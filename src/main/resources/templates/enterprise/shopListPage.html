@@ -37,7 +37,10 @@
                             </el-link>
                         </div>
                         <div class="shop-edit-page left-order">
-                            <el-link type="primary" icon="el-icon-edit">店铺页面</el-link>
+                            <el-link type="primary" icon="el-icon-edit"
+                                     :href="'getShopSettingPage?shopId=' + shop.id"
+                            >商品信息
+                            </el-link>
                         </div>
                     </div>
                     <div class="shop-edit">
@@ -71,7 +74,8 @@
                         <el-input v-model="createShopForm.shopName" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="商品种类" prop="type">
-                        <el-select v-model="createShopForm.type" filterable placeholder="请选择商品种类" @change="createFormSelectType">
+                        <el-select v-model="createShopForm.type" filterable placeholder="请选择商品种类"
+                                   @change="createFormSelectType">
                             <el-option
                                     v-for="type in typeDic"
                                     :key="type.id"
@@ -122,7 +126,8 @@
                         <el-input v-model="updateShopForm.shopName" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="商品种类" prop="type">
-                        <el-select v-model="updateShopForm.type" filterable placeholder="请选择商品种类" @change="updateFormSelectType">
+                        <el-select v-model="updateShopForm.type" filterable placeholder="请选择商品种类"
+                                   @change="updateFormSelectType">
                             <el-option
                                     v-for="type in typeDic"
                                     :key="type.id"

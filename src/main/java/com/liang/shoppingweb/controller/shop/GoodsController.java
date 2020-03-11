@@ -15,13 +15,13 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
-    @GetMapping("/goods/goodsDetailPage/{id}")
+    @GetMapping("/shop/goodsDetailPage/{id}")
     public String goodsDetailPage(@PathVariable String id, Model model) {
         model.addAttribute("goods",goodsService.getGoodsById(id));
-        return "goods/goodsDetail";
+        return "shop/goodsDetail";
     }
 
-    @GetMapping("/goods/goodsDetail/{id}")
+    @GetMapping("/shop/goodsDetail/{id}")
     @ResponseBody
     public Goods goodsDetail(@PathVariable String id) {
         return goodsService.getGoodsById(id);

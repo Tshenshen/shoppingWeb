@@ -72,7 +72,7 @@ new Vue({
         },
         uploadShopImage() {
             return "uploadShopImage/" + this.updateShopForm.id
-        }
+        },
     },
     methods: {
         submitCreateShopForm() {

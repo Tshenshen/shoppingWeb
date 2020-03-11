@@ -3,11 +3,16 @@ package com.liang.shoppingweb.controller.enterprise;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
 import com.liang.shoppingweb.entity.shop.Shop;
+import com.liang.shoppingweb.entity.shop.ShopItem;
+import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.service.enterprise.EnterpriseService;
+import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.service.shop.ShopService;
+import com.liang.shoppingweb.service.shop.ShopVoService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.internal.Function;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +30,74 @@ public class EnterpriseController {
     private EnterpriseService enterpriseService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private ShopVoService shopVoService;
+    @Autowired
+    private ShopItemService shopItemService;
+
+    @PostMapping("addNewShopItem")
+    @ResponseBody
+    public MyResponse addNewShopItem(@RequestBody ShopItem shopItem){
+        MyResponse myResponse;
+        try {
+            shopItemService.addNewShopItem(shopItem);
+            myResponse = MyResponse.getSuccessResponse("添加新商品成功！",shopItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("添加新商品失败！");
+        }
+        return myResponse;
+    }
+
+    @PutMapping("updateShopItem")
+    @ResponseBody
+    public MyResponse updateShopItem(@RequestBody ShopItem shopItem){
+        MyResponse myResponse;
+        try {
+            shopItemService.updateShopItem(shopItem);
+            myResponse = MyResponse.getSuccessResponse("更新商品成功！",shopItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("更新商品失败！");
+        }
+        return myResponse;
+    }
+
+    @DeleteMapping("deleteShopItem")
+    @ResponseBody
+    public MyResponse deleteShopItem(@RequestParam String shopItemId){
+        MyResponse myResponse;
+        try {
+            shopItemService.deleteShopItem(shopItemId);
+            myResponse = MyResponse.getSuccessResponse("删除商品成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("删除商品失败！");
+        }
+        return myResponse;
+    }
+
+
+    @GetMapping("getShopSettingPage")
+    public String getShopSettingPage(@RequestParam String shopId, Model model) {
+        model.addAttribute("shopId", shopId);
+        return "shop/shopSettingPage";
+    }
+
+    @GetMapping("getShopVo/{shopId}")
+    @ResponseBody
+    public MyResponse getShopVoById(@PathVariable String shopId) {
+        MyResponse myResponse;
+        try {
+            ShopVo shopVo = shopVoService.getShopVoById(shopId);
+            myResponse = MyResponse.getSuccessResponse("获取店铺信息成功！", shopVo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取店铺信息失败！");
+        }
+        return myResponse;
+    }
+
 
     @PutMapping("/updateShopInfo")
     @ResponseBody
@@ -32,7 +105,7 @@ public class EnterpriseController {
         MyResponse myResponse;
         try {
             shopService.updateShopInfoById(shop);
-            myResponse = MyResponse.getSuccessResponse("修改店铺信息成功！",shop);
+            myResponse = MyResponse.getSuccessResponse("修改店铺信息成功！", shop);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("修改店铺信息失败！");

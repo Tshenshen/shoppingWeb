@@ -9,7 +9,7 @@ import java.util.Date;
  */
 
 @Data
-public class GoodsItem {
+public class ShopItem {
 
     /**
      * 商品 id
@@ -23,10 +23,6 @@ public class GoodsItem {
      * 商品名字
      */
     private String name;
-    /**
-     * 商品描述
-     */
-    private String describe;
     /**
      * 商品 价格
      */

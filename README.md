@@ -82,3 +82,4 @@ http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
 * 店铺中包含同类型的，不同规格的商品
 * 创建商家表，店铺表，商品表拆分出规格表
 * 编写我的店铺页面，注册商家页面，添加商品页面
+* 添加店铺编辑页面
