@@ -22,7 +22,7 @@
         </el-header>
         <el-main>
             <div class="shop left-order" v-for="(shop,index) in shopList" :key="index">
-                <el-image :src="shopImg(shop.id, shop.images)" class="shop-image left-order"> :fit="fill">
+                <el-image :src="shopImg(shop.id, shop.images)" class="shop-image left-order">
                     <div slot="error" class="image-slot shop-image-error">
                         请到编辑页面中添加图片
                     </div>

@@ -1,15 +1,15 @@
 package com.liang.shoppingweb.service.order;
 
 import com.liang.shoppingweb.entity.cart.CartVo;
-import com.liang.shoppingweb.entity.shop.Goods;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderCell;
+import com.liang.shoppingweb.entity.shop.ShopItem;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
+import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
-import com.liang.shoppingweb.mapper.shop.GoodsMapper;
 import com.liang.shoppingweb.mapper.order.OrderCellMapper;
 import com.liang.shoppingweb.mapper.order.OrderMapper;
+import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
@@ -27,9 +27,9 @@ import java.util.UUID;
 public class OrderService {
 
     @Resource
-    private CartGoodsMapper cartGoodsMapper;
+    private CartVoMapper cartVoMapper;
     @Resource
-    private GoodsMapper goodsMapper;
+    private ShopItemService shopItemService;
     @Resource
     private CartMapper cartMapper;
     @Resource
@@ -51,7 +51,7 @@ public class OrderService {
     public Order createOrder(String[] ids, String receiverInfoId) throws Exception {
 
         String in_ids = QueryPramFormatUtils.strToIn(ids);
-        List<CartVo> cartVoList = cartGoodsMapper.getCartWithGoodsInfoByIds(in_ids);
+        List<CartVo> cartVoList = cartVoMapper.getCartWithGoodsInfoByIds(in_ids);
         Order order;
         order = createOrder(cartVoList, receiverInfoId);
         //删除购物车
@@ -63,12 +63,12 @@ public class OrderService {
      * 创建订单(单件物品）
      */
     @Transactional
-    public Order createSingleOrder(String goodsId, int goodsNum, String receiverInfoId) throws Exception {
+    public Order createSingleOrder(String shopItemId, int shopItemNum, String receiverInfoId) throws Exception {
         List<CartVo> cartVoList = new ArrayList<>();
         CartVo cartVo = new CartVo();
-        cartVo.setGoodsNum(goodsNum);
-        cartVo.setGoodsId(goodsId);
-        cartVo.setGoods(goodsMapper.getGoodsById(goodsId));
+        cartVo.setShopItemNum(shopItemNum);
+        cartVo.setShopItemId(shopItemId);
+        cartVo.setShopItem(shopItemService.getShopItemById(shopItemId));
         cartVoList.add(cartVo);
         return createOrder(cartVoList, receiverInfoId);
     }
@@ -88,15 +88,15 @@ public class OrderService {
             orderCell = cartVo.convertToOrderCell();
             orderCell.setId(UUID.randomUUID().toString());
             orderCells.add(orderCell);
-            Goods goods = cartVo.getGoods();
-            int newStock = goods.getStock() - cartVo.getGoodsNum();
-            goods.setStock(newStock);
-            goods.setUpdateDate(new Date());
-            goodsMapper.updateGoodsStock(goods);
+            ShopItem shopItem = cartVo.getShopItem();
+            int newStock = shopItem.getStock() - cartVo.getShopItemNum();
             if (newStock < 0) {
-                throw new Exception(cartVo.getGoods().getName() + " 库存不足！！！");
+                throw new Exception(cartVo.getShopItem().getName() + " 库存不足！！！");
             }
-            sumPrice = sumPrice + cartVo.getGoodsNum() * goods.getPrice();
+            shopItem.setStock(newStock);
+            shopItem.setUpdateDate(new Date());
+            shopItemService.updateShopItemStock(shopItem);
+            sumPrice = sumPrice + cartVo.getShopItemNum() * shopItem.getPrice();
         }
 
         //创建总订单

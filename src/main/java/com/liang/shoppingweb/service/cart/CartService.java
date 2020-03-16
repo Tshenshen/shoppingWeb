@@ -2,10 +2,10 @@ package com.liang.shoppingweb.service.cart;
 
 import com.liang.shoppingweb.entity.cart.Cart;
 import com.liang.shoppingweb.entity.cart.CartVo;
-import com.liang.shoppingweb.entity.shop.Goods;
-import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
+import com.liang.shoppingweb.entity.shop.ShopItem;
+import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
-import com.liang.shoppingweb.mapper.shop.GoodsMapper;
+import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,14 @@ public class CartService {
     @Resource
     private CartMapper cartMapper;
     @Resource
-    private CartGoodsMapper cartGoodsMapper;
+    private CartVoMapper cartVoMapper;
     @Resource
-    private GoodsMapper goodsMapper;
+    private ShopItemService shopItemService;
 
     public void addGoods(Cart newCart) throws Exception {
         //根据用户名和goodsId获取cart记录
-        Cart cart = cartMapper.getCartByUserIdAndGoodsId(newCart);
+        newCart.setUserId(LoginUtils.getCurrentUserId());
+        Cart cart = cartMapper.getCartByUserIdAndShopItemId(newCart);
         //没有就插入新纪录
         if (cart == null) {
             newCart.setId(UUID.randomUUID().toString());
@@ -36,22 +37,22 @@ public class CartService {
             return;
         }
         //如果有就更新数量
-        Goods goods = goodsMapper.getGoodsById(cart.getGoodsId());
-        int newGoodsNum = cart.getGoodsNum()+ newCart.getGoodsNum();
-        if (newGoodsNum > goods.getStock()){
+        ShopItem shopItem = shopItemService.getShopItemById(cart.getShopItemId());
+        int newGoodsNum = cart.getShopItemNum() + newCart.getShopItemNum();
+        if (newGoodsNum > shopItem.getStock()) {
             throw new Exception("库存不足");
         }
         cart.setUpdateDate(new Date());
-        cart.setGoodsNum(newGoodsNum);
+        cart.setShopItemNum(newGoodsNum);
         cartMapper.updateCart(cart);
     }
 
     public CartVo buySingleGoods(Cart newCart) throws Exception {
         CartVo cartVo = new CartVo();
-        Goods goods = goodsMapper.getGoodsById(newCart.getGoodsId());
-        cartVo.setGoods(goods);
+        ShopItem shopItem = shopItemService.getShopItemById(newCart.getShopItemId());
+        cartVo.setShopItem(shopItem);
         //根据用户名和goodsId获取cart记录
-        Cart cart = cartMapper.getCartByUserIdAndGoodsId(newCart);
+        Cart cart = cartMapper.getCartByUserIdAndShopItemId(newCart);
         //没有就插入新纪录
         if (cart == null) {
             newCart.setId(UUID.randomUUID().toString());
@@ -61,12 +62,12 @@ public class CartService {
             return cartVo;
         }
         //如果有就更新数量
-        int newGoodsNum = newCart.getGoodsNum();
-        if (newGoodsNum > goods.getStock()){
+        int newGoodsNum = newCart.getShopItemNum();
+        if (newGoodsNum > shopItem.getStock()) {
             throw new Exception("库存不足");
         }
         cart.setUpdateDate(new Date());
-        cart.setGoodsNum(newGoodsNum);
+        cart.setShopItemNum(newGoodsNum);
         cartMapper.updateCart(cart);
         cartVo.setCartPro(cart);
         return cartVo;
@@ -78,11 +79,10 @@ public class CartService {
     }
 
     public List<CartVo> getCartWithGoodsInfoByUserId() {
-        List<CartVo> carts = cartGoodsMapper.getCartWithGoodsInfoByUserId(LoginUtils.getCurrentUserId());
-        return carts;
+        return cartVoMapper.getCartWithGoodsInfoByUserId(LoginUtils.getCurrentUserId());
     }
 
-    public void deleteCartItem(Integer id) {
+    public void deleteCartItem(String id) {
         cartMapper.deleteItem(id);
     }
 

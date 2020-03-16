@@ -1,5 +1,9 @@
 package com.liang.shoppingweb.service.shop;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.liang.shoppingweb.common.PageConstant;
+import com.liang.shoppingweb.entity.shop.Goods;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.mapper.shop.ShopMapper;
 import com.liang.shoppingweb.utils.LoginUtils;
@@ -115,5 +119,10 @@ public class ShopService {
     public void updateShopInfoById(Shop shop) {
         shop.setUpdateDate(new Date());
         shopMapper.updateShopInfoById(shop);
+    }
+
+    public PageInfo<Shop> getShopListByPage(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        return new PageInfo<>(shopMapper.getShopListByPage(), PageConstant.navigatePages);
     }
 }

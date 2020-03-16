@@ -16,7 +16,7 @@
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
 <div id="app">
-    <el-container id="app" style="width: 70% ;margin: auto">
+    <el-container style="width: 70% ;margin: auto">
         <el-header style="margin-bottom: 15px">
             <h1 style="color: red">
                 <div style="margin: auto ;width: fit-content">购物车<i class="el-icon-shopping-cart-full"></i></div>
@@ -69,11 +69,11 @@
                                 <el-image :src="picUrl(index)" lazy></el-image>
                             </div>
                             <div class="column cart-props">
-                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cart.goods.id" target="_blank">{{cart.goods.name}}</a>
+                                <a :href="'/ShopWeb/shop/detailPage/' + cart.shopItem.id" target="_blank">{{cart.shopItem.name}}</a>
                             </div>
-                            <div class="column cart-price">{{cart.goods.price}}</div>
+                            <div class="column cart-price">{{cart.shopItem.price.toFixed(2)}}</div>
                             <div class="column cart-quantity">
-                                <el-input-number size="mini" v-model="cart.goodsNum" :min="1" :max="cart.goods.stock"
+                                <el-input-number size="mini" v-model="cart.shopItemNum" :min="1" :max="cart.shopItem.stock"
                                                  @change="updateNum(index)"></el-input-number>
                             </div>
                             <div class="column cart-sum">{{ItemsSum(index)}}</div>
@@ -141,12 +141,12 @@
         computed: {
             picUrl() {
                 return function (index) {
-                    return "/ShopWeb/image/" + this.cartList[index].goods.id + ".jpg";
+                    return "/ShopWeb/image/" + this.cartList[index].shopItem.id + ".jpg";
                 }
             },
             ItemsSum() {
                 return function (index) {
-                    return (this.cartList[index].goodsNum * this.cartList[index].goods.price).toFixed(2);
+                    return (this.cartList[index].shopItemNum * this.cartList[index].shopItem.price).toFixed(2);
                 }
             },
             select_all() {
@@ -160,7 +160,7 @@
                 var sum = 0.00;
                 _that.cartList.forEach(function (cart) {
                     if (_that.selectedList.indexOf(cart.id) >= 0) {
-                        sum = sum + cart.goodsNum * cart.goods.price;
+                        sum = sum + cart.shopItemNum * cart.shopItem.price;
                     }
                 });
                 return sum.toFixed(2);

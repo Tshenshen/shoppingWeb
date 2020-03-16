@@ -29,4 +29,7 @@ public interface ShopMapper {
 
     @Update("update tbl_shop set shop_name = #{shopName}, type = #{type}, style= #{style}, `describe`= #{describe}, price= #{price}, update_date = #{updateDate} where id = #{id}")
     void updateShopInfoById(Shop shop);
+
+    @Select("select * from tbl_shop where enable = '1' order by create_date asc")
+    List<Shop> getShopListByPage();
 }

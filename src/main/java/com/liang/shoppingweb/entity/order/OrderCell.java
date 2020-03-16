@@ -20,10 +20,10 @@ public class OrderCell {
     /**
      * 商品id
      */
-    private String goodsId;
+    private String shopItemId;
     /**
      * 商品数量
      */
-    private int goodsNum;
+    private int shopItemNum;
 
 }

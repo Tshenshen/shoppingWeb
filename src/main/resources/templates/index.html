@@ -2,69 +2,90 @@
 <html xmlns:th="http://www.thymeleaf.org"
 >
 <head>
-    <title>购物网站ShopWeb</title>
+    <title id="s">购物网站ShopWeb</title>
     <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
     <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
     <script th:src="@{/js/bootstrap.js}"></script>
     <script th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
-    <link th:href="@{/css/bootstrap.css}" rel="stylesheet" >
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/index.css}" rel="stylesheet"/>
 
-
-    <link rel="stylesheet"
-          href="//g.alicdn.com/??mui/global/3.0.31/global.css"/>
-    <link rel="stylesheet"
-          href="//g.alicdn.com/??tm/list/2.25.18/mods/srp/cells/pin.css,tm/list/2.25.18/pages/layout.css,tm/list/2.25.18/pages/base.css,tm/list/2.25.18/pages/mui.css,tm/list/2.25.18/mods/error/error.css,tm/list/2.25.18/mods/tmall-rec.css,tm/list/2.25.18/mods/crumb/crumb.css,tm/list/2.25.18/mods/attr/attr.css,tm/list/2.25.18/mods/related/related.css,tm/list/2.25.18/mods/filter/filter.css,tm/list/2.25.18/mods/filter/couponfilter.css,tm/list/2.25.18/mods/locData.css,tm/list/2.25.18/mods/srp/grid.css,tm/list/2.25.18/pages/bts.css"/>
 </head>
-<body>
-
-</div>
 <div th:replace="toolBar/topNavBar :: topNavBar"></div>
-<div>
-    <div class="view grid-nosku " style="margin: auto">
-        <div class="product " th:each="good:${pageInfo.list}">
-            <div class="product-iWrap">
-                <a class="productImg-wrap" th:href="@{/shop/goodsDetailPage/}+${good.id}" target="_blank">
-                    <img src="" th:src="@{/image/}+${good.id}+.jpg"/>
-                </a>
-
-                <p class="productPrice">
-                    &yen;[[${good.price}]]
-                </p>
-
-                <p class="productTittle">
-                    <a th:href="@{/shop/goodsDetailPage/}+${good.id}" target="_blank">[[${good.name}]]</a>
-                </p>
+<div id="app" style="margin: auto;width: 79%">
+    <div>
+        <div class="view grid-nosku " >
+            <div class="product" v-for="(shop,index) in pageInfo.list" :key="index">
+                <div class="product-iWrap">
+                    <a class="productImg-wrap" :href="'detailPage?shopId=' + shop.id" target="_blank">
+                        <img :src="imgUrl(shop.id, shop.images)" style="object-fit: fill;height: 100%;width: 100%"/>
+                    </a>
+                    <div class="productPrice">
+                        &yen;{{shop.price}}
+                    </div>
+                    <div class="productTittle">
+                        <a :href="'detailPage?shopId=' + shop.id" target="_blank">
+                            {{shop.shopName}}</a>
+                    </div>
+                </div>
             </div>
-
         </div>
-
     </div>
-    <nav aria-label="Page navigation" style="display: flex;justify-content: center">
-        <ul class="pagination" style="margin-top: 0px">
-            <li th:class="${pageInfo.isFirstPage}?disabled">
-                <a href="#" th:href="@{/index/}+${pageInfo.pageNum - 1}" th:if="${!pageInfo.isFirstPage}"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-                <span aria-hidden="true" th:if="${pageInfo.isFirstPage}">&laquo;</span>
-            </li>
-            <li th:class="${pageInfo.pageNum==pageNum} ? 'active':'1'" th:each="pageNum:${pageInfo.navigatepageNums}">
-                <a href="" th:href="@{/index/}+${pageNum}">[[${pageNum}]]</a>
-            </li>
-            <li th:class="${pageInfo.isLastPage}?disabled">
-                <a href="#" th:href="@{/index/}+${pageInfo.pageNum + 1}" th:if="${!pageInfo.isLastPage}"
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                <span class="disabled" aria-hidden="true" th:if="${pageInfo.isLastPage}">&raquo;</span>
-            </li>
-        </ul>
-    </nav>
+    <div style="display: inline-flex;  width: 100%">
+        <el-pagination
+                style="margin: auto"
+                background
+                layout="prev, pager, next"
+                :total="pageInfo.total"
+                @current-change="pageChange">
+        </el-pagination>
+    </div>
+
 
 </div>
 </body>
 <script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            pageInfo: {
+                list: []
+            }
+        },
+        mounted() {
+            this.pageChange(1);
+        },
+        computed: {
+            imgUrl() {
+                return function (shopId, images) {
+                    if (images.split(",")[0].length > 0) {
+                        return "/ShopWeb/image/" + shopId + "/" + images.split(",")[0];
+                    } else {
+                        return ""
+                    }
+                }
+            }
+        },
+        methods:{
+            pageChange(curPage){
+                var _that = this;
+                axios.get("list?pageNum=" + curPage).then(function (value) {
+                    if (value.data.success) {
+                        _that.pageInfo = value.data.content;
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("获取店铺列表错误！");
+                });
+            }
+        }
+
+    })
+</script>
 </html>
 

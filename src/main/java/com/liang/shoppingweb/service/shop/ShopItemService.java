@@ -28,4 +28,12 @@ public class ShopItemService {
     public void deleteShopItem(String shopItemId) {
         shopItemMapper.deleteShopItem(shopItemId);
     }
+
+    public ShopItem getShopItemById(String shopItemId) {
+        return shopItemMapper.getShopItemById(shopItemId);
+    }
+
+    public void updateShopItemStock(ShopItem shopItem) {
+        shopItemMapper.updateShopItemStock(shopItem);
+    }
 }

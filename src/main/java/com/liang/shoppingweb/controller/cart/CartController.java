@@ -1,6 +1,5 @@
 package com.liang.shoppingweb.controller.cart;
 
-import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.cart.Cart;
 import com.liang.shoppingweb.entity.cart.CartVo;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,15 +26,10 @@ public class CartController {
     @ResponseBody
     public MyResponse addGoods(@RequestBody Cart cart) {
         MyResponse myResponse;
-        User user = LoginUtils.getCurrentUser();
-        if (user == null) {
-            return MyResponse.getFailedResponse("用户未登录");
-        }
-        cart.setUserId(user.getId());
         try {
             cartService.addGoods(cart);
             myResponse = MyResponse.getSuccessResponse("物品添加成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());
         }
@@ -51,7 +44,7 @@ public class CartController {
         try {
             CartVo cartVo = cartService.buySingleGoods(cart);
             myResponse = MyResponse.getSuccessResponse("物品添加成功", cartVo);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());
         }
@@ -69,8 +62,8 @@ public class CartController {
         MyResponse myResponse;
         try {
             List<CartVo> cartVoList = cartService.getCartWithGoodsInfoByUserId();
-            myResponse = MyResponse.getSuccessResponse("获取购物车列表成功",cartVoList);
-        } catch (Exception e){
+            myResponse = MyResponse.getSuccessResponse("获取购物车列表成功", cartVoList);
+        } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取购物车列表失败!");
         }
@@ -79,7 +72,7 @@ public class CartController {
 
     @DeleteMapping("/deleteItem/{id}")
     @ResponseBody
-    public MyResponse deleteCartItem(@PathVariable("id") Integer id) {
+    public MyResponse deleteCartItem(@PathVariable("id") String id) {
         MyResponse myResponse = new MyResponse();
         try {
             cartService.deleteCartItem(id);

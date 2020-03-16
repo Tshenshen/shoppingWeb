@@ -5,7 +5,7 @@ import com.liang.shoppingweb.entity.common.Dictionary;
 import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.cart.CartGoodsMapper;
+import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.service.common.DictionaryService;
 import com.liang.shoppingweb.service.order.OrderService;
@@ -48,7 +48,7 @@ class ShoppingWebApplicationTests {
     private UserService userService;
 
     @Resource
-    private CartGoodsMapper cartGoodsMapper;
+    private CartVoMapper cartVoMapper;
 
     @Autowired
     private OrderService orderService;
@@ -119,7 +119,7 @@ class ShoppingWebApplicationTests {
 
     @Test
     void testMultiInsert() {
-        List<CartVo> cartVos = cartGoodsMapper.getCartWithGoodsInfoByIds("(35,38)");
+        List<CartVo> cartVos = cartVoMapper.getCartWithGoodsInfoByIds("(35,38)");
         List<OrderCell> orderCells = new ArrayList<>();
         for (CartVo cartVo : cartVos) {
             orderCells.add(cartVo.convertToOrderCell());
@@ -175,7 +175,7 @@ class ShoppingWebApplicationTests {
 
     @Test
     void testCartGoodsMapper() {
-        List<CartVo> carts = cartGoodsMapper.getCartWithGoodsInfoByUserId("7ba510b1-9bc9-4748-9fe1-cff83eafeb28");
+        List<CartVo> carts = cartVoMapper.getCartWithGoodsInfoByUserId("7ba510b1-9bc9-4748-9fe1-cff83eafeb28");
         System.out.println(carts);
     }
 

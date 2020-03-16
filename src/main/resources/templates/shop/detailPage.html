@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title id="title">店铺页面</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script th:src="@{/webjars/vue-router/3.1.3/dist/vue-router.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/css/shop/shopSettingPage.css}" rel="stylesheet">
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app">
+    <input hidden="hidden" ref="shopId" th:value="${shopId}">
+    <el-container style="width: 70% ;margin: auto">
+
+        <el-container direction="horizontal">
+            <el-aside style="padding-top: 20px;width: 45%;margin-right: 3%">
+                <el-carousel height="400px">
+                    <el-carousel-item v-for="(imgUrl,index) in goodsImgUrlList" :key="index">
+                        <div style=" border: 1px solid gray;">
+                            <el-image class="image_preview "
+                                      :src="imgUrl"
+                                      fit="fill">
+                            </el-image>
+                        </div>
+                    </el-carousel-item>
+                </el-carousel>
+
+            </el-aside>
+            <el-main>
+                <h3 style="color: red;margin-bottom: 20px;">{{shopVo.shopName}}</h3>
+                <!--商品信息模块-->
+                <div class="goods-detail-name-frag">
+                    <label>商 品 名 </label>
+                    <span class="goods-detail-name">{{currentItem.name}}</span>
+                </div>
+                <div>
+                    <div class="goods-detail-price-frag">
+                        <label>秒 杀 价 </label>
+                        <span class="goods-detail-price"><span>￥</span><span style="font-size: large">{{currentItem.price}}</span></span>
+                        <span class="goods-detail-price">[<del>￥{{currentItem.price}}</del>]</span>
+                    </div>
+                </div>
+
+                <!--商品规格-->
+                <!--规格选择-->
+                <div class="shop-item-frag">
+                    <label>商 品 选 择 </label>
+                    <div v-for="(item,index) in shopVo.shopItems">
+                        <div class="item-frag">
+                            <span :class="itemClass(index)" @click="selectItem($event,index)">{{item.name}}</span>
+                        </div>
+                    </div>
+                </div>
+                <!--加入购物车模块-->
+                <div v-if="itemSelected">
+                    <div v-if="hasStock">
+                        <el-input-number v-model="shopItemNum" :min="1" :max="currentItem.stock"
+                                         controls-position="right" size="mini"
+                                         style="margin-right: 15px"></el-input-number>
+                        <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
+                        <el-button type="danger" size="small">立即购买</el-button>
+                    </div>
+                    <div v-else>
+                        <h4>商品太抢手~已经没有库存啦~</h4>
+                    </div>
+                </div>
+                <div v-else>
+                    <h4>请选择商品~</h4>
+                </div>
+                <a hidden="hidden" th:href="@{/order/orderPage}" ref="toOrderPage"></a>
+            </el-main>
+        </el-container>
+    </el-container>
+
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            shopVo: {},
+            goodsImgUrlList: [""],
+            selectedItemIndex: -1,
+            defaultItem: {
+                name: '',
+                price: '',
+                stock: 1
+            },
+            currentItem: {},
+            shopItemNum: ''
+        },
+        mounted() {
+            var _that = this;
+            var shopId = _that.$refs.shopId.getAttribute("value");
+            axios.get("getShopVo/" + shopId).then(function (value) {
+                if (value.data.success) {
+                    _that.shopVo = value.data.content;
+                    var imageList = [];
+                    _that.shopVo.images.split(",").forEach(function (image) {
+                        imageList.push("/ShopWeb/image/" + _that.shopVo.id + "/" + image);
+                    });
+                    _that.goodsImgUrlList = imageList;
+                    _that.defaultItem.name = _that.shopVo.shopName;
+                    _that.defaultItem.price = _that.shopVo.price;
+                    _that.currentItem = _that.defaultItem;
+                    document.querySelector("#title").innerHTML = _that.defaultItem.name;
+                } else {
+                    _that.$message.error(value.data.message);
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("初始化店铺信息错误！");
+            });
+        },
+        computed: {
+            itemClass() {
+                var _that = this;
+                return function (index) {
+                    if (_that.selectedItemIndex === index) {
+                        return "item selected-item";
+                    } else {
+                        return "item";
+                    }
+                }
+            },
+            hasStock() {
+                var _that = this;
+                if (_that.selectedItemIndex === -1) {
+                    return false;
+                } else {
+                    return _that.currentItem.stock > 0;
+                }
+            },
+            itemSelected() {
+                return this.selectedItemIndex !== -1;
+            }
+        },
+
+        methods: {
+            selectItem(event, index) {
+                var _that = this;
+                _that.shopItemNum = 1;
+                if (_that.selectedItemIndex === -1) {
+                    _that.selectedItemIndex = index;
+                    _that.currentItem = _that.shopVo.shopItems[index];
+                } else if (_that.selectedItemIndex === index) {
+                    _that.selectedItemIndex = -1;
+                    _that.currentItem = _that.defaultItem;
+                } else {
+                    _that.selectedItemIndex = index;
+                    _that.currentItem = _that.shopVo.shopItems[index];
+                }
+            },
+            addGoods() {
+                var _that = this;
+                axios({
+                    method: "post",
+                    url: "/ShopWeb/cart/addGoods",
+                    data: {
+                        shopItemNum: _that.shopItemNum,
+                        shopItemId: _that.currentItem.id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.$message.success(value.data.message);
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error('添加购物车错误！！');
+                });
+
+            },
+            //todo 数据结构
+            // buySingleGoods() {
+            //     var _that = this;
+            //     axios({
+            //         method: "post",
+            //         url: "/ShopWeb/cart/buySingleGoods",
+            //         data: {
+            //             shopItemNum: _that.shopItemNum,
+            //             shopItemId: _that.currentItem.id
+            //         }
+            //     }).then(function (value) {
+            //         if (value.data.success) {
+            //             _that.orderList.push(value.data.content);
+            //             sessionStorage.setItem("orderList", JSON.stringify(_that.orderList));
+            //             _that.$refs.toOrderPage.click();
+            //         } else {
+            //             _that.$message.error(value.data.message);
+            //         }
+            //     }).catch(function (reason) {
+            //         console.log(reason);
+            //         _that.$message.error('立即购买错误！！');
+            //     });
+            // }
+        }
+    });
+</script>
+</html>

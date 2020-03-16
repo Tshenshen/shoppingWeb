@@ -23,11 +23,11 @@ public class Cart {
     /**
      * 商品id
      */
-    private String goodsId;
+    private String shopItemId;
     /**
      * 商品数量
      */
-    private int goodsNum;
+    private int shopItemNum;
     /**
      * 创建时间
      */
@@ -39,8 +39,8 @@ public class Cart {
 
     public OrderCell convertToOrderCell(){
         OrderCell orderCell = new OrderCell();
-        orderCell.setGoodsId(this.getGoodsId());
-        orderCell.setGoodsNum(this.getGoodsNum());
+        orderCell.setShopItemId(this.getShopItemId());
+        orderCell.setShopItemNum(this.getShopItemNum());
         return orderCell;
     }
 
