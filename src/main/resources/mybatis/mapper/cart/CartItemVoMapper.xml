@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liang.shoppingweb.mapper.cart.CartItemVoMapper">
+
+    <resultMap id="CartItemVoMap" type="com.liang.shoppingweb.entity.cart.CartItemVo">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_item_id" property="shopItemId"/>
+        <result column="shop_item_num" property="shopItemNum"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <association property="shopVo" resultMap="ShopVoMap" columnPrefix="shop_"/>
+    </resultMap>
+
+    <resultMap id="ShopVoMap" type="com.liang.shoppingweb.entity.shop.ShopVo">
+        <id column="id" property="id"/>
+        <result column="enterprise_id" property="enterpriseId"/>
+        <result column="name" property="name"/>
+        <result column="describe" property="describe"/>
+        <result column="type" property="type"/>
+        <result column="style" property="style"/>
+        <result column="price" property="price"/>
+        <result column="images" property="images"/>
+        <result column="enable" property="enable"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+        <collection property="shopItems" ofType="com.liang.shoppingweb.entity.shop.ShopItem" columnPrefix="item_"
+                    resultMap="ShopItemMap"/>
+    </resultMap>
+
+    <resultMap id="ShopItemMap" type="com.liang.shoppingweb.entity.shop.ShopItem">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="stock" property="stock"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_date" property="updateDate"/>
+    </resultMap>
+
+    <select id="getCartWithGoodsInfoByUserId" resultMap="CartItemVoMap">
+        SELECT
+            c.id            id,
+            c.user_id       user_id,
+            c.shop_item_id  shop_item_id,
+            c.shop_item_num shop_item_num,
+            s.id            shop_id,
+            s.enterprise_id shop_enterprise_id,
+            s.name          shop_name,
+            s.images        shop_images,
+            s.type          shop_type,
+            s.style         shop_style,
+            s.`describe`    shop_describe,
+            s.price         shop_price,
+            s.`enable`      shop_enable,
+            s.create_date   shop_create_date,
+            s.update_date   shop_create_date,
+            i.id            shop_item_id,
+            i.shop_id       shop_item_shop_id,
+            i.`name`        shop_item_name,
+            i.price         shop_item_price,
+            i.stock         shop_item_stock,
+            i.create_date   shop_item_create_date,
+            i.update_date   shop_item_update_date
+        FROM
+            tbl_cart AS c
+            INNER JOIN tbl_shop_item AS i ON c.shop_item_id = i.id
+            INNER JOIN tbl_shop AS s ON i.shop_id = s.id
+        WHERE
+            c.user_id = #{userId}
+    </select>
+
+    <select id="getCartWithGoodsInfoByIds" resultMap="CartItemVoMap">
+        SELECT
+            c.id            id,
+            c.user_id       user_id,
+            c.shop_item_id  shop_item_id,
+            c.shop_item_num shop_item_num,
+            s.id            shop_id,
+            s.enterprise_id shop_enterprise_id,
+            s.name          shop_name,
+            s.images        shop_images,
+            s.type          shop_type,
+            s.style         shop_style,
+            s.`describe`    shop_describe,
+            s.price         shop_price,
+            s.`enable`      shop_enable,
+            s.create_date   shop_create_date,
+            s.update_date   shop_create_date,
+            i.id            shop_item_id,
+            i.shop_id       shop_item_shop_id,
+            i.`name`        shop_item_name,
+            i.price         shop_item_price,
+            i.stock         shop_item_stock,
+            i.create_date   shop_item_create_date,
+            i.update_date   shop_item_update_date
+        FROM
+            tbl_cart AS c
+            INNER JOIN tbl_shop_item AS i ON c.shop_item_id = i.id
+            INNER JOIN tbl_shop AS s ON i.shop_id = s.id
+        WHERE
+            c.id in ${ids}
+    </select>
+</mapper>

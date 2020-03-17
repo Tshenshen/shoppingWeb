@@ -7,4 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ShopVoMapper {
 
     ShopVo getShopVoById(String id);
+
+
+    ShopVo getShopVoByItemId(String itemId);
 }

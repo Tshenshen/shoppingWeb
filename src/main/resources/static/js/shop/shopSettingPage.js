@@ -60,7 +60,7 @@ new Vue({
                     imageList.push("/ShopWeb/image/" + _that.shopVo.id + "/" + image);
                 });
                 _that.goodsImgUrlList = imageList;
-                _that.defaultItem.name = _that.shopVo.shopName;
+                _that.defaultItem.name = _that.shopVo.name;
                 _that.defaultItem.price = _that.shopVo.price;
                 _that.currentItem = _that.defaultItem;
             } else {

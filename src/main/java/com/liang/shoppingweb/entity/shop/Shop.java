@@ -17,7 +17,7 @@ public class Shop {
     /**
      * 店铺名称
      */
-    private String shopName;
+    private String name;
     /**
      * 商品描述
      */

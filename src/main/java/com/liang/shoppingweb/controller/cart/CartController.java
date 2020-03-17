@@ -2,6 +2,7 @@ package com.liang.shoppingweb.controller.cart;
 
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.cart.Cart;
+import com.liang.shoppingweb.entity.cart.CartItemVo;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.cart.CartService;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/cart")
@@ -40,10 +38,9 @@ public class CartController {
     @ResponseBody
     public MyResponse buySingleGoods(@RequestBody Cart cart) {
         MyResponse myResponse;
-        cart.setUserId(LoginUtils.getCurrentUserId());
         try {
-            CartVo cartVo = cartService.buySingleGoods(cart);
-            myResponse = MyResponse.getSuccessResponse("物品添加成功", cartVo);
+            cart = cartService.buySingleGoods(cart);
+            myResponse = MyResponse.getSuccessResponse("物品添加成功", cart.getId());
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());
@@ -61,8 +58,23 @@ public class CartController {
     public MyResponse getCartsByUserId() {
         MyResponse myResponse;
         try {
-            List<CartVo> cartVoList = cartService.getCartWithGoodsInfoByUserId();
+            List<CartItemVo> cartVoList = cartService.getCartWithGoodsInfoByUserId();
             myResponse = MyResponse.getSuccessResponse("获取购物车列表成功", cartVoList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取购物车列表失败!");
+        }
+        return myResponse;
+    }
+
+    @PostMapping("/cartsListByIds")
+    @ResponseBody
+    public MyResponse getCartsByIds(@RequestBody HashMap map) {
+        MyResponse myResponse;
+        try {
+            String ids = (String) map.get("ids");
+            List<CartItemVo> cartItemVos = cartService.getCartWithGoodsInfoByIds(ids);
+            myResponse = MyResponse.getSuccessResponse("获取购物车列表成功", cartItemVos);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取购物车列表失败!");

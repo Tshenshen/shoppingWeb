@@ -29,7 +29,7 @@
                 </el-image>
                 <div class="shop-right left-order">
                     <div class="shop-title">
-                        {{shop.shopName}}
+                        {{shop.name}}
                     </div>
                     <div class="shop-edit">
                         <div class="shop-edit-info left-order">
@@ -70,8 +70,8 @@
             <!--新建店铺对话框-->
             <el-dialog title="添加新店铺" :visible.sync="createShopDialogVisible">
                 <el-form :model="createShopForm" :rules="rules" ref="createShopFormRef">
-                    <el-form-item label="店铺名（商品名）" prop="shopName">
-                        <el-input v-model="createShopForm.shopName" autocomplete="off"></el-input>
+                    <el-form-item label="店铺名（商品名）" prop="name">
+                        <el-input v-model="createShopForm.name" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="商品种类" prop="type">
                         <el-select v-model="createShopForm.type" filterable placeholder="请选择商品种类"
@@ -122,8 +122,8 @@
                     <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-form :model="updateShopForm" :rules="rules" ref="updateShopFormRef">
-                    <el-form-item label="店铺名（商品名）" prop="shopName">
-                        <el-input v-model="updateShopForm.shopName" autocomplete="off"></el-input>
+                    <el-form-item label="店铺名（商品名）" prop="name">
+                        <el-input v-model="updateShopForm.name" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="商品种类" prop="type">
                         <el-select v-model="updateShopForm.type" filterable placeholder="请选择商品种类"

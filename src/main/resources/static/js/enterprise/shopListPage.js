@@ -10,7 +10,7 @@ new Vue({
         updateShopIndex: '',
         updateShopForm: {},
         rules: {
-            shopName: [
+            name: [
                 {required: true, message: "请输入店铺/商品名", trigger: 'blur'}
             ],
             type: [

@@ -3,12 +3,16 @@ package com.liang.shoppingweb.service.order;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderCell;
+import com.liang.shoppingweb.entity.order.OrderCellVo;
+import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.shop.ShopItem;
 import com.liang.shoppingweb.entity.user.User;
-import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
+import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.order.OrderCellMapper;
 import com.liang.shoppingweb.mapper.order.OrderMapper;
+import com.liang.shoppingweb.mapper.order.OrderWithCellMapper;
+import com.liang.shoppingweb.service.enterprise.EnterpriseService;
 import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
@@ -38,6 +42,10 @@ public class OrderService {
     private OrderCellMapper orderCellMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EnterpriseService enterpriseService;
+    @Resource
+    private OrderWithCellMapper orderWithCellMapper;
 
 
     public Order getOrderById(String id) {
@@ -50,7 +58,7 @@ public class OrderService {
     @Transactional
     public Order createOrder(String[] ids, String receiverInfoId) throws Exception {
 
-        String in_ids = QueryPramFormatUtils.strToIn(ids);
+        String in_ids = QueryPramFormatUtils.arrayToIn(ids);
         List<CartVo> cartVoList = cartVoMapper.getCartWithGoodsInfoByIds(in_ids);
         Order order;
         order = createOrder(cartVoList, receiverInfoId);
@@ -114,16 +122,42 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public void payWithWallet(String orderId) throws Exception {
-        Order order;
+        OrderVo orderVo;
+        String shopId = "";
+        List<OrderVo> orderVoList = new ArrayList<>();
+        OrderVo newOrderVo = new OrderVo();
+        orderVo = orderWithCellMapper.getOrderVoById(orderId);
+        userService.payWithWallet(orderVo.getSumPrice());
         try {
-            order = orderMapper.getOrderById(orderId);
-            order.setState(2);
-            order.setUpdateDate(new Date());
-            orderMapper.updateOrderState(order);
+            //拆分订单
+            for (OrderCellVo orderCellVo : orderVo.getOrderCells()) {
+                if (!shopId.equals(orderCellVo.getShopVo().getId())) {
+                    shopId = orderCellVo.getShopVo().getId();
+                    newOrderVo = new OrderVo();
+                    newOrderVo.setId(UUID.randomUUID().toString());
+                    newOrderVo.setUserId(orderVo.getUserId());
+                    newOrderVo.setShopId(shopId);
+                    newOrderVo.setEnterpriseId(orderCellVo.getShopVo().getEnterpriseId());
+                    newOrderVo.setReceiveInfoId(orderVo.getReceiveInfoId());
+                    newOrderVo.setState(2);
+                    newOrderVo.setSumPrice(0.0);
+                    newOrderVo.setOrderCells(new ArrayList<>());
+                    newOrderVo.setCreateDate(new Date());
+                    orderVoList.add(newOrderVo);
+                }
+                orderCellVo.setOrderId(newOrderVo.getId());
+                orderCellMapper.updateOrderId(orderCellVo);
+                newOrderVo.getOrderCells().add(orderCellVo);
+                newOrderVo.setSumPrice(newOrderVo.getSumPrice() + orderCellVo.getShopItemNum() * orderCellVo.getShopVo().getShopItems().get(0).getPrice());
+            }
+            //删除旧的订单
+            orderMapper.deleteById(orderId);
+            //插入新的订单
+            orderMapper.addOrders(orderVoList);
+            enterpriseService.updateBalanceFromOrderVoList(orderVoList);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception("支付失败！！");
+            throw new Exception("支付失败！！订单更新失败！！");
         }
-        userService.payWithWallet(order.getSumPrice());
     }
 }

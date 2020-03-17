@@ -2,6 +2,7 @@ package com.liang.shoppingweb.service.user;
 
 import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
+import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.exception.MyException;
 import com.liang.shoppingweb.mapper.enterprise.EnterpriseMapper;
@@ -23,7 +24,6 @@ public class UserService {
     private UserMapper userMapper;
     @Resource
     private EnterpriseMapper enterpriseMapper;
-
 
 
     public List<User> getAll() {
@@ -73,6 +73,8 @@ public class UserService {
         }
 
     }
+
+
 
     @Transactional
     public void enterpriseRegister(Enterprise enterprise) {

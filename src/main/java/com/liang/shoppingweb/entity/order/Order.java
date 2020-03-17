@@ -20,6 +20,14 @@ public class Order {
      */
     private String userId;
     /**
+     * 店铺id
+     */
+    private String shopId;
+    /**
+     * 商家id
+     */
+    private String enterpriseId;
+    /**
      * 总价格
      */
     private double sumPrice;

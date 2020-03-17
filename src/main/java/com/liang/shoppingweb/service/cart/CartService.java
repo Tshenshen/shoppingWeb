@@ -1,14 +1,17 @@
 package com.liang.shoppingweb.service.cart;
 
 import com.liang.shoppingweb.entity.cart.Cart;
+import com.liang.shoppingweb.entity.cart.CartItemVo;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.shop.ShopItem;
-import com.liang.shoppingweb.mapper.cart.CartVoMapper;
+import com.liang.shoppingweb.mapper.cart.CartItemVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
+import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.expression.Ids;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -24,8 +27,24 @@ public class CartService {
     private CartVoMapper cartVoMapper;
     @Resource
     private ShopItemService shopItemService;
+    @Resource
+    private CartItemVoMapper cartItemVoMapper;
 
-    public void addGoods(Cart newCart) throws Exception {
+
+    public void addGoods(Cart newCart) {
+        addOrUpdateCart(newCart);
+    }
+
+    public Cart buySingleGoods(Cart newCart) {
+        return addOrUpdateCart(newCart, true);
+    }
+
+
+    private void addOrUpdateCart(Cart newCart) {
+        addOrUpdateCart(newCart, false);
+    }
+
+    private Cart addOrUpdateCart(Cart newCart, boolean forBuy) {
         //根据用户名和goodsId获取cart记录
         newCart.setUserId(LoginUtils.getCurrentUserId());
         Cart cart = cartMapper.getCartByUserIdAndShopItemId(newCart);
@@ -34,43 +53,20 @@ public class CartService {
             newCart.setId(UUID.randomUUID().toString());
             newCart.setCreateDate(new Date());
             cartMapper.addGoods(newCart);
-            return;
+            return newCart;
         }
         //如果有就更新数量
-        ShopItem shopItem = shopItemService.getShopItemById(cart.getShopItemId());
-        int newGoodsNum = cart.getShopItemNum() + newCart.getShopItemNum();
-        if (newGoodsNum > shopItem.getStock()) {
-            throw new Exception("库存不足");
-        }
+        //检查库存
+//        ShopItem shopItem = shopItemService.getShopItemById(cart.getShopItemId());
+//        int newGoodsNum = cart.getShopItemNum() + newCart.getShopItemNum();
+//        if (newGoodsNum > shopItem.getStock()) {
+//            throw new Exception("库存不足");
+//        }
+        int newGoodsNum = forBuy ? newCart.getShopItemNum() : cart.getShopItemNum() + newCart.getShopItemNum();
         cart.setUpdateDate(new Date());
         cart.setShopItemNum(newGoodsNum);
         cartMapper.updateCart(cart);
-    }
-
-    public CartVo buySingleGoods(Cart newCart) throws Exception {
-        CartVo cartVo = new CartVo();
-        ShopItem shopItem = shopItemService.getShopItemById(newCart.getShopItemId());
-        cartVo.setShopItem(shopItem);
-        //根据用户名和goodsId获取cart记录
-        Cart cart = cartMapper.getCartByUserIdAndShopItemId(newCart);
-        //没有就插入新纪录
-        if (cart == null) {
-            newCart.setId(UUID.randomUUID().toString());
-            newCart.setCreateDate(new Date());
-            cartMapper.addGoods(newCart);
-            cartVo.setCartPro(newCart);
-            return cartVo;
-        }
-        //如果有就更新数量
-        int newGoodsNum = newCart.getShopItemNum();
-        if (newGoodsNum > shopItem.getStock()) {
-            throw new Exception("库存不足");
-        }
-        cart.setUpdateDate(new Date());
-        cart.setShopItemNum(newGoodsNum);
-        cartMapper.updateCart(cart);
-        cartVo.setCartPro(cart);
-        return cartVo;
+        return cart;
     }
 
 
@@ -78,8 +74,8 @@ public class CartService {
         return cartMapper.getCartsByUserId(userId);
     }
 
-    public List<CartVo> getCartWithGoodsInfoByUserId() {
-        return cartVoMapper.getCartWithGoodsInfoByUserId(LoginUtils.getCurrentUserId());
+    public List<CartItemVo> getCartWithGoodsInfoByUserId() {
+        return cartItemVoMapper.getCartWithGoodsInfoByUserId(LoginUtils.getCurrentUserId());
     }
 
     public void deleteCartItem(String id) {
@@ -87,11 +83,16 @@ public class CartService {
     }
 
     public void deleteCartItems(String[] itemIds) {
-        String ids = QueryPramFormatUtils.strToIn(itemIds);
+        String ids = QueryPramFormatUtils.arrayToIn(itemIds);
         cartMapper.deleteItems(ids);
     }
 
     public void updateItemNum(Cart cart) {
         cartMapper.updateCart(cart);
+    }
+
+    public List<CartItemVo> getCartWithGoodsInfoByIds(String ids) {
+        String in_ids = QueryPramFormatUtils.strToIn(ids,",");
+        return cartItemVoMapper.getCartWithGoodsInfoByIds(in_ids);
     }
 }

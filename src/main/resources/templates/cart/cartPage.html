@@ -66,14 +66,15 @@
                                 <input type="checkbox" v-model="selectedList" :value="cart.id">
                             </div>
                             <div class="column cart-goods">
-                                <el-image :src="picUrl(index)" lazy></el-image>
+                                <el-image fit="fill" :src="picUrl(index)" lazy ></el-image>
                             </div>
                             <div class="column cart-props">
-                                <a :href="'/ShopWeb/shop/detailPage/' + cart.shopItem.id" target="_blank">{{cart.shopItem.name}}</a>
+                                <a :href="'/ShopWeb/shop/detailPage?shopId=' + cart.shopVo.id" target="_blank">{{cart.shopVo.shopItems[0].name}}</a>
                             </div>
-                            <div class="column cart-price">{{cart.shopItem.price.toFixed(2)}}</div>
+                            <div class="column cart-price">{{cart.shopVo.shopItems[0].price.toFixed(2)}}</div>
                             <div class="column cart-quantity">
-                                <el-input-number size="mini" v-model="cart.shopItemNum" :min="1" :max="cart.shopItem.stock"
+                                <el-input-number size="mini" v-model="cart.shopItemNum" :min="1"
+                                                 :max="cart.shopVo.shopItems[0].stock"
                                                  @change="updateNum(index)"></el-input-number>
                             </div>
                             <div class="column cart-sum">{{ItemsSum(index)}}</div>
@@ -110,7 +111,9 @@
                     </div>
                 </div>
             </div>
-
+            <form ref="selectedListForm" action="/ShopWeb/order/orderPage" method="post">
+                <input hidden="hidden" v-model="selectedList" name="ids">
+            </form>
 
         </el-main>
     </el-container>
@@ -141,12 +144,18 @@
         computed: {
             picUrl() {
                 return function (index) {
-                    return "/ShopWeb/image/" + this.cartList[index].shopItem.id + ".jpg";
+                    var _that = this;
+                    var shop = _that.cartList[index].shopVo;
+                    if (_that.cartList[index].shopVo.images.length > 0) {
+                        return "/ShopWeb/image/" + shop.id + "/" + shop.images.split(",")[0];
+                    } else {
+                        return "";
+                    }
                 }
             },
             ItemsSum() {
                 return function (index) {
-                    return (this.cartList[index].shopItemNum * this.cartList[index].shopItem.price).toFixed(2);
+                    return (this.cartList[index].shopItemNum * this.cartList[index].shopVo.shopItems[0].price).toFixed(2);
                 }
             },
             select_all() {
@@ -160,7 +169,7 @@
                 var sum = 0.00;
                 _that.cartList.forEach(function (cart) {
                     if (_that.selectedList.indexOf(cart.id) >= 0) {
-                        sum = sum + cart.shopItemNum * cart.shopItem.price;
+                        sum = sum + cart.shopItemNum * cart.shopVo.shopItems[0].price;
                     }
                 });
                 return sum.toFixed(2);
@@ -234,7 +243,7 @@
                 axios({
                     method: "put",
                     url: "updateItemNum",
-                    data:_that.cartList[index]
+                    data: _that.cartList[index]
                 }).then(function (value) {
                     if (!value.data.success) {
                         _that.$message.error(value.data.message);
@@ -244,22 +253,13 @@
                     _that.$message.error("更新购物车物品数量错误！");
                 })
             },
-            asOrder(){
+            asOrder() {
                 var _that = this;
-                let orderList = [];
-                if (_that.selectedList.length === 0 ){
+                if (_that.selectedList.length === 0) {
                     _that.$message.error("亲~，还没选择商品哦~");
                     return;
                 }
-                _that.cartList.forEach(function (item) {
-                    if (_that.selectedList.indexOf(item.id) >= 0) {
-                        orderList.push(item);
-                    }
-                });
-                sessionStorage.setItem("orderList",JSON.stringify(orderList));
-                var a = document.createElement("a");
-                a.setAttribute('href',"/ShopWeb/order/orderPage");
-                a.click();
+                _that.$refs.selectedListForm.submit();
             }
         }
     })

@@ -14,8 +14,8 @@ public interface ShopMapper {
     @Select("select * from tbl_shop where id = #{id}")
     Shop getShopById(String id);
 
-    @Insert("insert into tbl_shop(id, enterprise_id, shop_name, images, type, style, `describe`, price, enable, create_date)" +
-            "values(#{id}, #{enterpriseId}, #{shopName}, #{images}, #{type}, #{style}, #{describe}, #{price}, #{enable}, #{createDate})")
+    @Insert("insert into tbl_shop(id, enterprise_id, name, images, type, style, `describe`, price, enable, create_date)" +
+            "values(#{id}, #{enterpriseId}, #{name}, #{images}, #{type}, #{style}, #{describe}, #{price}, #{enable}, #{createDate})")
     void createNewShop(Shop shop);
 
     @Update("update tbl_shop set enable = #{enable}, update_date = #{updateDate} where id = #{id}")
@@ -27,7 +27,7 @@ public interface ShopMapper {
     @Update("update tbl_shop set images = #{images}, update_date = #{updateDate} where id = #{id}")
     void updateShopImages(Shop shop);
 
-    @Update("update tbl_shop set shop_name = #{shopName}, type = #{type}, style= #{style}, `describe`= #{describe}, price= #{price}, update_date = #{updateDate} where id = #{id}")
+    @Update("update tbl_shop set name = #{name}, type = #{type}, style= #{style}, `describe`= #{describe}, price= #{price}, update_date = #{updateDate} where id = #{id}")
     void updateShopInfoById(Shop shop);
 
     @Select("select * from tbl_shop where enable = '1' order by create_date asc")

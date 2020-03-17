@@ -8,7 +8,7 @@
     <resultMap id="ShopVoMap" type="com.liang.shoppingweb.entity.shop.ShopVo">
         <id column="id" property="id"/>
         <result column="enterprise_id" property="enterpriseId"/>
-        <result column="shop_name" property="shopName"/>
+        <result column="name" property="name"/>
         <result column="describe" property="describe"/>
         <result column="type" property="type"/>
         <result column="style" property="style"/>
@@ -35,7 +35,7 @@
         SELECT
             s.id            id,
             s.enterprise_id enterprise_id,
-            s.shop_name     shop_name,
+            s.name          name,
             s.images        images,
             s.type          type,
             s.style         style,
@@ -53,9 +53,39 @@
             i.update_date   item_update_date
         FROM
             tbl_shop AS s
-            left join  tbl_shop_item AS i ON s.id = i.shop_id
+            left join tbl_shop_item AS i ON s.id = i.shop_id
         WHERE
-        s.id = #{id}
+            s.id = #{id}
         order by i.create_date asc
     </select>
+
+
+    <select id="getShopVoByItemId" resultMap="ShopVoMap">
+        SELECT
+            s.id            id,
+            s.enterprise_id enterprise_id,
+            s.name          name,
+            s.images        images,
+            s.type          type,
+            s.style         style,
+            s.`describe`    `describe`,
+            s.price         price,
+            s.`enable`      `enable`,
+            s.create_date   create_date,
+            s.update_date   create_date,
+            i.id            item_id,
+            i.shop_id       item_shop_id,
+            i.`name`        item_name,
+            i.price         item_price,
+            i.stock         item_stock,
+            i.create_date   item_create_date,
+            i.update_date   item_update_date
+        FROM
+            tbl_shop AS s
+            inner join tbl_shop_item AS i ON s.id = i.shop_id
+        WHERE
+            s.id = #{itemId}
+        order by i.create_date asc
+    </select>
+
 </mapper>

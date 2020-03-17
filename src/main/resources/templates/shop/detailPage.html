@@ -34,7 +34,7 @@
 
             </el-aside>
             <el-main>
-                <h3 style="color: red;margin-bottom: 20px;">{{shopVo.shopName}}</h3>
+                <h3 style="color: red;margin-bottom: 20px;">{{shopVo.name}}</h3>
                 <!--商品信息模块-->
                 <div class="goods-detail-name-frag">
                     <label>商 品 名 </label>
@@ -65,8 +65,12 @@
                                          controls-position="right" size="mini"
                                          style="margin-right: 15px"></el-input-number>
                         <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
-                        <el-button type="danger" size="small">立即购买</el-button>
+                        <el-button type="danger" size="small"  @click="buySingleGoods">立即购买</el-button>
+                        <form ref="selectedListForm" action="/ShopWeb/order/orderPage" method="post">
+                            <input hidden="hidden" name="ids" ref="selectedList">
+                        </form>
                     </div>
+
                     <div v-else>
                         <h4>商品太抢手~已经没有库存啦~</h4>
                     </div>
@@ -108,7 +112,7 @@
                         imageList.push("/ShopWeb/image/" + _that.shopVo.id + "/" + image);
                     });
                     _that.goodsImgUrlList = imageList;
-                    _that.defaultItem.name = _that.shopVo.shopName;
+                    _that.defaultItem.name = _that.shopVo.name;
                     _that.defaultItem.price = _that.shopVo.price;
                     _that.currentItem = _that.defaultItem;
                     document.querySelector("#title").innerHTML = _that.defaultItem.name;
@@ -180,29 +184,27 @@
                 });
 
             },
-            //todo 数据结构
-            // buySingleGoods() {
-            //     var _that = this;
-            //     axios({
-            //         method: "post",
-            //         url: "/ShopWeb/cart/buySingleGoods",
-            //         data: {
-            //             shopItemNum: _that.shopItemNum,
-            //             shopItemId: _that.currentItem.id
-            //         }
-            //     }).then(function (value) {
-            //         if (value.data.success) {
-            //             _that.orderList.push(value.data.content);
-            //             sessionStorage.setItem("orderList", JSON.stringify(_that.orderList));
-            //             _that.$refs.toOrderPage.click();
-            //         } else {
-            //             _that.$message.error(value.data.message);
-            //         }
-            //     }).catch(function (reason) {
-            //         console.log(reason);
-            //         _that.$message.error('立即购买错误！！');
-            //     });
-            // }
+            buySingleGoods() {
+                var _that = this;
+                axios({
+                    method: "post",
+                    url: "/ShopWeb/cart/buySingleGoods",
+                    data: {
+                        shopItemNum: _that.shopItemNum,
+                        shopItemId: _that.currentItem.id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.$refs.selectedList.setAttribute("value",value.data.content);
+                        _that.$refs.selectedListForm.submit();
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error('立即购买错误！！');
+                });
+            }
         }
     });
 </script>

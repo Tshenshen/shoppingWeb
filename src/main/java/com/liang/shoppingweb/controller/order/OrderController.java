@@ -28,8 +28,9 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/orderPage")
-    public String getOrderPage() {
+    @PostMapping("/orderPage")
+    public String getOrderPage(String ids,Model model) {
+        model.addAttribute("ids", ids);
         return "order/orderPage";
     }
 

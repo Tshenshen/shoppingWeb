@@ -1,8 +1,10 @@
 package com.liang.shoppingweb.mapper.order;
 
 import com.liang.shoppingweb.entity.order.OrderCell;
+import com.liang.shoppingweb.entity.order.OrderCellVo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -17,4 +19,7 @@ public interface OrderCellMapper {
             "</foreach>" +
             "</script>")
     void insertOrderCells(String orderId,List<OrderCell> orderCells);
+
+    @Update("update tbl_order_cell set order_id = #{orderId} where id = #{id}")
+    void updateOrderId(OrderCell orderCell);
 }
