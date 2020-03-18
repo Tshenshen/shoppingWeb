@@ -148,6 +148,8 @@ new Vue({
                     console.log(reason);
                     _that.$message.error("删除店铺错误！")
                 })
+            }).catch(function (reason) {
+                console.log(reason)
             });
 
         },

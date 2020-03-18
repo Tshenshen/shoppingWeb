@@ -195,22 +195,30 @@ new Vue({
         },
         deleteShopItem(index) {
             var _that = this;
-            axios({
-                method: "delete",
-                url: "deleteShopItem",
-                params: {
-                    shopItemId: _that.shopVo.shopItems[index].id
-                }
-            }).then(function (value) {
-                if (value.data.success) {
-                    _that.shopVo.shopItems.splice(index, 1);
-                    _that.$message.success(value.data.message);
-                } else {
-                    _that.$message.error(value.data.message);
-                }
+            _that.$confirm('是否确认删除?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(function () {
+                axios({
+                    method: "delete",
+                    url: "deleteShopItem",
+                    params: {
+                        shopItemId: _that.shopVo.shopItems[index].id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.shopVo.shopItems.splice(index, 1);
+                        _that.$message.success(value.data.message);
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("删除商品错误！");
+                });
             }).catch(function (reason) {
-                console.log(reason);
-                _that.$message.error("删除商品错误！");
+                console.log(reason)
             });
         }
 

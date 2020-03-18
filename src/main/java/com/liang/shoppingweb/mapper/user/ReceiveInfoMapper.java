@@ -13,7 +13,7 @@ public interface ReceiveInfoMapper {
     void addNewReceiver(ReceiveInfo receiveInfo);
 
     @Delete("delete from tbl_receive_info where id = #{id}")
-    void deleteReceiver(int id);
+    void deleteReceiver(String id);
 
     @Select("select * from tbl_receive_info where user_id = #{userId}")
     List<ReceiveInfo> getReceiversByUserId(String userId);

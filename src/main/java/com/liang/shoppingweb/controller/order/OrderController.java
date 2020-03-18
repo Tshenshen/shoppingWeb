@@ -28,21 +28,92 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
+    @PutMapping("/refundApply")
+    @ResponseBody
+    public MyResponse refundApply(@RequestBody Order order) {
+        MyResponse myResponse;
+        try {
+            orderService.refundApply(order);
+            OrderVo orderVo = orderVoService.getOrderVoById(order.getId());
+            myResponse = MyResponse.getSuccessResponse("订单申请退款成功",orderVo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("订单申请退款失败");
+        }
+        return myResponse;
+    }
+
+    @PutMapping("/refundApply/{orderId}")
+    @ResponseBody
+    public MyResponse refundAccept(@PathVariable String orderId) {
+        MyResponse myResponse;
+        try {
+            orderService.refundAccept(orderId);
+            myResponse = MyResponse.getSuccessResponse("订单退款接受成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("订单退款接受失败");
+        }
+        return myResponse;
+    }
+
+    @PutMapping("/refundRefuse/{orderId}")
+    @ResponseBody
+    public MyResponse refundRefuse(@PathVariable String orderId) {
+        MyResponse myResponse;
+        try {
+            orderService.refundRefuse(orderId);
+            myResponse = MyResponse.getSuccessResponse("订单退款拒绝成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("订单退款拒绝失败");
+        }
+        return myResponse;
+    }
+
+    @PutMapping("/receiveById/{orderId}")
+    @ResponseBody
+    public MyResponse receiveById(@PathVariable String orderId) {
+        MyResponse myResponse;
+        try {
+            orderService.orderReceive(orderId);
+            myResponse = MyResponse.getSuccessResponse("确认收货成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("确认收货失败");
+        }
+        return myResponse;
+    }
+
+    @DeleteMapping("/cancelById/{orderId}")
+    @ResponseBody
+    public MyResponse cancelById(@PathVariable String orderId) {
+        MyResponse myResponse;
+        try {
+            orderService.orderCancel(orderId);
+            myResponse = MyResponse.getSuccessResponse("取消订单成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("取消订单失败");
+        }
+        return myResponse;
+    }
+
     @PostMapping("/orderPage")
-    public String getOrderPage(String ids,Model model) {
+    public String getOrderPage(String ids, Model model) {
         model.addAttribute("ids", ids);
         return "order/orderPage";
     }
 
     @GetMapping("/payPage")
     public String getPayPage(String orderId, String SW_USER_TOKEN, Model model) {
-        if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
+        if (!LoginUtils.isSameUser(SW_USER_TOKEN)) {
             return "redirect:/";
         }
         User user = userService.getUserByName(LoginUtils.getCurrentUsername());
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         Order order = orderService.getOrderById(orderId);
-        model.addAttribute("order",order);
+        model.addAttribute("order", order);
         return "order/payPage";
     }
 
@@ -99,17 +170,17 @@ public class OrderController {
     @PostMapping("/payWithWallet")
     public String payWithWallet(String orderId, String SW_USER_TOKEN, Model model) {
         MyResponse myResponse;
-        if(!LoginUtils.isSameUser(SW_USER_TOKEN)){
+        if (!LoginUtils.isSameUser(SW_USER_TOKEN)) {
             return "redirect:/";
         }
         try {
             orderService.payWithWallet(orderId);
-            myResponse = MyResponse.getSuccessResponse("支付成功","订单支付成功！！感谢您的购买！！");
+            myResponse = MyResponse.getSuccessResponse("支付成功", "订单支付成功！！感谢您的购买！！");
         } catch (Exception e) {
             e.printStackTrace();
-            myResponse = MyResponse.getFailedResponse("支付失败",e.getMessage());
+            myResponse = MyResponse.getFailedResponse("支付失败", e.getMessage());
         }
-        model.addAttribute("payResult",myResponse);
+        model.addAttribute("payResult", myResponse);
         return "order/payResult";
     }
 

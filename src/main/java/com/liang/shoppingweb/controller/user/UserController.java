@@ -45,7 +45,7 @@ public class UserController {
 
     @DeleteMapping("/deleteReceiver/{id}")
     @ResponseBody
-    public MyResponse getReceives(@PathVariable("id") int id) {
+    public MyResponse getReceives(@PathVariable("id") String id) {
         MyResponse myResponse;
         try {
             receiveInfoService.deleteReceiver(id);

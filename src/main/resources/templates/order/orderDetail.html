@@ -17,7 +17,7 @@
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
 <div id="app">
     <input id="orderId" hidden="hidden" th:value="${orderId}">
-    <el-container  style="width: 70% ;margin: auto">
+    <el-container style="width: 70% ;margin: auto">
         <el-header style="margin-bottom: 15px">
             <h1 style="color: red">
                 <div style="margin: auto ;width: fit-content">订单<i class="el-icon-s-order"></i></div>
@@ -52,14 +52,14 @@
                                 {{index+1}}
                             </div>
                             <div class="column cart-goods">
-                                <el-image :src="picUrl(index)" lazy></el-image>
+                                <el-image :src="picUrl(cart)" lazy></el-image>
                             </div>
                             <div class="column cart-props">
-                                <a :href="'/ShopWeb/goods/goodsDetailPage/' + cart.goods.id" target="_blank">{{cart.goods.name}}</a>
+                                <a :href="'/ShopWeb/shop/detailPage?shopId=' + cart.shopVo.id" target="_blank">{{cart.shopVo.shopItems[0].name}}</a>
                             </div>
-                            <div class="column cart-price">{{cart.goods.price}}</div>
-                            <div class="column cart-quantity">{{cart.goodsNum}}</div>
-                            <div class="column cart-sum">{{ItemsSum(index)}}</div>
+                            <div class="column cart-price">{{cart.shopVo.shopItems[0].price}}</div>
+                            <div class="column cart-quantity">{{cart.shopItemNum}}</div>
+                            <div class="column cart-sum">{{ItemsSum(cart)}}</div>
                             <div class="column cart-action">
                             </div>
                         </div>
@@ -70,7 +70,8 @@
                                 收件地址：
                             </div>
                             <div class="receiver-ops">
-                                <el-select v-model="order.receiveInfoId" placeholder="请选择" size="small" style="width: 550px" disabled>
+                                <el-select v-model="order.receiveInfoId" placeholder="请选择" size="small"
+                                           style="width: 550px" disabled>
                                     <el-option
                                             v-for="(receiver,index) in receivers"
                                             :key="index"
@@ -80,14 +81,22 @@
                                 </el-select>
                             </div>
                             <div class="normal">
-                                <div class="btn-area">
+                                <div class="btn-area" v-if="order.state === 0">
+                                    <el-button type="danger" icon="el-icon-delete" disabled>已取消
+                                    </el-button>
+                                </div>
+                                <div class="btn-area" v-else-if="order.state === 1">
                                     <el-button type="danger" icon="el-icon-bank-card" @click="toPayPage">去支付
+                                    </el-button>
+                                </div>
+                                <div class="btn-area" v-else>
+                                    <el-button type="danger" icon="el-icon-document-checked" disabled>已支付
                                     </el-button>
                                 </div>
                                 <div class="price-sum">
                                     <div>
                                         <span>总价：</span>
-                                        <span><em>¥{{order.sumPrice}}</em></span>
+                                        <span><em>¥{{(order.sumPrice+0).toFixed(2)}}</em></span>
                                     </div>
                                 </div>
                                 <div class="amount-sum">
@@ -100,7 +109,7 @@
             </div>
             <form th:action="@{/order/payPage}" method="get" ref="toPayPageForm">
                 <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
-                <input hidden="hidden" th:value="${orderId}" name="orderId" >
+                <input hidden="hidden" th:value="${orderId}" name="orderId">
             </form>
         </el-main>
     </el-container>
@@ -113,7 +122,7 @@
         el: "#app",
         data: {
             order: {
-                orderCells:[]
+                orderCells: []
             },
             receivers: [],
             receiveInfoId: ''
@@ -146,13 +155,13 @@
         },
         computed: {
             picUrl() {
-                return function (index) {
-                    return "/ShopWeb/image/" + this.order.orderCells[index].goods.id + ".jpg";
+                return function (cart) {
+                    return cart.shopVo.images.length > 0 ? "/ShopWeb/image/" + cart.shopVo.id + "/" + cart.shopVo.images.split(",")[0] : "";
                 }
             },
             ItemsSum() {
-                return function (index) {
-                    return (this.order.orderCells[index].goodsNum * this.order.orderCells[index].goods.price).toFixed(2);
+                return function (cart) {
+                    return (cart.shopItemNum * cart.shopVo.shopItems[0].price).toFixed(2);
                 }
             },
             receiverLabel() {
@@ -164,7 +173,7 @@
             }
         },
         methods: {
-            toPayPage(){
+            toPayPage() {
                 this.$refs.toPayPageForm.submit();
             }
         }

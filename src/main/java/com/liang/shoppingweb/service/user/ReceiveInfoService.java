@@ -27,7 +27,7 @@ public class ReceiveInfoService {
     }
 
 
-    public void deleteReceiver(int id){
+    public void deleteReceiver(String id){
         receiveInfoMapper.deleteReceiver(id);
     }
 

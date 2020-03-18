@@ -3,6 +3,46 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liang.shoppingweb.mapper.order.OrderWithCellMapper">
+    <sql id="select_column">
+        SELECT
+            o.id              id,
+            o.user_id         user_id,
+            o.sum_price       sum_price,
+            o.shop_id         shop_id,
+            o.enterprise_id   enterprise_id,
+            o.receive_info_id receive_info_id,
+            o.state           state,
+            o.create_date     create_date,
+            o.update_date     update_date,
+            o.refund_reason   refund_reason,
+            c.id              cell_id,
+            c.order_id        cell_order_id,
+            c.shop_item_id    cell_shop_item_id,
+            c.shop_item_num   cell_shop_item_num,
+            s.id              cell_shop_id,
+            s.enterprise_id   cell_shop_enterprise_id,
+            s.name            cell_shop_name,
+            s.images          cell_shop_images,
+            s.type            cell_shop_type,
+            s.style           cell_shop_style,
+            s.`describe`      cell_shop_describe,
+            s.price           cell_shop_price,
+            s.`enable`        cell_shop_enable,
+            s.create_date     cell_shop_create_date,
+            s.update_date     cell_shop_create_date,
+            i.id              cell_shop_item_id,
+            i.shop_id         cell_shop_item_shop_id,
+            i.`name`          cell_shop_item_name,
+            i.price           cell_shop_item_price,
+            i.stock           cell_shop_item_stock,
+            i.create_date     cell_shop_item_create_date,
+            i.update_date     cell_shop_item_update_date
+        FROM
+            tbl_order AS o
+            INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
+            INNER JOIN tbl_shop_item AS i ON i.id = c.shop_item_id
+            INNER JOIN tbl_shop AS s ON i.shop_id = s.id
+    </sql>
     <resultMap id="orderVo" type="com.liang.shoppingweb.entity.order.OrderVo">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
@@ -13,6 +53,7 @@
         <result column="create_date" property="createDate"/>
         <result column="state" property="state"/>
         <result column="update_date" property="updateDate"/>
+        <result column="refund_reason" property="refundReason"/>
         <collection property="orderCells" ofType="com.liang.shoppingweb.entity.order.OrderCellVo"
                     resultMap="orderCellVoMap" columnPrefix="cell_"/>
     </resultMap>
@@ -52,85 +93,17 @@
     </resultMap>
 
     <select id="getUnFinishOrderVoByUserId" resultMap="orderVo">
-        SELECT
-            o.id              id,
-            o.user_id         user_id,
-            o.sum_price       sum_price,
-            o.receive_info_id receive_info_id,
-            o.state           state,
-            o.create_date     create_date,
-            o.update_date     update_date,
-            c.id              cell_id,
-            c.order_id        cell_order_id,
-            c.shop_item_id    cell_shop_item_id,
-            c.shop_item_num   cell_shop_item_num,
-            s.id              cell_shop_id,
-            s.enterprise_id   cell_shop_enterprise_id,
-            s.name            cell_shop_name,
-            s.images          cell_shop_images,
-            s.type            cell_shop_type,
-            s.style           cell_shop_style,
-            s.`describe`      cell_shop_describe,
-            s.price           cell_shop_price,
-            s.`enable`        cell_shop_enable,
-            s.create_date     cell_shop_create_date,
-            s.update_date     cell_shop_create_date,
-            i.id              cell_shop_item_id,
-            i.shop_id         cell_shop_item_shop_id,
-            i.`name`          cell_shop_item_name,
-            i.price           cell_shop_item_price,
-            i.stock           cell_shop_item_stock,
-            i.create_date     cell_shop_item_create_date,
-            i.update_date     cell_shop_item_update_date
-        FROM
-            tbl_order AS o
-            INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
-            INNER JOIN tbl_shop_item AS i ON i.id = c.shop_item_id
-            INNER JOIN tbl_shop AS s ON i.shop_id = s.id
+        <include refid="select_column"/>
         WHERE
-            o.user_id = #{userId} and
-            o.state &lt; 4
+        o.user_id = #{userId} and
+        o.state &lt; 5
         order by o.create_date asc
     </select>
 
     <select id="getOrderVoById" resultMap="orderVo">
-        SELECT
-            o.id              id,
-            o.user_id         user_id,
-            o.sum_price       sum_price,
-            o.receive_info_id receive_info_id,
-            o.state           state,
-            o.create_date     create_date,
-            o.update_date     update_date,
-            c.id              cell_id,
-            c.order_id        cell_order_id,
-            c.shop_item_id    cell_shop_item_id,
-            c.shop_item_num   cell_shop_item_num,
-            s.id              cell_shop_id,
-            s.enterprise_id   cell_shop_enterprise_id,
-            s.name            cell_shop_name,
-            s.images          cell_shop_images,
-            s.type            cell_shop_type,
-            s.style           cell_shop_style,
-            s.`describe`      cell_shop_describe,
-            s.price           cell_shop_price,
-            s.`enable`        cell_shop_enable,
-            s.create_date     cell_shop_create_date,
-            s.update_date     cell_shop_create_date,
-            i.id              cell_shop_item_id,
-            i.shop_id         cell_shop_item_shop_id,
-            i.`name`          cell_shop_item_name,
-            i.price           cell_shop_item_price,
-            i.stock           cell_shop_item_stock,
-            i.create_date     cell_shop_item_create_date,
-            i.update_date     cell_shop_item_update_date
-        FROM
-            tbl_order AS o
-            INNER JOIN tbl_order_cell AS c ON o.id = c.order_id
-            INNER JOIN tbl_shop_item AS i ON i.id = c.shop_item_id
-            INNER JOIN tbl_shop AS s ON i.shop_id = s.id
+        <include refid="select_column"/>
         WHERE
-            o.id = #{id}
+        o.id = #{id}
         order by i.shop_id
     </select>
 </mapper>

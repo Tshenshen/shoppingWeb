@@ -10,14 +10,14 @@ import java.util.List;
 public interface OrderMapper {
 
     @Insert("insert into tbl_order(id, user_id, sum_price, receive_info_id, create_date, state) " +
-            "values(#{id}, #{userId}, #{sumPrice}, #{receiveInfoId}, #{createDate}, '1') ")
+            "values(#{id}, #{userId}, #{sumPrice}, #{receiveInfoId}, #{createDate}, #{state}) ")
     void insertOrder(Order order);
 
     @Select("select * from tbl_order where id = #{id}")
     Order getOrderById(String id);
 
     @Update("update tbl_order set state = #{state}, update_date = #{updateDate} where id = #{id}")
-    void updateOrderState(Order order);
+    void updateOrderStateById(Order order);
 
     @Delete("delete from tbl_order where id = #{id}")
     void deleteById(String orderId);
@@ -29,4 +29,7 @@ public interface OrderMapper {
             "</foreach>" +
             "</script>")
     void addOrders(List<OrderVo> orderVoList);
+
+    @Update("update tbl_order set state = #{state}, update_date = #{updateDate}, refund_reason = #{refundReason} where id = #{id}")
+    void refundApply(Order order);
 }

@@ -1,5 +1,6 @@
 package com.liang.shoppingweb.service.order;
 
+import com.liang.shoppingweb.common.OrderStateConstant;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderCell;
@@ -81,6 +82,7 @@ public class OrderService {
         return createOrder(cartVoList, receiverInfoId);
     }
 
+
     @Transactional
     public Order createOrder(List<CartVo> cartVoList, String receiverInfoId) throws Exception {
         User currentUser = LoginUtils.getCurrentUser();
@@ -114,6 +116,7 @@ public class OrderService {
         order.setUserId(currentUser.getId());
         order.setReceiveInfoId(receiverInfoId);
         order.setSumPrice(sumPrice);
+        order.setState(OrderStateConstant.unPay);
         orderMapper.insertOrder(order);
         //插入子订单
         orderCellMapper.insertOrderCells(order.getId(), orderCells);
@@ -139,7 +142,7 @@ public class OrderService {
                     newOrderVo.setShopId(shopId);
                     newOrderVo.setEnterpriseId(orderCellVo.getShopVo().getEnterpriseId());
                     newOrderVo.setReceiveInfoId(orderVo.getReceiveInfoId());
-                    newOrderVo.setState(2);
+                    newOrderVo.setState(OrderStateConstant.unSend);
                     newOrderVo.setSumPrice(0.0);
                     newOrderVo.setOrderCells(new ArrayList<>());
                     newOrderVo.setCreateDate(new Date());
@@ -159,5 +162,39 @@ public class OrderService {
             e.printStackTrace();
             throw new Exception("支付失败！！订单更新失败！！");
         }
+    }
+
+    public void orderCancel(String orderId) {
+        updateStateById(orderId,OrderStateConstant.cancel);
+    }
+
+    public void orderSend(String orderId) {
+        updateStateById(orderId,OrderStateConstant.unReceive);
+    }
+
+    public void orderReceive(String orderId) {
+        updateStateById(orderId,OrderStateConstant.finish);
+    }
+
+    private void updateStateById(String orderId, int state) {
+        Order order = new Order();
+        order.setId(orderId);
+        order.setState(state);
+        order.setUpdateDate(new Date());
+        orderMapper.updateOrderStateById(order);
+    }
+
+    public void refundApply(Order order) {
+        order.setUpdateDate(new Date());
+        order.setState(OrderStateConstant.refund);
+        orderMapper.refundApply(order);
+    }
+
+    public void refundAccept(String orderId) {
+        updateStateById(orderId,OrderStateConstant.refundAccept);
+    }
+
+    public void refundRefuse(String orderId) {
+        updateStateById(orderId,OrderStateConstant.refundRefuse);
     }
 }

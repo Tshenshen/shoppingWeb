@@ -47,6 +47,10 @@ public class Order {
      * 订单状态更新时间
      */
     private Date updateDate;
+    /**
+     * 退款原因
+     */
+    private String refundReason;
 
 
 }
