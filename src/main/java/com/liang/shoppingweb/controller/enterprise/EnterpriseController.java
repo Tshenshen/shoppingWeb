@@ -35,6 +35,12 @@ public class EnterpriseController {
     @Autowired
     private ShopItemService shopItemService;
 
+    @GetMapping("getTotalOrderPage")
+    public String getTotalOrderPage(Model model) {
+        model.addAttribute("type", "enterprise");
+        return "order/totalOrderPage";
+    }
+
     @PostMapping("addNewShopItem")
     @ResponseBody
     public MyResponse addNewShopItem(@RequestBody ShopItem shopItem){

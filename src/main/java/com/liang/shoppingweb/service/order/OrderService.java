@@ -1,6 +1,9 @@
 package com.liang.shoppingweb.service.order;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.OrderStateConstant;
+import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderCell;
@@ -20,6 +23,7 @@ import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -130,7 +134,7 @@ public class OrderService {
         List<OrderVo> orderVoList = new ArrayList<>();
         OrderVo newOrderVo = new OrderVo();
         orderVo = orderWithCellMapper.getOrderVoById(orderId);
-        userService.payWithWallet(orderVo.getSumPrice());
+        userService.balanceMinusFromOrder(orderVo);
         try {
             //拆分订单
             for (OrderCellVo orderCellVo : orderVo.getOrderCells()) {
@@ -190,11 +194,24 @@ public class OrderService {
         orderMapper.refundApply(order);
     }
 
-    public void refundAccept(String orderId) {
+    @Transactional(rollbackFor = Exception.class)
+    public void refundAccept(String orderId) throws Exception{
+        refundFromOrder(orderMapper.getOrderById(orderId));
         updateStateById(orderId,OrderStateConstant.refundAccept);
+    }
+
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.REPEATABLE_READ)
+    void refundFromOrder(Order order) throws Exception{
+        enterpriseService.balanceMinusFromOrder(order);
+        userService.balanceAddFromOrder(order);
     }
 
     public void refundRefuse(String orderId) {
         updateStateById(orderId,OrderStateConstant.refundRefuse);
+    }
+
+    public PageInfo<OrderVo> getOrderVoListByOrderInfoAndPageNum(Order order,int pageNum) {
+        PageHelper.startPage(pageNum,PageConstant.pageSize);
+        return new PageInfo<>(orderWithCellMapper.getOrderVoListByOrderInfo(order)) ;
     }
 }

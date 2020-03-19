@@ -2,7 +2,7 @@ package com.liang.shoppingweb.service.user;
 
 import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
-import com.liang.shoppingweb.entity.order.OrderVo;
+import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.exception.MyException;
 import com.liang.shoppingweb.mapper.enterprise.EnterpriseMapper;
@@ -56,24 +56,20 @@ public class UserService {
         return userMapper.getUserByName(username);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public void payWithWallet(double sumPrice) throws Exception {
-        User user = userMapper.getUserByName(LoginUtils.getCurrentUsername());
-        double newBalance = user.getBalance() - sumPrice;
-        if (newBalance < 0) {
-            throw new Exception("余额不足！！");
-        }
-        try {
-            user.setUpdateDate(new Date());
-            user.setBalance(newBalance);
-            userMapper.updateBalance(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("支付失败！！");
-        }
 
+    public void balanceAddFromOrder(Order order) {
+        order.setUpdateDate(new Date());
+        userMapper.balanceAddFromOrder(order);
     }
 
+    public void balanceMinusFromOrder(Order order) throws Exception {
+        User user = userMapper.getUserById(order.getUserId());
+        if (user.getBalance() - order.getSumPrice() < 0) {
+            throw new Exception("余额不足！！");
+        }
+        order.setUpdateDate(new Date());
+        userMapper.balanceMinusFromOrder(order);
+    }
 
 
     @Transactional
@@ -98,4 +94,5 @@ public class UserService {
         user = userMapper.getUserById(user.getId());
         LoginUtils.setCurrentUser(user);
     }
+
 }

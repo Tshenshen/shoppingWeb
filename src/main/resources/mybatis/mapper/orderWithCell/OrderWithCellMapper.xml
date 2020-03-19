@@ -97,7 +97,15 @@
         WHERE
         o.user_id = #{userId} and
         o.state &lt; 5
-        order by o.create_date asc
+        order by o.create_date desc
+    </select>
+
+    <select id="getUnFinishOrdersByEnterpriseId" resultMap="orderVo">
+        <include refid="select_column"/>
+        WHERE
+        o.enterprise_id = #{enterpriseId} and
+        o.state &lt; 5
+        order by o.create_date desc
     </select>
 
     <select id="getOrderVoById" resultMap="orderVo">
@@ -105,5 +113,19 @@
         WHERE
         o.id = #{id}
         order by i.shop_id
+    </select>
+
+    <select id="getOrderVoListByOrderInfo" resultMap="orderVo">
+        <include refid="select_column"/>
+        <where>
+            o.state = #{state} and
+            <if test=" enterpriseId != null">
+                o.enterprise_id = #{enterpriseId}
+            </if>
+            <if test=" userId != null">
+                o.user_id = #{userId}
+            </if>
+        </where>
+        order by o.create_date desc
     </select>
 </mapper>

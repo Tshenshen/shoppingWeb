@@ -1,6 +1,7 @@
 package com.liang.shoppingweb.mapper.enterprise;
 
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
+import com.liang.shoppingweb.entity.order.Order;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -19,4 +20,10 @@ public interface EnterpriseMapper {
 
     @Update("update tbl_enterprise set balance = #{balance}, update_date = #{updateDate} where id = #{id}")
     void updateBalance(Enterprise enterprise);
+
+    @Update("update tbl_enterprise set balance = balance + #{sumPrice}, update_date = #{updateDate} where id = #{enterpriseId}")
+    void balanceAddFromOrder(Order order);
+
+    @Update("update tbl_enterprise set balance = balance - #{sumPrice}, update_date = #{updateDate} where id = #{enterpriseId}")
+    void balanceMinusFromOrder(Order order);
 }

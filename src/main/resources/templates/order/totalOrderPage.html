@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${type== "user"?"用户订单中心":"商家订单中心"}]]</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/user/center.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app" style="margin: auto;width: 70%">
+    <input hidden="hidden" ref="type" th:value="${type}">
+    <!--center_order-->
+    <div>
+        <h1 style="color: red;text-align: center;margin: 40px 0">{{type === 'user'?'用户订单中心':'商家订单中心'}}<i
+                class="el-icon-s-order"></i></h1>
+    </div>
+    <div class=" order-fra">
+
+        <el-tabs type="border-card" v-model="state" @tab-click="changeTab">
+            <el-tab-pane label="已取消" name="0" v-if="type === 'user'">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" >
+                        <em style="color: red">已完成</em>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+
+            <el-tab-pane label="待付款" name="1" v-if="type === 'user'">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px" @click.prevent="toPayPage(order.id)">
+                            去支付
+                        </a>
+                        <a @click.prevent="orderCancel(index)">
+                            取消订单
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+
+            <el-tab-pane label="待发货" name="2">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" v-if="type === 'user'">
+                        <a style="margin: 15px 15px">
+                            催他发货<!--todo 催他发货功能-->
+                        </a>
+                        <a @click.prevent="orderRefundApply(index)">
+                            申请退款
+                        </a>
+                    </div>
+                    <div class="left-order th-action item-height" v-if="type === 'enterprise'">
+                        <a style="margin: 15px 15px" @click="orderSend(index)">
+                            确认发货
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+
+            <el-tab-pane label="待收货" name="3">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" v-if="type === 'user'">
+                        <a style="margin: 15px 15px" @click.prevent="orderReceive(index)">
+                            确认收件
+                        </a>
+                        <a @click.prevent="orderRefundApply(index)">
+                            申请退款
+                        </a>
+                    </div>
+                    <div class="left-order th-action item-height" v-if="type === 'enterprise'">
+                        <a style="margin: 15px 15px">
+                            提醒收货<!--todo 提醒收货 -->
+                        </a>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+
+            <el-tab-pane label="退款" name="4">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" v-if="type === 'user'">
+                        <a style="margin: 15px 15px">
+                            催他处理
+                        </a>
+                    </div>
+                    <div class="left-order th-action item-height" v-if="type === 'enterprise'">
+                        <a style="margin: 15px 15px" @click="refundHandle(index)">
+                            处理退款
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+
+            <el-tab-pane label="已完成" name="5">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" >
+                        <em style="color: red">已完成</em>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+
+            <el-tab-pane label="退款成功" name="6">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" >
+                        <em style="color: red">已退款</em>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+
+            <el-tab-pane label="拒绝退款" name="7">
+                <div v-if="orderList.length === 0" class="none-fra">
+                    空空如也~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height" >
+                        <em style="color: red">已拒绝</em>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+        </el-tabs>
+
+        <div style="padding: 10px" v-if="total > 10">
+            <el-pagination
+                    style="text-align: center"
+                    background
+                    layout="prev, pager, next"
+                    :current-page.sync ="pageNum"
+                    :page-size="10"
+                    :total="total"
+                    @current-change="getOrderVoListByOrderInfo()">
+            </el-pagination>
+        </div>
+    </div>
+
+    <form th:action="@{/order/payPage}" method="get" ref="toPayPageForm" target="_blank">
+        <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
+        <input hidden="hidden" name="orderId" ref="orderId" value="">
+    </form>
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script th:src="@{/js/order/totalOrderPage.js}"></script>
+</html>

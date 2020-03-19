@@ -10,7 +10,7 @@
     <script src="" th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
-    <link href="" rel="stylesheet" th:href="@{/css/user/enterprisePage.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/enterprise/center.css}">
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -52,13 +52,13 @@
                 <el-divider style="margin: 10px 0"></el-divider>
                 <div class="item left-order">
                     <h3>
-                        <a>0<!--todo 需要补充待发货功能--></a>
+                        <a>{{orderList.unSendList.length}}</a>
                     </h3>
                     <div style="margin-top: 15px">待发货</div>
                 </div>
                 <div class="item left-order">
                     <h3>
-                        <a>0<!--todo 需要补充售后/退款功能--></a>
+                        <a>{{orderList.refundList.length}}</a>
                     </h3>
                     <div style="margin-top: 15px">售后/退款</div>
                 </div>
@@ -79,21 +79,139 @@
             </div>
         </div>
     </div>
+
+    <!--center_order-->
+    <div class=" order-fra">
+        <div>
+            <span style="font-size: 20px">我的订单</span>
+            <a class="order-more"  th:href="@{getTotalOrderPage}" target="_blank"><i class="el-icon-more"> 所有订单</i></a>
+        </div>
+        <el-divider style="margin: 10px 0"></el-divider>
+
+        <el-tabs type="border-card" >
+            <el-tab-pane label="待发货">
+                <div v-if="orderList.unSendList.length === 0" class="none-fra">
+                    还没有用户下单，继续加油哦~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList.unSendList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px" @click="orderSend(index)">
+                            确认发货
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+
+
+            <el-tab-pane label="待收货">
+                <div v-if="orderList.unReceiveList.length === 0" class="none-fra">
+                    还不收货，心很急~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList.unReceiveList" :key="index">
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px" >
+                            提醒收货<!--todo 提醒收货 -->
+                        </a>
+                    </div>
+                </div>
+
+            </el-tab-pane>
+            <el-tab-pane label="待评价">待评价</el-tab-pane><!--todo 待评价-->
+            <el-tab-pane label="退款">
+                <div v-if="orderList.refundList.length === 0" class="none-fra">
+                    良心商家~
+                </div>
+                <div v-else class="th-Border">
+                    <div class="left-order th-order">序号</div>
+                    <div class="left-order th-goods">商品</div>
+                    <div class="left-order th-quantity">数量</div>
+                    <div class="left-order th-sum">总价</div>
+                    <div class="left-order th-action">操作</div>
+                </div>
+
+                <div class="order-item-fra" v-for="(order,index) in orderList.refundList" :key="index">
+
+
+                    <div class="left-order th-order item-height">
+                        {{index+1}}
+                    </div>
+                    <div class="left-order  th-goods">
+                        <div class="item-image" style="width: 130px">
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                        </div>
+                        <div class="item-name">
+                            <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
+                        </div>
+                    </div>
+                    <div class="left-order th-quantity item-height">
+                        共{{order.orderCells.length}}件商品
+                    </div>
+                    <div class="left-order th-sum item-height">
+                        <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
+                    </div>
+                    <div class="left-order th-action item-height">
+                        <a style="margin: 15px 15px" @click="refundHandle(index)">
+                            处理退款
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
 </div>
 </body>
 <script th:src="@{/js/toolBar/topNavBar.js}"></script>
-<script>
-    new Vue({
-        el: "#app",
-        data: {
-            orderList: {
-                unSendList: []
-            }
-        },
-        mounted(){
-
-        },
-        methods: {}
-    })
-</script>
+<script th:src="@{/js/enterprise/center.js}"></script>
 </html>

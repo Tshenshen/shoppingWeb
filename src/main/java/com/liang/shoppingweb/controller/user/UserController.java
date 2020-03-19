@@ -24,6 +24,12 @@ public class UserController {
     private UserService userService;
 
 
+    @GetMapping("getTotalOrderPage")
+    public String getTotalOrderPage(Model model) {
+        model.addAttribute("type", "user");
+        return "order/totalOrderPage";
+    }
+
     @GetMapping("/getReceiveSettingPage")
     public String getReceiveSettingPage() {
         return "user/receiveSetting";

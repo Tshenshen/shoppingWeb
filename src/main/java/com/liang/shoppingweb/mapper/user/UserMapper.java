@@ -1,5 +1,6 @@
 package com.liang.shoppingweb.mapper.user;
 
+import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.user.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,4 +32,10 @@ public interface UserMapper {
 
     @Update("update tbl_user set role = #{role}, update_date = #{updateDate}, enterprise_id = #{enterpriseId} where id = #{id}")
     void enterpriseRegister(User user);
+
+    @Update("update tbl_user set balance = balance + #{sumPrice}, update_date = #{updateDate} where id = #{userId}")
+    void balanceAddFromOrder(Order order);
+
+    @Update("update tbl_user set balance = balance - #{sumPrice}, update_date = #{updateDate} where id = #{userId}")
+    void balanceMinusFromOrder(Order order);
 }

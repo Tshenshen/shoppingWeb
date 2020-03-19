@@ -70,12 +70,25 @@
                                 收件地址：
                             </div>
                             <div class="receiver-ops">
-                                <el-select v-model="receiveInfoId" placeholder="请选择" size="small" style="width: 550px">
+                                <el-select v-model="receiveInfoId"
+                                           placeholder="请选择"
+                                           size="small"
+                                           style="width: 550px"
+                                           @change="receiverChange">
                                     <el-option
                                             v-for="(receiver,index) in receivers"
                                             :key="index"
                                             :label="receiverLabel(receiver)"
                                             :value="receiver.id">
+                                    </el-option>
+                                    <el-option v-if="receivers.length < 10"
+                                            :label="'+添加新的收件地址'"
+                                            :value="0">
+                                    </el-option>
+                                    <el-option v-if="receivers.length === 10"
+                                               :label="'收件地址最多10个'"
+                                               :value="-1"
+                                               disabled>
                                     </el-option>
                                 </el-select>
                             </div>
@@ -102,6 +115,24 @@
                 <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
                 <input hidden="hidden" name="orderId" ref="orderId" value="">
             </form>
+            <!--新增收货地址对话框-->
+            <el-dialog title="收货地址" :visible.sync="newDialogFormVisible">
+                <el-form :model="newReceiverInfo" status-icon :rules="rules" ref="newReceiverForm">
+                    <el-form-item label="收件人"  prop="receiver">
+                        <el-input v-model="newReceiverInfo.receiver"></el-input>
+                    </el-form-item>
+                    <el-form-item label="电话"  prop="phoneNumber">
+                        <el-input v-model="newReceiverInfo.phoneNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="地址"  prop="address">
+                        <el-input v-model="newReceiverInfo.address"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="newDialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="addNewReceiverInfo">确 定</el-button>
+                </div>
+            </el-dialog>
 
         </el-main>
     </el-container>
@@ -116,7 +147,24 @@
             ids: [],
             orderList: [],
             receivers: [],
-            receiveInfoId: ''
+            receiveInfoId: '',
+            newDialogFormVisible:false,
+            newReceiverInfo:{
+                receiver:'',
+                phoneNumber:'',
+                address:''
+            }, rules: {
+                receiver: [
+                    {required: true, message: '请输入收件人姓名', trigger: 'blur'},
+                    {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur'}
+                ], address: [
+                    {required: true, message: '请输收件地址', trigger: 'blur'},
+                    {min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur'}
+                ], phoneNumber: [
+                    {required: true, message: '请输入收件人电话', trigger: 'blur'},
+                    {min: 8, max: 11, message: '长度在 8 到 11 个字符', trigger: 'blur'}
+                ]
+            }
         },
         mounted() {
             var _that = this;
@@ -211,6 +259,38 @@
             toPayPage(id) {
                 this.$refs.orderId.setAttribute("value", id);
                 this.$refs.toPayPageForm.submit();
+            },
+            receiverChange(value){
+                if (value === 0) {
+                    this.newDialogFormVisible = true;
+                }
+            },
+            addNewReceiverInfo() {
+                var _that = this;
+                _that.$refs.newReceiverForm.validate().then(
+                    function () {
+                        _that.newDialogFormVisible = false;
+                        axios({
+                            method: "post",
+                            url: "/ShopWeb/user/addNewReceiver",
+                            data: _that.newReceiverInfo
+                        }).then(function (value) {
+                            if (value.data.success) {
+                                _that.receivers.push(value.data.content);
+                                _that.receiveInfoId = value.data.content.id;
+                                _that.$message.success(value.data.message);
+                            } else {
+                                _that.$message.error(value.data.message);
+                            }
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            _that.$message.error("添加新收件地址错误！！");
+                        })
+                    }
+                ).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("请完善表单");
+                })
             }
 
         }

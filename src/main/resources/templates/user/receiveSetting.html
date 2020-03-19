@@ -156,7 +156,8 @@
                             data: _that.newReceiverInfo
                         }).then(function (value) {
                             if (value.data.success) {
-                                _that.receivers.push(value.data.content)
+                                _that.receivers.push(value.data.content);
+                                _that.$message.success(value.data.message);
                             } else {
                                 _that.$message.error(value.data.message);
                             }
@@ -167,7 +168,7 @@
                     }
                 ).catch(function (reason) {
                     console.log(reason);
-                    _that.$message.error("123123");
+                    _that.$message.error("请完善表单");
                 })
             },
             deleteReceiver(id, index) {
@@ -184,6 +185,7 @@
                     }).then(function (value) {
                         if (value.data.success) {
                             _that.receivers.splice(index, 1);
+                            _that.$message.success(value.data.message);
                         } else {
                             _that.$message.error(value.data.message);
                         }
@@ -216,6 +218,7 @@
                         }).then(function (value) {
                             if (value.data.success) {
                                 _that.receivers.splice(_that.updateItemIndex, 1, value.data.content);
+                                _that.$message.success(value.data.message);
                             } else {
                                 _that.$message.error(value.data.message);
                             }

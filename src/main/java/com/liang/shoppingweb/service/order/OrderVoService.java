@@ -22,4 +22,8 @@ public class OrderVoService {
     public OrderVo getOrderVoById(String id) {
         return orderWithCellMapper.getOrderVoById(id);
     }
+
+    public List<OrderVo> getUnFinishOrdersByEnterpriseId() {
+        return orderWithCellMapper.getUnFinishOrdersByEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
+    }
 }

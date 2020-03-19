@@ -1,6 +1,9 @@
 package com.liang.shoppingweb.controller.order;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.MyResponse;
+import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
@@ -28,6 +31,28 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
+
+    @GetMapping("getOrderVoListByOrderInfo")
+    @ResponseBody
+    public MyResponse getOrderVoListByOrderInfo(@RequestParam String type, @RequestParam int state, @RequestParam int pageNum) {
+        MyResponse myResponse;
+        try {
+            Order order = new Order();
+            order.setState(state);
+            if ("user".equals(type)) {
+                order.setUserId(LoginUtils.getCurrentUserId());
+            } else if ("enterprise".equals(type)) {
+                order.setEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
+            }
+            PageInfo<OrderVo> pageInfo = orderService.getOrderVoListByOrderInfoAndPageNum(order,pageNum);
+            myResponse = MyResponse.getSuccessResponse("获取订单列表成功", pageInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取订单列表失败");
+        }
+        return myResponse;
+    }
+
     @PutMapping("/refundApply")
     @ResponseBody
     public MyResponse refundApply(@RequestBody Order order) {
@@ -35,10 +60,25 @@ public class OrderController {
         try {
             orderService.refundApply(order);
             OrderVo orderVo = orderVoService.getOrderVoById(order.getId());
-            myResponse = MyResponse.getSuccessResponse("订单申请退款成功",orderVo);
+            myResponse = MyResponse.getSuccessResponse("订单申请退款成功", orderVo);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("订单申请退款失败");
+        }
+        return myResponse;
+    }
+
+    @PutMapping("/sendById/{orderId}")
+    @ResponseBody
+    public MyResponse sendById(@PathVariable String orderId) {
+        MyResponse myResponse;
+        try {
+            orderService.orderSend(orderId);
+            OrderVo orderVo = orderVoService.getOrderVoById(orderId);
+            myResponse = MyResponse.getSuccessResponse("确认发货成功", orderVo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("确认发货失败");
         }
         return myResponse;
     }
@@ -52,7 +92,7 @@ public class OrderController {
             myResponse = MyResponse.getSuccessResponse("订单退款接受成功");
         } catch (Exception e) {
             e.printStackTrace();
-            myResponse = MyResponse.getFailedResponse("订单退款接受失败");
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
         }
         return myResponse;
     }
@@ -66,7 +106,7 @@ public class OrderController {
             myResponse = MyResponse.getSuccessResponse("订单退款拒绝成功");
         } catch (Exception e) {
             e.printStackTrace();
-            myResponse = MyResponse.getFailedResponse("订单退款拒绝失败");
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
         }
         return myResponse;
     }
@@ -145,6 +185,20 @@ public class OrderController {
         MyResponse myResponse;
         try {
             List<OrderVo> unFinishOrders = orderVoService.getUnFinishOrderVoByUserId();
+            myResponse = MyResponse.getSuccessResponse("获取订单列表成功", unFinishOrders);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
+        }
+        return myResponse;
+    }
+
+    @GetMapping("/getUnFinishOrdersByEnterpriseId")
+    @ResponseBody
+    public MyResponse getUnFinishOrdersByEnterpriseId() {
+        MyResponse myResponse;
+        try {
+            List<OrderVo> unFinishOrders = orderVoService.getUnFinishOrdersByEnterpriseId();
             myResponse = MyResponse.getSuccessResponse("获取订单列表成功", unFinishOrders);
         } catch (Exception e) {
             e.printStackTrace();
