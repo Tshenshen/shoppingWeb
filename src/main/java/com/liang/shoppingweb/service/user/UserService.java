@@ -9,10 +9,16 @@ import com.liang.shoppingweb.mapper.enterprise.EnterpriseMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.utils.EncodeUtils;
 import com.liang.shoppingweb.utils.LoginUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -93,6 +99,16 @@ public class UserService {
         //更新本地用户
         user = userMapper.getUserById(user.getId());
         LoginUtils.setCurrentUser(user);
+        // 得到当前的认证信息
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //  生成当前的所有授权
+        List<GrantedAuthority> updatedAuthorities = new ArrayList<>();
+        // 添加 ROLE_VIP 授权
+        updatedAuthorities.add(new SimpleGrantedAuthority(user.getRole()));
+        // 生成新的认证信息
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);
+        // 重置认证信息
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 
 }

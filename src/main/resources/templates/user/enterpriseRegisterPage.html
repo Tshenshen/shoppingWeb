@@ -56,7 +56,7 @@
                     if (isValid) {
                         axios({
                             method: 'post',
-                            url: '/ShopWeb/enterprise/enterpriseRegister',
+                            url: '/ShopWeb/user/enterpriseRegister',
                             data: _that.enterpriseRegisterForm
                         }).then(function (value) {
                             if (value.data.success) {

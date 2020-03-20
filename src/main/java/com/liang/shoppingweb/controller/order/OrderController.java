@@ -53,6 +53,21 @@ public class OrderController {
         return myResponse;
     }
 
+    @PutMapping("/changeReceiver")
+    @ResponseBody
+    public MyResponse changeReceiver(@RequestBody Order order) {
+        MyResponse myResponse;
+        try {
+            orderService.changeReceiver(order);
+            myResponse = MyResponse.getSuccessResponse("修改收件地址成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("修改收件地址失败");
+        }
+        return myResponse;
+    }
+
+
     @PutMapping("/refundApply")
     @ResponseBody
     public MyResponse refundApply(@RequestBody Order order) {
@@ -150,16 +165,23 @@ public class OrderController {
         if (!LoginUtils.isSameUser(SW_USER_TOKEN)) {
             return "redirect:/";
         }
+        Order order = orderService.getOrderById(orderId);
+        if (!order.getUserId().equals(LoginUtils.getCurrentUserId())){
+            return "error/403";
+        }
+        model.addAttribute("order", order);
         User user = userService.getUserByName(LoginUtils.getCurrentUsername());
         model.addAttribute("user", user);
-        Order order = orderService.getOrderById(orderId);
-        model.addAttribute("order", order);
         return "order/payPage";
     }
 
     @GetMapping("/orderDetail/{orderId}")
     public String getOrderDetail(@PathVariable("orderId") String orderId, Model model) {
         model.addAttribute("orderId", orderId);
+        Order order = orderService.getOrderById(orderId);
+        if (!order.getUserId().equals(LoginUtils.getCurrentUserId())){
+            return "error/403";
+        }
         return "order/orderDetail";
     }
 

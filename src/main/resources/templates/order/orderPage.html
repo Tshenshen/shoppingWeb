@@ -237,6 +237,10 @@
         methods: {
             createOrder() {
                 var _that = this;
+                if (_that.receiveInfoId.length <= 0) {
+                    _that.$message.error("请选择收件地址！！");
+                    return;
+                }
                 axios({
                     method: "post",
                     url: "/ShopWeb/order/createOrder",

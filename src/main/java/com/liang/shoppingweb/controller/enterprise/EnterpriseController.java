@@ -216,25 +216,9 @@ public class EnterpriseController {
 
     @GetMapping("/center")
     public String getEnterprisePage(Model model) {
-        if (!LoginUtils.isEnterprise()) {
-            return "enterprise/register";
-        }
         Enterprise enterprise = enterpriseService.getEnterpriseByUserId(LoginUtils.getCurrentUserId());
         model.addAttribute("enterpriseInfo", enterprise);
         return "enterprise/center";
     }
 
-    @PostMapping("/enterpriseRegister")
-    @ResponseBody
-    public MyResponse enterpriseRegister(@RequestBody Enterprise enterprise) {
-        MyResponse myResponse;
-        try {
-            userService.enterpriseRegister(enterprise);
-            myResponse = MyResponse.getSuccessResponse("注册商家成功！");
-        } catch (Exception e) {
-            e.printStackTrace();
-            myResponse = MyResponse.getFailedResponse("注册商家失败！");
-        }
-        return myResponse;
-    }
 }

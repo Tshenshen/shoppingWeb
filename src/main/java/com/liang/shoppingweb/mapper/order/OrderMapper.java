@@ -32,4 +32,7 @@ public interface OrderMapper {
 
     @Update("update tbl_order set state = #{state}, update_date = #{updateDate}, refund_reason = #{refundReason} where id = #{id}")
     void refundApply(Order order);
+
+    @Update("update tbl_order set receive_info_id = #{receiveInfoId}, update_date = #{updateDate} where id = #{id}")
+    void updateOrderReceiveInfoId(Order order);
 }

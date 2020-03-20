@@ -89,10 +89,6 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(List<CartVo> cartVoList, String receiverInfoId) throws Exception {
-        User currentUser = LoginUtils.getCurrentUser();
-        if (currentUser == null) {
-            throw new Exception("用户未登录！！");
-        }
         List<OrderCell> orderCells = new ArrayList<>();
         double sumPrice = 0.0;
         OrderCell orderCell;
@@ -117,7 +113,7 @@ public class OrderService {
         Order order = new Order();
         order.setId(UUID.randomUUID().toString());
         order.setCreateDate(new Date());
-        order.setUserId(currentUser.getId());
+        order.setUserId(LoginUtils.getCurrentUserId());
         order.setReceiveInfoId(receiverInfoId);
         order.setSumPrice(sumPrice);
         order.setState(OrderStateConstant.unPay);
@@ -213,5 +209,10 @@ public class OrderService {
     public PageInfo<OrderVo> getOrderVoListByOrderInfoAndPageNum(Order order,int pageNum) {
         PageHelper.startPage(pageNum,PageConstant.pageSize);
         return new PageInfo<>(orderWithCellMapper.getOrderVoListByOrderInfo(order)) ;
+    }
+
+    public void changeReceiver(Order order) {
+        order.setUpdateDate(new Date());
+        orderMapper.updateOrderReceiveInfoId(order);
     }
 }

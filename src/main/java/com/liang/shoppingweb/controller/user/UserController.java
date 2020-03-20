@@ -1,17 +1,22 @@
 package com.liang.shoppingweb.controller.user;
 
 import com.liang.shoppingweb.common.MyResponse;
+import com.liang.shoppingweb.entity.enterprise.Enterprise;
 import com.liang.shoppingweb.entity.user.ReceiveInfo;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.service.user.ReceiveInfoService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller()
@@ -115,6 +120,29 @@ public class UserController {
             System.out.println(myResponse);
         }
         return myResponse;
+    }
+
+
+    @PostMapping("/enterpriseRegister")
+    @ResponseBody
+    public MyResponse enterpriseRegister(@RequestBody Enterprise enterprise) {
+        MyResponse myResponse;
+        try {
+            userService.enterpriseRegister(enterprise);
+            myResponse = MyResponse.getSuccessResponse("注册商家成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("注册商家失败！");
+        }
+        return myResponse;
+    }
+
+    @GetMapping("/toEnterpriseCenter")
+    public String toEnterpriseCenter() {
+        if (!LoginUtils.isEnterprise()) {
+            return "user/enterpriseRegisterPage";
+        }
+        return "redirect:/enterprise/center";
     }
 
 

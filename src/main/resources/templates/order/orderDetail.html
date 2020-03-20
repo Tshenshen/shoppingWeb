@@ -71,7 +71,7 @@
                             </div>
                             <div class="receiver-ops">
                                 <el-select v-model="order.receiveInfoId" placeholder="请选择" size="small"
-                                           style="width: 550px" disabled>
+                                           style="width: 550px" :disabled="order.state !== 1" @change="changeReceiver">
                                     <el-option
                                             v-for="(receiver,index) in receivers"
                                             :key="index"
@@ -128,8 +128,7 @@
             order: {
                 orderCells: []
             },
-            receivers: [],
-            receiveInfoId: ''
+            receivers: []
         },
         mounted() {
             var _that = this;
@@ -179,6 +178,23 @@
         methods: {
             toPayPage() {
                 this.$refs.toPayPageForm.submit();
+            },
+            changeReceiver() {
+                var _that = this;
+                axios({
+                    method: "put",
+                    url: "/ShopWeb/order/changeReceiver",
+                    data: _that.order
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.$message.success(value.data.message);
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("修改收件地址错误！！");
+                })
             }
         }
     })
