@@ -17,195 +17,97 @@
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
 <div id="app">
     <input hidden="hidden" ref="shopId" th:value="${shopId}">
-    <el-container style="width: 70% ;margin: auto">
-
-        <el-container direction="horizontal">
-            <el-aside style="padding-top: 20px;width: 45%;margin-right: 3%">
-                <el-carousel height="400px">
-                    <el-carousel-item v-for="(imgUrl,index) in goodsImgUrlList" :key="index">
-                        <div style=" border: 1px solid gray;">
-                            <el-image class="image_preview "
-                                      :src="imgUrl"
-                                      fit="fill">
-                            </el-image>
-                        </div>
-                    </el-carousel-item>
-                </el-carousel>
-
-            </el-aside>
-            <el-main>
-                <h3 style="color: red;margin-bottom: 20px;">{{shopVo.name}}</h3>
-                <!--商品信息模块-->
-                <div class="goods-detail-name-frag">
-                    <label>商 品 名 </label>
-                    <span class="goods-detail-name">{{currentItem.name}}</span>
+    <div v-if="shopVo === null">
+        <h1 style="color: red;text-align: center">改天再来吧，店铺还未上线</h1>
+    </div>
+    <div v-else>
+        <el-container style="width: 70% ;margin: auto">
+            <el-header>
+                <div class="shop-name">
+                    <h3 style="color: red;margin-bottom: 20px;text-align: center">{{shopVo.name}}</h3>
                 </div>
-                <div>
-                    <div class="goods-detail-price-frag">
-                        <label>秒 杀 价 </label>
-                        <span class="goods-detail-price"><span>￥</span><span style="font-size: large">{{currentItem.price}}</span></span>
-                        <span class="goods-detail-price">[<del>￥{{currentItem.price}}</del>]</span>
+                <!--收藏栏-->
+                <div class="shop-collect">
+                    <div v-if="shopVo.collect === null">
+                        <el-link type="danger" @click.prevent="collectShop">收藏该店铺</el-link>
                     </div>
-                </div>
-
-                <!--商品规格-->
-                <!--规格选择-->
-                <div class="shop-item-frag">
-                    <label>商 品 选 择 </label>
-                    <div v-for="(item,index) in shopVo.shopItems">
-                        <div class="item-frag">
-                            <span :class="itemClass(index)" @click="selectItem($event,index)">{{item.name}}</span>
-                        </div>
-                    </div>
-                </div>
-                <!--加入购物车模块-->
-                <div v-if="itemSelected">
-                    <div v-if="hasStock">
-                        <el-input-number v-model="shopItemNum" :min="1" :max="currentItem.stock"
-                                         controls-position="right" size="mini"
-                                         style="margin-right: 15px"></el-input-number>
-                        <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
-                        <el-button type="danger" size="small"  @click="buySingleGoods">立即购买</el-button>
-                        <form ref="selectedListForm" action="/ShopWeb/order/orderPage" method="post">
-                            <input hidden="hidden" name="ids" ref="selectedList">
-                        </form>
-                    </div>
-
                     <div v-else>
-                        <h4>商品太抢手~已经没有库存啦~</h4>
+                        <el-link type="danger" @click.prevent="cancelCollectShop">取消收藏</el-link>
                     </div>
                 </div>
-                <div v-else>
-                    <h4>请选择商品~</h4>
-                </div>
-                <a hidden="hidden" th:href="@{/order/orderPage}" ref="toOrderPage"></a>
-            </el-main>
+            </el-header>
+            <el-container direction="horizontal">
+
+                <el-aside style="padding-top: 20px;width: 45%;margin-right: 3%">
+                    <el-carousel height="400px">
+                        <el-carousel-item v-for="(imgUrl,index) in goodsImgUrlList" :key="index">
+                            <div style=" border: 1px solid gray;">
+                                <el-image class="image_preview "
+                                          :src="imgUrl"
+                                          fit="fill">
+                                    <div slot="error" class="image-slot">
+                                        商家未添加图片
+                                    </div>
+                                </el-image>
+                            </div>
+
+                        </el-carousel-item>
+                    </el-carousel>
+
+                </el-aside>
+                <el-main>
+
+                    <!--商品信息模块-->
+                    <div class="goods-detail-name-frag">
+                        <label>商 品 名 </label>
+                        <span class="goods-detail-name">{{currentItem.name}}</span>
+                    </div>
+                    <div>
+                        <div class="goods-detail-price-frag">
+                            <label>秒 杀 价 </label>
+                            <span class="goods-detail-price"><span>￥</span><span style="font-size: large">{{currentItem.price}}</span></span>
+                            <span class="goods-detail-price">[<del>￥{{currentItem.price}}</del>]</span>
+                        </div>
+                    </div>
+
+                    <!--商品规格-->
+                    <!--规格选择-->
+                    <div class="shop-item-frag">
+                        <label>商 品 选 择 </label>
+                        <div v-for="(item,index) in shopVo.shopItems">
+                            <div class="item-frag">
+                                <span :class="itemClass(index)" @click="selectItem($event,index)">{{item.name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--加入购物车模块-->
+                    <div v-if="itemSelected">
+                        <div v-if="hasStock">
+                            <el-input-number v-model="shopItemNum" :min="1" :max="currentItem.stock"
+                                             controls-position="right" size="mini"
+                                             style="margin-right: 15px"></el-input-number>
+                            <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
+                            <el-button type="danger" size="small" @click="buySingleGoods">立即购买</el-button>
+                            <form ref="selectedListForm" action="/ShopWeb/order/orderPage" method="post">
+                                <input hidden="hidden" name="ids" ref="selectedList">
+                            </form>
+                        </div>
+
+                        <div v-else>
+                            <h4>商品太抢手~已经没有库存啦~</h4>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h4>请选择商品~</h4>
+                    </div>
+                    <a hidden="hidden" th:href="@{/order/orderPage}" ref="toOrderPage"></a>
+                </el-main>
+            </el-container>
         </el-container>
-    </el-container>
+    </div>
 
 </div>
 </body>
 <script th:src="@{/js/toolBar/topNavBar.js}"></script>
-<script>
-    new Vue({
-        el: "#app",
-        data: {
-            shopVo: {},
-            goodsImgUrlList: [""],
-            selectedItemIndex: -1,
-            defaultItem: {
-                name: '',
-                price: '',
-                stock: 1
-            },
-            currentItem: {},
-            shopItemNum: ''
-        },
-        mounted() {
-            var _that = this;
-            var shopId = _that.$refs.shopId.getAttribute("value");
-            axios.get("getShopVo/" + shopId).then(function (value) {
-                if (value.data.success) {
-                    _that.shopVo = value.data.content;
-                    var imageList = [];
-                    _that.shopVo.images.split(",").forEach(function (image) {
-                        imageList.push("/ShopWeb/image/" + _that.shopVo.id + "/" + image);
-                    });
-                    _that.goodsImgUrlList = imageList;
-                    _that.defaultItem.name = _that.shopVo.name;
-                    _that.defaultItem.price = _that.shopVo.price;
-                    _that.currentItem = _that.defaultItem;
-                    document.querySelector("#title").innerHTML = _that.defaultItem.name;
-                } else {
-                    _that.$message.error(value.data.message);
-                }
-            }).catch(function (reason) {
-                console.log(reason);
-                _that.$message.error("初始化店铺信息错误！");
-            });
-        },
-        computed: {
-            itemClass() {
-                var _that = this;
-                return function (index) {
-                    if (_that.selectedItemIndex === index) {
-                        return "item selected-item";
-                    } else {
-                        return "item";
-                    }
-                }
-            },
-            hasStock() {
-                var _that = this;
-                if (_that.selectedItemIndex === -1) {
-                    return false;
-                } else {
-                    return _that.currentItem.stock > 0;
-                }
-            },
-            itemSelected() {
-                return this.selectedItemIndex !== -1;
-            }
-        },
-
-        methods: {
-            selectItem(event, index) {
-                var _that = this;
-                _that.shopItemNum = 1;
-                if (_that.selectedItemIndex === -1) {
-                    _that.selectedItemIndex = index;
-                    _that.currentItem = _that.shopVo.shopItems[index];
-                } else if (_that.selectedItemIndex === index) {
-                    _that.selectedItemIndex = -1;
-                    _that.currentItem = _that.defaultItem;
-                } else {
-                    _that.selectedItemIndex = index;
-                    _that.currentItem = _that.shopVo.shopItems[index];
-                }
-            },
-            addGoods() {
-                var _that = this;
-                axios({
-                    method: "post",
-                    url: "/ShopWeb/cart/addGoods",
-                    data: {
-                        shopItemNum: _that.shopItemNum,
-                        shopItemId: _that.currentItem.id
-                    }
-                }).then(function (value) {
-                    if (value.data.success) {
-                        _that.$message.success(value.data.message);
-                    } else {
-                        _that.$message.error(value.data.message);
-                    }
-                }).catch(function (reason) {
-                    console.log(reason);
-                    _that.$message.error('添加购物车错误！！');
-                });
-
-            },
-            buySingleGoods() {
-                var _that = this;
-                axios({
-                    method: "post",
-                    url: "/ShopWeb/cart/buySingleGoods",
-                    data: {
-                        shopItemNum: _that.shopItemNum,
-                        shopItemId: _that.currentItem.id
-                    }
-                }).then(function (value) {
-                    if (value.data.success) {
-                        _that.$refs.selectedList.setAttribute("value",value.data.content);
-                        _that.$refs.selectedListForm.submit();
-                    } else {
-                        _that.$message.error(value.data.message);
-                    }
-                }).catch(function (reason) {
-                    console.log(reason);
-                    _that.$message.error('立即购买错误！！');
-                });
-            }
-        }
-    });
-</script>
+<script th:src="@{/js/shop/detailPage.js}"></script>
 </html>

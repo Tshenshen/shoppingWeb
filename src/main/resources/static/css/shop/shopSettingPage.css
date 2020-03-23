@@ -7,6 +7,23 @@
 
 }
 
+.shop-name-frag {
+    padding: 5px 0;
+    width: 100%;
+    margin: 5px 0;
+    height: fit-content;
+}
+
+.shop-name {
+    float: left;
+    width: 80%;
+}
+
+.shop-collect {
+    padding-top: 45px;
+    float: left;
+    width: 20%;
+}
 
 .goods-detail-price {
     margin-left: 10px;
@@ -20,7 +37,8 @@
     margin-top: 10px;
     margin-bottom: 10px
 }
-.shop-item-frag{
+
+.shop-item-frag {
     margin-top: 10px;
     margin-bottom: 10px
 }
@@ -33,27 +51,28 @@
 }
 
 .goods-detail-name-frag {
+    width: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-.item-frag{
+.item-frag {
     margin: 10px 2px;
     font-size: 15px;
 }
 
-.item{
+.item {
     padding: 2px 5px;
     width: fit-content;
     border: 1px solid gray;
     color: black;
 }
 
-.selected-item{
+.selected-item {
     background-color: orange;
 }
 
-.add-item{
+.add-item {
     font-size: 14px;
     margin: 10px 2px;
     color: green;
@@ -61,6 +80,13 @@
     width: fit-content;
     border: 1px solid gray;
 }
-.image_preview{
+
+.image_preview {
     height: 400px;
+    width: 100%;
+}
+
+.image-slot {
+    text-align: center;
+    line-height: 400px;
 }

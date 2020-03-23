@@ -4,6 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.liang.shoppingweb.mapper.shop.ShopVoMapper">
 
+    <sql id="column">
+        s.id            id,
+        s.enterprise_id enterprise_id,
+        s.`name` name,
+        s.images        images,
+        s.type          type,
+        s.style         style,
+        s.`describe`    `describe`,
+        s.price         price,
+        s.`enable`      `enable`,
+        s.create_date   create_date,
+        s.update_date   create_date,
+        i.id            item_id,
+        i.shop_id       item_shop_id,
+        i.`name`        item_name,
+        i.price         item_price,
+        i.stock         item_stock,
+        i.create_date   item_create_date,
+        i.update_date   item_update_date
+    </sql>
 
     <resultMap id="ShopVoMap" type="com.liang.shoppingweb.entity.shop.ShopVo">
         <id column="id" property="id"/>
@@ -17,9 +37,11 @@
         <result column="enable" property="enable"/>
         <result column="create_date" property="createDate"/>
         <result column="update_date" property="updateDate"/>
+        <!--<association property="collect" columnPrefix="collect" resultMap="CollectMap"/>-->
         <collection property="shopItems" ofType="com.liang.shoppingweb.entity.shop.ShopItem" columnPrefix="item_"
                     resultMap="ShopItemMap"/>
     </resultMap>
+
 
     <resultMap id="ShopItemMap" type="com.liang.shoppingweb.entity.shop.ShopItem">
         <id column="id" property="id"/>
@@ -31,60 +53,34 @@
         <result column="update_date" property="updateDate"/>
     </resultMap>
 
+    <resultMap id="CollectMap" type="com.liang.shoppingweb.entity.user.Collect">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="user_id"/>
+        <result column="collect" property="collect"/>
+    </resultMap>
+
     <select id="getShopVoById" resultMap="ShopVoMap">
         SELECT
-            s.id            id,
-            s.enterprise_id enterprise_id,
-            s.name          name,
-            s.images        images,
-            s.type          type,
-            s.style         style,
-            s.`describe`    `describe`,
-            s.price         price,
-            s.`enable`      `enable`,
-            s.create_date   create_date,
-            s.update_date   create_date,
-            i.id            item_id,
-            i.shop_id       item_shop_id,
-            i.`name`        item_name,
-            i.price         item_price,
-            i.stock         item_stock,
-            i.create_date   item_create_date,
-            i.update_date   item_update_date
+        <include refid="column"/>
         FROM
-            tbl_shop AS s
-            left join tbl_shop_item AS i ON s.id = i.shop_id
+        tbl_shop AS s
+        left join tbl_shop_item AS i ON s.id = i.shop_id
         WHERE
-            s.id = #{id}
+        s.id = #{id} and
+        s.enable = '1'
         order by i.create_date asc
     </select>
 
 
     <select id="getShopVoByItemId" resultMap="ShopVoMap">
         SELECT
-            s.id            id,
-            s.enterprise_id enterprise_id,
-            s.name          name,
-            s.images        images,
-            s.type          type,
-            s.style         style,
-            s.`describe`    `describe`,
-            s.price         price,
-            s.`enable`      `enable`,
-            s.create_date   create_date,
-            s.update_date   create_date,
-            i.id            item_id,
-            i.shop_id       item_shop_id,
-            i.`name`        item_name,
-            i.price         item_price,
-            i.stock         item_stock,
-            i.create_date   item_create_date,
-            i.update_date   item_update_date
+        <include refid="column"/>
         FROM
-            tbl_shop AS s
-            inner join tbl_shop_item AS i ON s.id = i.shop_id
+        tbl_shop AS s
+        inner join tbl_shop_item AS i ON s.id = i.shop_id
         WHERE
-            s.id = #{itemId}
+        s.id = #{itemId}
         order by i.create_date asc
     </select>
 

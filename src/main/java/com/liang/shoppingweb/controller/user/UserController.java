@@ -2,21 +2,19 @@ package com.liang.shoppingweb.controller.user;
 
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
+import com.liang.shoppingweb.entity.user.Collect;
 import com.liang.shoppingweb.entity.user.ReceiveInfo;
 import com.liang.shoppingweb.entity.user.User;
+import com.liang.shoppingweb.service.user.CollectService;
 import com.liang.shoppingweb.service.user.ReceiveInfoService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller()
@@ -27,7 +25,50 @@ public class UserController {
     private ReceiveInfoService receiveInfoService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CollectService collectService;
 
+    @GetMapping("getCollectByShopId")
+    @ResponseBody
+    public MyResponse getCollectByShopId(String shopId) {
+        MyResponse myResponse;
+        try {
+            Collect collect = collectService.getCollectByShopId(shopId);
+            myResponse = MyResponse.getSuccessResponse("获取收藏信息成功！", collect);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取收藏信息失败！");
+        }
+        return myResponse;
+    }
+
+    @PostMapping("collectShop")
+    @ResponseBody
+    public MyResponse collectShop(@RequestBody Collect collect) {
+        MyResponse myResponse;
+        try {
+            collect = collectService.collectShop(collect);
+            myResponse = MyResponse.getSuccessResponse("收藏店铺成功！", collect);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("收藏店铺失败！");
+        }
+        return myResponse;
+    }
+
+    @DeleteMapping("cancelCollectShop")
+    @ResponseBody
+    public MyResponse cancelCollectShop(@RequestBody Collect collect) {
+        MyResponse myResponse;
+        try {
+            collectService.cancelCollectShop(collect);
+            myResponse = MyResponse.getSuccessResponse("已取消收藏！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("取消收藏失败！");
+        }
+        return myResponse;
+    }
 
     @GetMapping("getTotalOrderPage")
     public String getTotalOrderPage(Model model) {
@@ -74,7 +115,7 @@ public class UserController {
         MyResponse myResponse;
         try {
             receiveInfo = receiveInfoService.updateReceiver(receiveInfo);
-            myResponse = MyResponse.getSuccessResponse("更新收件地址成功！",receiveInfo);
+            myResponse = MyResponse.getSuccessResponse("更新收件地址成功！", receiveInfo);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("更新收件地址失败！");

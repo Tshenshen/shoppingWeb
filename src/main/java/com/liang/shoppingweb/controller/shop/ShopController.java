@@ -3,11 +3,11 @@ package com.liang.shoppingweb.controller.shop;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.common.PageConstant;
-import com.liang.shoppingweb.entity.shop.Goods;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.service.shop.ShopService;
 import com.liang.shoppingweb.service.shop.ShopVoService;
+import com.liang.shoppingweb.service.user.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,14 @@ public class ShopController {
     private ShopService shopService;
     @Autowired
     private ShopVoService shopVoService;
+    @Autowired
+    private CollectService collectService;
 
+
+    @GetMapping("getCollectByShopId")
+    public String getCollectByShopId(String shopId) {
+        return "forward:/user/getCollectByShopId";
+    }
 
     @GetMapping("/index")
     public String index() {
@@ -35,7 +42,7 @@ public class ShopController {
         try {
             PageInfo<Shop> pageInfo = shopService.getShopListByPage(pageNum, PageConstant.pageSize);
             myResponse = MyResponse.getSuccessResponse("获取店铺列表成功！", pageInfo);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取店铺列表失败！");
         }
@@ -44,7 +51,7 @@ public class ShopController {
 
     @GetMapping("detailPage")
     public String detailPage(@RequestParam String shopId, Model model) {
-        model.addAttribute("shopId",shopId);
+        model.addAttribute("shopId", shopId);
         return "shop/detailPage";
     }
 
@@ -54,8 +61,9 @@ public class ShopController {
         MyResponse myResponse;
         try {
             ShopVo shopVo = shopVoService.getShopVoById(id);
+            shopVo.setCollect(collectService.getCollectByShopId(id));
             myResponse = MyResponse.getSuccessResponse("获取店铺详细信息成功！", shopVo);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取店铺详细信息失败！");
         }
