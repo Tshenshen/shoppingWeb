@@ -10,7 +10,6 @@
     <script src="" th:src="@{/js/bootstrap.js}"></script>
     <script src="" th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
-    <link th:href="@{/css/goodsDetail.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
 <body>
@@ -45,29 +44,14 @@
             <div style=" text-align: center; margin-top: 16px"  >
                 <button type="submit" class="btn btn-primary btn-block">注册</button>
             </div>
+
         </form>
+        <a  th:href="@{/userLogin}" style=" text-align: center; margin-top: 6px;float: right" >
+            已有账号，去登录
+        </a>
     </div>
 
 </div>
 </body>
 </html>
 
-<!--<div class="card border-0 shadow card&#45;&#45;login" id="login">-->
-<!--<div class="card-body">-->
-<!--<h2 class="card-title">欢迎登录！</h2>-->
-<!--<p>第三方登录</p>-->
-<!--<p class="badge-wrap"><a class="badge"><i class="fab fa-facebook-f"></i></a><a class="badge"><i class="fab fa-google"></i></a><a class="badge"><i class="fab fa-twitter"></i></a><a class="badge"><i class="fab fa-github"></i></a></p>-->
-<!--<p>或用邮箱登录</p>-->
-<!--<form>-->
-<!--<div class="form-group">-->
-<!--<input class="form-control" type="email" placeholder="邮箱" value="admin@163.com" required="required" />-->
-<!--</div>-->
-<!--<div class="form-group">-->
-<!--<input class="form-control" type="password" placeholder="密码" required="required" />-->
-<!--</div>-->
-<!--<p><a href="#">忘记密码?</a></p>-->
-<!--<button class="btn btn-lg">登录</button>-->
-<!--</form>-->
-<!--</div>-->
-<!--<button class="btn btn-back js-btn" data-target="welcome"><i class="fas fa-angle-left"></i></button>-->
-<!--</div>-->
