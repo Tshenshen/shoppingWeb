@@ -6,10 +6,21 @@ new Vue({
             unSendList: [],
             unReceiveList: [],
             refundList: []
-        }
+        },
+        collectShopNumber: 0
     },
     mounted() {
         var _that = this;
+        axios.get("getCollectShopNumber").then(function (value) {
+            if (value.data.success) {
+                _that.collectShopNumber = value.data.content;
+            } else {
+                _that.$message.error(value.data.message)
+            }
+        }).catch(function (reason) {
+            console.log(reason);
+            _that.$message.error("获取收藏数量错误！！")
+        });
         axios.get("/ShopWeb/order/getUnFinishOrders").then(function (value) {
             if (value.data.success) {
                 value.data.content.forEach(function (order) {
@@ -79,11 +90,11 @@ new Vue({
                 confirmButtonText: '退款申请',
                 cancelButtonText: '取消',
                 inputValidator: function (value) {
-                    if (value === null){
+                    if (value === null) {
                         return "请输入退款原因";
-                    }else if (value.length > 100) {
+                    } else if (value.length > 100) {
                         return "最长100个字"
-                    }else if(value .length === 0) {
+                    } else if (value.length === 0) {
                         return "请输入退款原因";
                     } else if (value.length > 100) {
                         return "最长100个字"
@@ -115,7 +126,7 @@ new Vue({
                 console.log(reason);
             });
         },
-        orderReceive(index){
+        orderReceive(index) {
             var _that = this;
             _that.$confirm('是否确认收货?', '提示', {
                 confirmButtonText: '确定',

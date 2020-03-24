@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的收藏</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link href="" rel="stylesheet" th:href="@{/css/enterprise/shopListPage.css}">
+</head>
+<body>
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app" style="margin: auto;width: 82%">
+    <div>
+        <h1 style="color: red;text-align: center;margin: 40px 0">
+            我的收藏<i class="el-icon-collection"></i></h1>
+    </div>
+    <div class=" order-fra">
+
+        <el-tabs type="border-card">
+            <el-tab-pane label="收藏的店铺">
+                <div class="shop left-order" v-for="(shop,index) in collectList" :key="index">
+                    <el-image :src="shopImg(shop)" class="shop-image left-order">
+                        <div slot="error" class="image-slot shop-image-error">
+                            获取图片失败
+                        </div>
+                    </el-image>
+                    <div class="shop-right left-order">
+                        <div class="shop-title">
+                            {{shop.name}}
+                        </div>
+                        <div class="shop-price">
+                            价格：{{shopPrice(shop.price)}}
+                        </div>
+                    </div>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+
+        <div style="padding: 10px" v-if="total > 9">
+            <el-pagination
+                    style="text-align: center"
+                    background
+                    layout="prev, pager, next"
+                    :current-page.sync="pageNum"
+                    :page-size="9"
+                    :total="total"
+                    @current-change="getCollectShopList()">
+            </el-pagination>
+        </div>
+    </div>
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            pageNum: 0,
+            total: 0,
+            collectList: []
+        },
+        mounted() {
+            this.getCollectShopList();
+        },
+        computed: {
+            shopImg() {
+                return function (shop) {
+                    if (shop.images.length > 0) {
+                        return "/ShopWeb/image/" + shop.id + "/" + shop.images.split(",")[0];
+                    } else {
+                        return ""
+                    }
+                }
+            },
+            shopPrice() {
+                return function (price) {
+                    var prices = price.split("~");
+                    return "￥" + prices[0] + (prices[1] ? " ~￥" + prices[1] : '');
+                }
+            }
+        },
+        methods: {
+            getCollectShopList() {
+                var _that = this;
+                axios({
+                    method: "get",
+                    url: "getCollectShopList",
+                    params: {
+                        pageNum: _that.pageNum,
+                        pageSize: 9
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.collectList = value.data.content.list;
+                        _that.total = value.data.content.total;
+                    } else {
+                        _that.$message.error(value.data.message)
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("获取店铺收藏列表错误！！")
+                })
+            }
+        }
+    })
+</script>
+</html>

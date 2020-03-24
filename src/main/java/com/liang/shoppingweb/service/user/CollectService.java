@@ -47,4 +47,8 @@ public class CollectService {
         collect.setUserId(LoginUtils.getCurrentUserId());
         collectMapper.deleteCollectByShopId(collect);
     }
+
+    public int getCollectShopNumber() {
+        return collectMapper.getCollectShopNumber(LoginUtils.getCurrentUserId());
+    }
 }

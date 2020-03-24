@@ -20,4 +20,7 @@ public interface CollectMapper {
 
     @Delete("delete from tbl_collect where id = #{id}")
     void deleteCollectById(Collect collect);
+
+    @Select("select count(id) from tbl_collect where user_id = #{userId}")
+    int getCollectShopNumber(String userId);
 }

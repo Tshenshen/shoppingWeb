@@ -32,4 +32,7 @@ public interface ShopMapper {
 
     @Select("select * from tbl_shop where enable = '1' order by create_date asc")
     List<Shop> getShopListByPage();
+
+    @Select("select s.* from tbl_shop s inner join tbl_collect c on s.id = c.shop_id where c.user_id = #{userId} order by create_date asc")
+    List<Shop> getCollectShopListByPage(String userId);
 }

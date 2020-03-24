@@ -56,7 +56,7 @@
                 <el-divider style="margin: 10px 0"></el-divider>
                 <div class="item left-order">
                     <h3>
-                        <a>0<!--todo 需要补充收藏功能--></a>
+                        <a th:href="getCollectPage" target="_blank">{{collectShopNumber}}</a>
                     </h3>
                     <div style="margin-top: 15px">收藏的商品</div>
                 </div>
@@ -87,7 +87,7 @@
     <div class=" order-fra">
         <div>
             <span style="font-size: 20px">我的订单</span>
-            <a class="order-more"  th:href="@{getTotalOrderPage}" target="_blank"><i class="el-icon-more"> 所有订单</i></a>
+            <a class="order-more" th:href="@{getTotalOrderPage}" target="_blank"><i class="el-icon-more"> 所有订单</i></a>
         </div>
         <el-divider style="margin: 10px 0"></el-divider>
 

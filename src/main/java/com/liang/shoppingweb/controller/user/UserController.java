@@ -1,10 +1,13 @@
 package com.liang.shoppingweb.controller.user;
 
+import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
+import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.entity.user.Collect;
 import com.liang.shoppingweb.entity.user.ReceiveInfo;
 import com.liang.shoppingweb.entity.user.User;
+import com.liang.shoppingweb.service.shop.ShopService;
 import com.liang.shoppingweb.service.user.CollectService;
 import com.liang.shoppingweb.service.user.ReceiveInfoService;
 import com.liang.shoppingweb.service.user.UserService;
@@ -27,6 +30,41 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CollectService collectService;
+    @Autowired
+    private ShopService shopService;
+
+    @GetMapping("getCollectPage")
+    public String getCollectPage() {
+        return "user/collectPage";
+    }
+
+    @GetMapping("getCollectShopList")
+    @ResponseBody
+    public MyResponse getCollectShopList(@RequestParam int pageNum,@RequestParam int pageSize) {
+        MyResponse myResponse;
+        try {
+            PageInfo<Shop> shopList = shopService.getCollectShopListByPage(pageNum,pageSize);
+            myResponse = MyResponse.getSuccessResponse("获取店铺收藏列表成功！", shopList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取店铺收藏列表失败！");
+        }
+        return myResponse;
+    }
+
+    @GetMapping("getCollectShopNumber")
+    @ResponseBody
+    public MyResponse getCollectShopNumber() {
+        MyResponse myResponse;
+        try {
+            int collectShopNumber = collectService.getCollectShopNumber();
+            myResponse = MyResponse.getSuccessResponse("获取收藏数量成功！", collectShopNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取收藏数量失败！");
+        }
+        return myResponse;
+    }
 
     @GetMapping("getCollectByShopId")
     @ResponseBody

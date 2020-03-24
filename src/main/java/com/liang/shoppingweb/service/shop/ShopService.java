@@ -125,4 +125,9 @@ public class ShopService {
         PageHelper.startPage(pageNum,pageSize);
         return new PageInfo<>(shopMapper.getShopListByPage(), PageConstant.navigatePages);
     }
+
+    public PageInfo<Shop> getCollectShopListByPage(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        return new PageInfo<>(shopMapper.getCollectShopListByPage(LoginUtils.getCurrentUserId()));
+    }
 }
