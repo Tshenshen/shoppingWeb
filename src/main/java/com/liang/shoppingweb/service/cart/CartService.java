@@ -2,16 +2,15 @@ package com.liang.shoppingweb.service.cart;
 
 import com.liang.shoppingweb.entity.cart.Cart;
 import com.liang.shoppingweb.entity.cart.CartItemVo;
-import com.liang.shoppingweb.entity.cart.CartVo;
-import com.liang.shoppingweb.entity.shop.ShopItem;
+import com.liang.shoppingweb.entity.cart.CartShopVo;
 import com.liang.shoppingweb.mapper.cart.CartItemVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
+import com.liang.shoppingweb.mapper.cart.CartShopVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.expression.Ids;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -29,6 +28,8 @@ public class CartService {
     private ShopItemService shopItemService;
     @Resource
     private CartItemVoMapper cartItemVoMapper;
+    @Resource
+    private CartShopVoMapper cartShopVoMapper;
 
 
     public void addGoods(Cart newCart) {
@@ -78,6 +79,10 @@ public class CartService {
         return cartItemVoMapper.getCartWithGoodsInfoByUserId(LoginUtils.getCurrentUserId());
     }
 
+    public List<CartShopVo> getCartShopVoListByUserId() {
+        return cartShopVoMapper.getCartShopVoListByUserId(LoginUtils.getCurrentUserId());
+    }
+
     public void deleteCartItem(String id) {
         cartMapper.deleteItem(id);
     }
@@ -92,7 +97,7 @@ public class CartService {
     }
 
     public List<CartItemVo> getCartWithGoodsInfoByIds(String ids) {
-        String in_ids = QueryPramFormatUtils.strToIn(ids,",");
+        String in_ids = QueryPramFormatUtils.strToIn(ids, ",");
         return cartItemVoMapper.getCartWithGoodsInfoByIds(in_ids);
     }
 }

@@ -19,6 +19,10 @@
             <div>
                 <h2 style=" text-align: center ;margin: 20px">用户登陆</h2>
             </div>
+            <div th:if="${param.error}">
+                <h4 style=" text-align: center ;margin: 20px;color: red">
+                    [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</h4>
+            </div>
             <div class="form-group">
                 <label>User name</label>
                 <input class="form-control" v-model="username" placeholder="UserName" name="username">
@@ -34,7 +38,7 @@
                 </label>
             </div>
             <div style=" text-align: center; margin-top: 16px">
-                <button  class="btn btn-primary btn-block" >登陆</button>
+                <button class="btn btn-primary btn-block">登陆</button>
             </div>
         </form>
         <a th:href="@{/userRegister}">
@@ -48,19 +52,19 @@
 </body>
 <script>
     new Vue({
-        el:"#userLogin",
-        data:{
-            username:"",
-            password:"",
-            isRemember:false
+        el: "#userLogin",
+        data: {
+            username: "",
+            password: "",
+            isRemember: false
         },
-        methods:{
-            login(){
+        methods: {
+            login() {
                 var _that = this;
                 axios({
-                    method:"post",
-                    url:"userLogin",
-                    data:"username="+_that.username+"&password="+_that.password+"&isRemember="+_that.isRemember
+                    method: "post",
+                    url: "userLogin",
+                    data: "username=" + _that.username + "&password=" + _that.password + "&isRemember=" + _that.isRemember
                 }).then(
                     function (value) {
                         close();

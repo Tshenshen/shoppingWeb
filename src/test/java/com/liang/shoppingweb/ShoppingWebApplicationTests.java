@@ -1,16 +1,19 @@
 package com.liang.shoppingweb;
 
+import com.liang.shoppingweb.entity.cart.CartShopVo;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.common.Dictionary;
 import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
+import com.liang.shoppingweb.mapper.cart.CartShopVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.service.common.DictionaryService;
 import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
 import com.liang.shoppingweb.service.user.UserService;
+import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -62,6 +65,9 @@ class ShoppingWebApplicationTests {
     @Autowired
     private DictionaryService dictionaryService;
 
+    @Resource
+    private CartShopVoMapper cartShopVoMapper;
+
     @BeforeAll
     @Test
     void initLogin() {
@@ -73,6 +79,23 @@ class ShoppingWebApplicationTests {
     }
 
     @Test
+    void testCartShopVoMapper() throws Exception {
+        List<CartShopVo> shopVoList = cartShopVoMapper.getCartShopVoListByUserId("7ba510b1-9bc9-4748-9fe1-cff83eafeb285");
+        System.out.println(shopVoList);
+        List<String> ids = new ArrayList<>();
+        for (CartShopVo cartShopVo : shopVoList) {
+            for (CartVo cartVo : cartShopVo.getCartVoList()) {
+                ids.add(cartVo.getId());
+            }
+        }
+        String str = QueryPramFormatUtils.listToIn(ids);
+        System.out.println(str);
+        List<CartShopVo> cartShopVoListByIds = cartShopVoMapper.getCartShopVoListByIds(str);
+        System.out.println(cartShopVoListByIds);
+    }
+
+
+    @Test
     void insertDictionary() {
         List<Dictionary> dictionaries1 = new ArrayList<>();
         List<Dictionary> dictionaries2;
@@ -82,7 +105,7 @@ class ShoppingWebApplicationTests {
             dictionary.setId(UUID.randomUUID().toString());
             dictionary.setCreateDate(new Date());
             dictionary.setValue(i + "");
-            dictionary.setOrder(i+1);
+            dictionary.setOrder(i + 1);
             dictionaries1.add(dictionary);
             dictionaries2 = new ArrayList<>();
             for (int j = 0; j < 10; j++) {
@@ -91,7 +114,7 @@ class ShoppingWebApplicationTests {
                 dictionary2.setId(UUID.randomUUID().toString());
                 dictionary2.setCreateDate(new Date());
                 dictionary2.setValue(j + "");
-                dictionary2.setOrder(j+1);
+                dictionary2.setOrder(j + 1);
                 dictionary2.setParentId(dictionary.getId());
                 dictionaries2.add(dictionary2);
             }

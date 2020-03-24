@@ -62,7 +62,7 @@ public class UserController {
         MyResponse myResponse;
         try {
             collectService.cancelCollectShop(collect);
-            myResponse = MyResponse.getSuccessResponse("已取消收藏！");
+            myResponse = MyResponse.getSuccessResponse("已取消收藏！", null);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("取消收藏失败！");

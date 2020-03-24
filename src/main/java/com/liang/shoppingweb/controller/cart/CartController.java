@@ -3,10 +3,8 @@ package com.liang.shoppingweb.controller.cart;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.cart.Cart;
 import com.liang.shoppingweb.entity.cart.CartItemVo;
-import com.liang.shoppingweb.entity.cart.CartVo;
-import com.liang.shoppingweb.entity.user.User;
+import com.liang.shoppingweb.entity.cart.CartShopVo;
 import com.liang.shoppingweb.service.cart.CartService;
-import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -58,8 +56,8 @@ public class CartController {
     public MyResponse getCartsByUserId() {
         MyResponse myResponse;
         try {
-            List<CartItemVo> cartVoList = cartService.getCartWithGoodsInfoByUserId();
-            myResponse = MyResponse.getSuccessResponse("获取购物车列表成功", cartVoList);
+            List<CartShopVo> cartShopVoList = cartService.getCartShopVoListByUserId();
+            myResponse = MyResponse.getSuccessResponse("获取购物车列表成功", cartShopVoList);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取购物车列表失败!");
@@ -85,13 +83,14 @@ public class CartController {
     @DeleteMapping("/deleteItem/{id}")
     @ResponseBody
     public MyResponse deleteCartItem(@PathVariable("id") String id) {
-        MyResponse myResponse = new MyResponse();
+        MyResponse myResponse;
         try {
             cartService.deleteCartItem(id);
-            myResponse.setSuccess(true);
+            List<CartShopVo> cartShopVoList = cartService.getCartShopVoListByUserId();
+            myResponse = MyResponse.getSuccessResponse("删除物品成功！", cartShopVoList);
         } catch (Exception e) {
-            myResponse.setSuccess(false);
-            myResponse.setMessage("删除物品失败");
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("删除物品失败！");
         }
         return myResponse;
     }
@@ -103,7 +102,8 @@ public class CartController {
         try {
             String[] itemIds = ((ArrayList<?>) map.get("itemIds")).toArray(new String[0]);
             cartService.deleteCartItems(itemIds);
-            myResponse = MyResponse.getSuccessResponse("删除选中物品成功！");
+            List<CartShopVo> cartShopVoList = cartService.getCartShopVoListByUserId();
+            myResponse = MyResponse.getSuccessResponse("删除选中物品成功！", cartShopVoList);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("删除选中物品失败！");

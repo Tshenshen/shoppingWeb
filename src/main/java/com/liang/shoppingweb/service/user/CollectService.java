@@ -25,7 +25,10 @@ public class CollectService {
         return collectMapper.getCollectByShopId(collect);
     }
 
-    public Collect collectShop(Collect collect) {
+    public Collect collectShop(Collect collect) throws Exception {
+        if (StringUtils.isEmpty(collect.getShopId())) {
+            throw new Exception("店铺id不能为空");
+        }
         Collect oldCollect = getCollectByShopId(collect.getShopId());
         if (oldCollect != null) {
             return oldCollect;

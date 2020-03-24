@@ -1,49 +1,102 @@
 .selectItem {
     float: left;
-    padding: 16px 0 16px 9px;
     height: 120px;
     width: 4%;
+    line-height: 90px;
+    text-align: center;
 }
+
+.cart-selectItem {
+    float: left;
+    height: 60px;
+    width: 4%;
+    line-height: 60px;
+    text-align: center;
+}
+
 .cart-goods {
+    height: 60px;
+    width: 10%;
+}
+
+.cart-props {
+    margin: 10px 0;
+    padding: 0 10px;
+    height: 40px;
+    width: 20%;
+    overflow: hidden;
+}
+
+.cart-price {
+    height: 60px;
+    line-height: 60px;
+    width: 16%;
+    text-align: center;
+}
+
+.cart-quantity {
+    height: 60px;
+    line-height: 60px;
+    width: 20%;
+    text-align: center;
+}
+
+.cart-sum {
+    height: 60px;
+    line-height: 60px;
+    width: 20%;
+    text-align: center;
+}
+
+.cart-action {
+    height: 60px;
+    line-height: 60px;
+    width: 10%;
+    text-align: center;
+}
+
+.shop-goods {
     padding-top: 7px;
     height: 120px;
     width: 10%;
 }
 
-.cart-props {
-    padding-top: 15px;
-    padding-left: 10px;
-    height: 120px;
+.shop-props {
+    margin: 30px 0;
+    padding: 0 10px;
+    height: 60px;
     width: 20%;
+    overflow: hidden;
 }
 
-.cart-price {
+.shop-price {
     padding-top: 45px;
     height: 120px;
     width: 16%;
     text-align: center;
 }
 
-.cart-quantity {
+.shop-quantity {
     padding-top: 42px;
     height: 120px;
     width: 20%;
     text-align: center;
 }
 
-.cart-sum {
+.shop-sum {
     padding-top: 45px;
     height: 120px;
     width: 20%;
     text-align: center;
 }
 
-.cart-action {
+.shop-action {
     padding-top: 45px;
     height: 120px;
     width: 10%;
     text-align: center;
 }
+
 .t-goods {
     width: 8%;
 }
@@ -73,15 +126,28 @@
     padding: 16px 0 16px 0;
     text-align: center;
 }
+
 .column {
     float: left;
 }
 
-
-.cartBarBorder {
-    border: 1px solid #d0d0d0;
-    height: 120px;
+.cartBar {
+    border-bottom: 1px solid #a0a0a0;
+    border-radius: 10px;
     width: 100%;
+    height: 120px;
+}
+
+.carItemBar {
+    width: 100%;
+    height: 60px;
+}
+
+.cartBar-frag {
+    margin: 10px 0;
+    width: 100%;
+    border: 1px solid #a0a0a0;
+    border-radius: 10px;
 }
 
 .barBorder {

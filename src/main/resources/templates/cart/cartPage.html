@@ -19,18 +19,21 @@
     <el-container style="width: 70% ;margin: auto">
         <el-header style="margin-bottom: 15px">
             <h1 style="color: red">
-                <div style="margin: auto ;width: fit-content">购物车<i class="el-icon-shopping-cart-full"></i></div>
+                <div style="margin: auto ;width: fit-content">购物车
+                    <i class="el-icon-shopping-cart-full" v-if="cartList.length > 0"></i>
+                    <i class="el-icon-shopping-cart-2" v-else></i>
+                </div>
             </h1>
         </el-header>
         <el-main style="height: fit-content">
-            <div v-if="cartIsEmpty">
+            <div v-if="!(cartList.length > 0)">
                 <div>
                     <ul>
-                        <li class="txt">
+                        <li>
                             购物车空空的哦~，去看看心仪的商品吧~
                         </li>
-                        <li class="mt10">
-                            <a th:href="@{/}" class="ftx-05">
+                        <li>
+                            <a th:href="@{/}">
                                 去购物&gt;
                             </a>
                         </li>
@@ -61,34 +64,67 @@
                         </div>
 
                         <!--商品信息栏-->
-                        <div class="cartBarBorder" v-for="(cart,index) in cartList" :key="index">
-                            <div class="selectItem">
-                                <input type="checkbox" v-model="selectedList" :value="cart.id">
+                        <div class="cartBar-frag" v-for="(cartShop,index) in cartList" :key="index">
+                            <div class="cartBar">
+                                <div class="selectItem">
+                                    <input type="checkbox" :checked="select_shop(cartShop.cartVoList)"
+                                           @click="select_shop_click(cartShop.cartVoList,$event)">
+                                </div>
+                                <div class="column shop-goods">
+                                    <el-image fit="fill" :src="picUrl(index)" lazy></el-image>
+                                </div>
+                                <div class="column shop-props">
+                                    <a :href="'/ShopWeb/shop/detailPage?shopId=' + cartShop.id" target="_blank">{{cartShop.name}}</a>
+                                </div>
+                                <div class="column shop-price">-</div>
+                                <div class="column shop-quantity">-</div>
+                                <div class="column shop-sum">-</div>
+                                <div class="column shop-action">
+                                    <!--收藏栏-->
+                                    <div>
+                                        <div v-if="cartShop.collect === null">
+                                            <el-link type="danger" @click.prevent="collectShop(cartShop)">收藏该店铺
+                                            </el-link>
+                                        </div>
+                                        <div v-else>
+                                            <el-link type="danger" @click.prevent="cancelCollectShop(cartShop)">取消收藏
+                                            </el-link>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="column cart-goods">
-                                <el-image fit="fill" :src="picUrl(index)" lazy ></el-image>
-                            </div>
-                            <div class="column cart-props">
-                                <a :href="'/ShopWeb/shop/detailPage?shopId=' + cart.shopVo.id" target="_blank">{{cart.shopVo.shopItems[0].name}}</a>
-                            </div>
-                            <div class="column cart-price">{{cart.shopVo.shopItems[0].price.toFixed(2)}}</div>
-                            <div class="column cart-quantity">
-                                <el-input-number size="mini" v-model="cart.shopItemNum" :min="1"
-                                                 :max="cart.shopVo.shopItems[0].stock"
-                                                 @change="updateNum(index)"></el-input-number>
-                            </div>
-                            <div class="column cart-sum">{{ItemsSum(index)}}</div>
-                            <div class="column cart-action">
-                                <a @click="deleteItem(index)">
-                                    <i class="el-icon-delete"></i>删除
-                                </a>
+
+                            <div class="carItemBar carItemBarHeight" v-for="(cartVo,index) in cartShop.cartVoList"
+                                 :key="index">
+                                <div class="column cart-goods  "></div>
+                                <div class="cart-selectItem  ">
+                                    <input type="checkbox" v-model="selectedList" :value="cartVo.id">
+                                </div>
+                                <div class="column cart-props  ">
+                                    <div>{{cartVo.shopItem.name}}</div>
+                                </div>
+                                <div class="column cart-price  ">{{cartVo.shopItem.price.toFixed(2)}}</div>
+                                <div class="column cart-quantity ">
+                                    <el-input-number size="mini" v-model="cartVo.shopItemNum" :min="1"
+                                                     :max="cartVo.shopItem.stock"
+                                                     @change="updateNum(cartVo)"></el-input-number>
+                                </div>
+                                <div class="column cart-sum ">{{(cartVo.shopItemNum *
+                                    cartVo.shopItem.price).toFixed(2)}}
+                                </div>
+                                <div class="column cart-action ">
+                                    <a @click="deleteItem(cartVo.id)">
+                                        <i class="el-icon-delete"></i>删除
+                                    </a>
+                                </div>
                             </div>
                         </div>
 
                         <!--结算栏-->
                         <div class="barBorder">
                             <div class="select-all">
-                                <div><input type="checkbox" :checked="select_all" @click="select_all_click"> 全选</div>
+                                <div><input type="checkbox" :checked="select_all" @click="select_all_click"> 全选
+                                </div>
                             </div>
                             <div class="operation">
                                 <a @click.prvent="delete_selected">删除选中商品</a>
@@ -104,7 +140,7 @@
                                     </div>
                                 </div>
                                 <div class="amount-sum">
-                                    已选择<em style="color: red"> {{selectedListNum}} </em>件商品
+                                    已选择<em style="color: red"> {{selectedList.length}} </em>件商品
                                 </div>
                             </div>
                         </div><!--结算栏-->
@@ -145,64 +181,126 @@
             picUrl() {
                 return function (index) {
                     var _that = this;
-                    var shop = _that.cartList[index].shopVo;
-                    if (_that.cartList[index].shopVo.images.length > 0) {
+                    var shop = _that.cartList[index];
+                    if (shop.images.length > 0) {
                         return "/ShopWeb/image/" + shop.id + "/" + shop.images.split(",")[0];
                     } else {
                         return "";
                     }
                 }
             },
-            ItemsSum() {
-                return function (index) {
-                    return (this.cartList[index].shopItemNum * this.cartList[index].shopVo.shopItems[0].price).toFixed(2);
-                }
-            },
             select_all() {
-                return this.cartList.length === this.selectedList.length
+                var _that = this;
+                var cartListLength = 0;
+                _that.cartList.forEach(function (cartShopVo) {
+                    cartListLength += cartShopVo.cartVoList.length;
+                });
+                return cartListLength === this.selectedList.length
             },
-            selectedListNum() {
-                return this.selectedList.length;
+            select_shop() {
+                return function (cartVoList) {
+                    var _that = this;
+                    var cartListLength = 0;
+                    cartVoList.forEach(function (cartVo) {
+                        if (_that.selectedList.indexOf(cartVo.id) >= 0) {
+                            cartListLength += 1;
+                        }
+                    });
+                    return cartListLength === cartVoList.length
+                }
             },
             sumPrice() {
                 var _that = this;
                 var sum = 0.00;
-                _that.cartList.forEach(function (cart) {
-                    if (_that.selectedList.indexOf(cart.id) >= 0) {
-                        sum = sum + cart.shopItemNum * cart.shopVo.shopItems[0].price;
-                    }
+                _that.cartList.forEach(function (cartShopVo) {
+                    cartShopVo.cartVoList.forEach(function (cartVo) {
+                        if (_that.selectedList.indexOf(cartVo.id) >= 0) {
+                            sum = sum + cartVo.shopItemNum * cartVo.shopItem.price;
+                        }
+                    });
                 });
                 return sum.toFixed(2);
-            },
-            cartIsEmpty() {
-                return !(this.cartList.length > 0);
             }
         },
         methods: {
+            cancelCollectShop(cartShopVo) {
+                var _that = this;
+                axios({
+                    method: "delete",
+                    url: "/ShopWeb/user/cancelCollectShop",
+                    data: {
+                        id: cartShopVo.collect.id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.$message.success(value.data.message);
+                        cartShopVo.collect = value.data.content;
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("取消收藏错误！");
+                });
+            },
+            collectShop(cartShopVo) {
+                var _that = this;
+                axios({
+                    method: "post",
+                    url: "/ShopWeb/user/collectShop",
+                    data: {
+                        shopId: cartShopVo.id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        cartShopVo.collect = value.data.content;
+                        _that.$message.success(value.data.message);
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("收藏店铺错误！");
+                });
+            },
             select_all_click(event) {
                 if (event.target.checked) {
                     var ids = [];
-                    this.cartList.forEach(
-                        function (item) {
-                            ids.push(item.id);
-                        }
-                    );
+                    this.cartList.forEach(function (cartShopVo) {
+                        cartShopVo.cartVoList.forEach(function (cartVo) {
+                            ids.push(cartVo.id);
+                        });
+                    });
                     this.selectedList = ids;
                 }
                 else {
                     this.selectedList = [];
                 }
             },
-            deleteItem(index) {
+            select_shop_click(cartVoList, event) {
                 var _that = this;
-                axios.delete("deleteItem/" + _that.cartList[index].id).then(function (value) {
+                if (event.target.checked) {
+                    cartVoList.forEach(function (cartVo) {
+                        if (_that.selectedList.indexOf(cartVo.id) < 0) {
+                            _that.selectedList.push(cartVo.id)
+                        }
+                    });
+                } else {
+                    cartVoList.forEach(function (cartVo) {
+                        _that.selectedList.splice(_that.selectedList.indexOf(cartVo.id), 1);
+                    });
+                }
+            },
+            deleteItem(id) {
+                var _that = this;
+                axios.delete("deleteItem/" + id).then(function (value) {
                     if (value.data.success) {
-                        let s_index = _that.selectedList.indexOf(_that.cartList[index].id);
+                        let s_index = _that.selectedList.indexOf(id);
                         if (s_index >= 0) {
                             _that.selectedList.splice(s_index, 1);
                         }
-                        _that.cartList.splice(index, 1);
-                        _that.$message.success("删除成功！");
+                        _that.cartList = value.data.content;
+                        _that.$message.success(value.data.message);
                     } else {
                         _that.$message.error(value.data.message);
                     }
@@ -219,31 +317,25 @@
                     data: {
                         itemIds: _that.selectedList
                     }
-                }).then(function (response) {
-                    if (response.data.success) {
-                        let tempList = [];
-                        _that.cartList.forEach(function (item) {
-                            if (_that.selectedList.indexOf(item.id) < 0) {
-                                tempList.push(item);
-                            }
-                        });
-                        _that.cartList = tempList;
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.cartList = value.data.content;
                         _that.selectedList = [];
-                        _that.$message.success(response.data.message);
+                        _that.$message.success(value.data.message);
                     } else {
-                        _that.$message.error(response.data.message);
+                        _that.$message.error(value.data.message);
                     }
                 }).catch(function (reason) {
                     console.log(reason);
                     _that.$message.error("删除物品错误！");
                 })
             },
-            updateNum(index) {
+            updateNum(cartVo) {
                 var _that = this;
                 axios({
                     method: "put",
                     url: "updateItemNum",
-                    data: _that.cartList[index]
+                    data: cartVo
                 }).then(function (value) {
                     if (!value.data.success) {
                         _that.$message.error(value.data.message);
