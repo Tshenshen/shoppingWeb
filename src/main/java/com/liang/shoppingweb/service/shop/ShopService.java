@@ -3,7 +3,6 @@ package com.liang.shoppingweb.service.shop;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
-import com.liang.shoppingweb.entity.shop.Goods;
 import com.liang.shoppingweb.entity.shop.SearchInfo;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.mapper.shop.ShopMapper;
@@ -55,10 +54,10 @@ public class ShopService {
         shopMapper.updateShopEnable(shop);
     }
 
-    public void deleteShopById(String id) throws Exception{
+    public void deleteShopById(String id) throws Exception {
         shopMapper.deleteShopById(id);
         File shopDir = new File(imagePath + id);
-        if (shopDir.exists()){
+        if (shopDir.exists()) {
             FileUtils.deleteDirectory(shopDir);
         }
     }
@@ -123,17 +122,17 @@ public class ShopService {
     }
 
     public PageInfo<Shop> getShopListByPage(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         return new PageInfo<>(shopMapper.getShopListByPage(), PageConstant.navigatePages);
     }
 
     public PageInfo<Shop> getCollectShopListByPage(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         return new PageInfo<>(shopMapper.getCollectShopListByPage(LoginUtils.getCurrentUserId()));
     }
 
     public PageInfo<Shop> getShopListBySearchInfo(SearchInfo searchInfo) {
-        PageHelper.startPage(searchInfo.getPageNum(),PageConstant.pageSize);
+        PageHelper.startPage(searchInfo.getPageNum(), PageConstant.pageSize);
         return new PageInfo<>(shopMapper.getShopListBySearchInfo(searchInfo));
     }
 }

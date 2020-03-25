@@ -54,7 +54,8 @@
     line-height: 30px;
     margin: 0 0 5px;
 }
-.productTittle{
+
+.productTittle {
     color: #ff0036;
     font-size: 14px;
     width: 200px;
@@ -62,34 +63,40 @@
     margin: 0 0 5px;
     padding: 0 5px;
     overflow: hidden;
-    word-wrap:break-word
+    word-wrap: break-word
 }
-.search-frag{
+
+.search-frag {
     width: 70%;
     margin: auto;
 
 }
 
-.bread-bar{
+.bread-bar {
     margin: 15px 0;
 }
-.dictionary-bar{
+
+.dictionary-bar {
     margin: 15px 0;
 }
-.dictionary-name{
+
+.dictionary-name {
     width: 100%;
     padding-left: 10px;
     margin: 15px 0;
 }
-.dictionary-value{
+
+.dictionary-value {
     width: 100%;
     padding-left: 20px;
     margin: 15px 0;
 }
-.dictionary-value-item{
+
+.dictionary-value-item {
     margin: 3px 40px;
 }
-.search-bar{
+
+.search-bar {
     margin: 15px 0;
     padding-left: 10px;
 }
