@@ -64,3 +64,32 @@
     overflow: hidden;
     word-wrap:break-word
 }
+.search-frag{
+    width: 70%;
+    margin: auto;
+
+}
+
+.bread-bar{
+    margin: 15px 0;
+}
+.dictionary-bar{
+    margin: 15px 0;
+}
+.dictionary-name{
+    width: 100%;
+    padding-left: 10px;
+    margin: 15px 0;
+}
+.dictionary-value{
+    width: 100%;
+    padding-left: 20px;
+    margin: 15px 0;
+}
+.dictionary-value-item{
+    margin: 3px 40px;
+}
+.search-bar{
+    margin: 15px 0;
+    padding-left: 10px;
+}

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.shop.Goods;
+import com.liang.shoppingweb.entity.shop.SearchInfo;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.mapper.shop.ShopMapper;
 import com.liang.shoppingweb.utils.LoginUtils;
@@ -129,5 +130,10 @@ public class ShopService {
     public PageInfo<Shop> getCollectShopListByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         return new PageInfo<>(shopMapper.getCollectShopListByPage(LoginUtils.getCurrentUserId()));
+    }
+
+    public PageInfo<Shop> getShopListBySearchInfo(SearchInfo searchInfo) {
+        PageHelper.startPage(searchInfo.getPageNum(),PageConstant.pageSize);
+        return new PageInfo<>(shopMapper.getShopListBySearchInfo(searchInfo));
     }
 }

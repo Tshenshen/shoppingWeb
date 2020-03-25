@@ -3,6 +3,7 @@ package com.liang.shoppingweb.controller.shop;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.common.PageConstant;
+import com.liang.shoppingweb.entity.shop.SearchInfo;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.service.shop.ShopService;
@@ -41,6 +42,20 @@ public class ShopController {
         MyResponse myResponse;
         try {
             PageInfo<Shop> pageInfo = shopService.getShopListByPage(pageNum, PageConstant.pageSize);
+            myResponse = MyResponse.getSuccessResponse("获取店铺列表成功！", pageInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取店铺列表失败！");
+        }
+        return myResponse;
+    }
+
+    @GetMapping("/getShopListBySearchInfo")
+    @ResponseBody
+    public MyResponse getShopListBySearchInfo(SearchInfo searchInfo) {
+        MyResponse myResponse;
+        try {
+            PageInfo<Shop> pageInfo = shopService.getShopListBySearchInfo(searchInfo);
             myResponse = MyResponse.getSuccessResponse("获取店铺列表成功！", pageInfo);
         } catch (Exception e) {
             e.printStackTrace();
