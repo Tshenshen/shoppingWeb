@@ -56,8 +56,8 @@
                     <div class="left-order th-sum item-height">
                         <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
                     </div>
-                    <div class="left-order th-action item-height" >
-                        <em style="color: red">已完成</em>
+                    <div class="left-order th-action item-height">
+                        <em style="color: red">已取消</em>
                     </div>
                 </div>
 
@@ -280,7 +280,7 @@
                     <div class="left-order th-sum item-height">
                         <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
                     </div>
-                    <div class="left-order th-action item-height" >
+                    <div class="left-order th-action item-height">
                         <em style="color: red">已完成</em>
                     </div>
                 </div>
@@ -319,7 +319,7 @@
                     <div class="left-order th-sum item-height">
                         <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
                     </div>
-                    <div class="left-order th-action item-height" >
+                    <div class="left-order th-action item-height">
                         <em style="color: red">已退款</em>
                     </div>
                 </div>
@@ -358,7 +358,7 @@
                     <div class="left-order th-sum item-height">
                         <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
                     </div>
-                    <div class="left-order th-action item-height" >
+                    <div class="left-order th-action item-height">
                         <em style="color: red">已拒绝</em>
                     </div>
                 </div>
@@ -371,7 +371,7 @@
                     style="text-align: center"
                     background
                     layout="prev, pager, next"
-                    :current-page.sync ="pageNum"
+                    :current-page.sync="pageNum"
                     :page-size="10"
                     :total="total"
                     @current-change="getOrderVoListByOrderInfo()">

@@ -40,10 +40,10 @@ public class UserController {
 
     @GetMapping("getCollectShopList")
     @ResponseBody
-    public MyResponse getCollectShopList(@RequestParam int pageNum,@RequestParam int pageSize) {
+    public MyResponse getCollectShopList(@RequestParam int pageNum, @RequestParam int pageSize) {
         MyResponse myResponse;
         try {
-            PageInfo<Shop> shopList = shopService.getCollectShopListByPage(pageNum,pageSize);
+            PageInfo<Shop> shopList = shopService.getCollectShopListByPage(pageNum, pageSize);
             myResponse = MyResponse.getSuccessResponse("获取店铺收藏列表成功！", shopList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,6 +222,21 @@ public class UserController {
             return "user/enterpriseRegisterPage";
         }
         return "redirect:/enterprise/center";
+    }
+
+
+    @PutMapping("/rechargeToWallet")
+    @ResponseBody
+    public MyResponse rechargeToWallet(@RequestBody User user) {
+        MyResponse myResponse;
+        try {
+            user = userService.rechargeToWallet(user);
+            myResponse = MyResponse.getSuccessResponse("钱包充值成功！", user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("钱包充值失败！");
+        }
+        return myResponse;
     }
 
 

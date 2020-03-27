@@ -1,13 +1,34 @@
 new Vue({
     el: "#app",
-    data: {
-        orderList: {
-            unPayList: [],
-            unSendList: [],
-            unReceiveList: [],
-            refundList: []
-        },
-        collectShopNumber: 0
+    data() {
+        var validatePrice = function (rule, value, callback) {
+            var pattern = /\d+.\d\d$/;
+            if (!pattern.test(value)) {
+                return callback(new Error("请输入数字"))
+            } else {
+                return callback()
+            }
+        };
+        return {
+            orderList: {
+                unPayList: [],
+                unSendList: [],
+                unReceiveList: [],
+                refundList: []
+            },
+            collectShopNumber: 0,
+            rechargeDialogVisible: false,
+            payType: '测试',
+            rechargeForm: {
+                balance: ""
+            },
+            rules: {
+                balance: [
+                    {required: true, message: "充值金额不能为空！", trigger: "blur"},
+                    {validator: validatePrice, trigger: "blur"}
+                ]
+            }
+        }
     },
     mounted() {
         var _that = this;
@@ -41,24 +62,69 @@ new Vue({
             console.log(reason);
             _that.$message.error("获取订单列表错误！！")
         })
-    },
+    }
+    ,
     computed: {
         picUrl() {
             return function (shopVo) {
                 return shopVo.images.length > 0 ? "/ShopWeb/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
             }
-        },
+        }
+        ,
         orderDetailUrl() {
             return function (id) {
                 return "/ShopWeb/order/orderDetail/" + id;
             }
         }
-    },
+    }
+    ,
     methods: {
+        submitRechargeForm() {
+            var _that = this;
+            _that.rechargeDialogVisible = false;
+            axios({
+                method: "put",
+                url: "rechargeToWallet",
+                data: _that.rechargeForm
+            }).then(function (value) {
+                if (value.data.success) {
+                    _that.$refs.balance.innerHTML = "&yen;" + value.data.content.balance;
+                    _that.$message.success(value.data.message);
+                } else {
+                    _that.$message.error(value.data.message);
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("余额充值错误！")
+            })
+        },
+        formatToDouble() {
+            this.rechargeForm.balance = this.fixToDouble(this.rechargeForm.balance)
+        }
+        ,
+        fixToDouble(value) {
+            value = value.replace(/(\-)/, "");
+            value = value.replace(/^(0+)/gi, "");
+            if (value.trim() === "") {
+                return "";
+            }
+            var temp = value.split(".");
+            temp[1] += "00";
+            if (value.indexOf(".") > 0) {
+                value = temp[0] + "." + temp[1].substr(0, 2);
+            } else if (value.indexOf(".") === 0) {
+                value = "0." + temp[1].substr(0, 2);
+            } else {
+                value += ".00";
+            }
+            return value;
+        }
+        ,
         toPayPage(id) {
             this.$refs.orderId.setAttribute("value", id);
             this.$refs.toPayPageForm.submit();
-        },
+        }
+        ,
         orderCancel(index) {
             var _that = this;
             _that.$confirm('是否确认取消订单?', '提示', {
@@ -83,7 +149,8 @@ new Vue({
             }).catch(function (reason) {
 
             });
-        },
+        }
+        ,
         orderRefundApply(listName, index) {
             var _that = this;
             _that.$prompt('退款原因', '退款申请', {
@@ -125,7 +192,8 @@ new Vue({
             }).catch(function (reason) {
                 console.log(reason);
             });
-        },
+        }
+        ,
         orderReceive(index) {
             var _that = this;
             _that.$confirm('是否确认收货?', '提示', {

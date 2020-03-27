@@ -111,4 +111,13 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 
+    public User rechargeToWallet(User user) {
+        User currentUser = LoginUtils.getCurrentUser();
+        currentUser.setBalance(currentUser.getBalance() + user.getBalance());
+        userMapper.updateBalance(currentUser);
+        //更新本地用户
+        user = userMapper.getUserById(currentUser.getId());
+        LoginUtils.setCurrentUser(user);
+        return user;
+    }
 }

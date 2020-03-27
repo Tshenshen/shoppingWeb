@@ -1,7 +1,7 @@
 package com.liang.shoppingweb.mapper.shop;
 
-import com.liang.shoppingweb.entity.shop.SearchInfo;
 import com.liang.shoppingweb.entity.shop.Shop;
+import com.liang.shoppingweb.utils.SearchInfo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

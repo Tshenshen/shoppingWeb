@@ -27,14 +27,13 @@
             </div>
             <el-divider style="margin: 10px 0"></el-divider>
             <div class="item left-order">
-                <h3 style="color: red">
+                <h3 style="color: red" ref="balance">
                     &yen;[[${userInfo.balance}]]
                 </h3>
                 <div style="margin-top: 15px">余额</div>
             </div>
             <div class="text-item left-order">
-                <!--todo 充值链接-->
-                <a>充值</a>
+                <a @click.prevent="rechargeDialogVisible=true">充值</a>
             </div>
         </div>
         <!--头像-->
@@ -178,7 +177,6 @@
                 </div>
             </el-tab-pane>
 
-
             <el-tab-pane label="待收货">
                 <div v-if="orderList.unReceiveList.length === 0" class="none-fra">
                     还不发货，心很急~
@@ -222,7 +220,9 @@
                 </div>
 
             </el-tab-pane>
+
             <el-tab-pane label="待评价">待评价</el-tab-pane><!--todo 待评价-->
+
             <el-tab-pane label="退款">
                 <div v-if="orderList.refundList.length === 0" class="none-fra">
                     良心商家，欢迎售后~
@@ -269,6 +269,28 @@
         <input hidden="hidden" th:value="${session.SW_USER_TOKEN}" name="SW_USER_TOKEN">
         <input hidden="hidden" name="orderId" ref="orderId" value="">
     </form>
+
+    <!--余额充值对话框-->
+    <el-dialog title="添加新店铺" :visible.sync="rechargeDialogVisible">
+        <div style="margin-top: 10px">
+            <div style="font-size:20px ">支付方式：</div>
+            <el-radio-group v-model="payType" style="margin-top: 5px">
+                <el-radio-button label="测试"></el-radio-button>
+                <el-radio-button label="微信"></el-radio-button>
+                <el-radio-button label="支付宝"></el-radio-button>
+                <el-radio-button label="QQ"></el-radio-button>
+            </el-radio-group>
+        </div>
+        <el-form :model="rechargeForm" :rules="rules" ref="rechargeFormRef">
+            <el-form-item label="充值金额" prop="balance">
+                <el-input v-model="rechargeForm.balance" @blur="formatToDouble"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="rechargeDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitRechargeForm">确 定</el-button>
+        </div>
+    </el-dialog>
 
 </div>
 </body>

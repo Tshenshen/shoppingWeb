@@ -26,7 +26,7 @@ new Vue({
             createShopItemForm: {
                 shopId: '',
                 name: '',
-                price: '0.00',
+                price: '',
                 stock: ''
             },
             updateDialogVisible: false,
@@ -90,7 +90,7 @@ new Vue({
                 return _that.currentItem.stock > 0;
             }
         },
-        itemSelected(){
+        itemSelected() {
             return this.selectedItemIndex !== -1;
         }
     },
@@ -111,7 +111,14 @@ new Vue({
             }
         },
         fixToDouble() {
-            var value = this.createShopItemForm.price;
+            this.createShopItemForm.price = this.fixToDouble1(this.createShopItemForm.price);
+        },
+        fixToDouble1(value) {
+            value = value.replace(/(\-)/, "");
+            value = value.replace(/^(0+)/gi, "");
+            if (value.trim() === "") {
+                return "";
+            }
             var temp = value.split(".");
             temp[1] += "00";
             if (value.indexOf(".") > 0) {
@@ -121,20 +128,10 @@ new Vue({
             } else {
                 value += ".00";
             }
-            this.createShopItemForm.price = value;
+            return value;
         },
         fixToDouble2() {
-            var value = this.updateShopItemForm.price;
-            var temp = value.split(".");
-            temp[1] += "00";
-            if (value.indexOf(".") > 0) {
-                value = temp[0] + "." + temp[1].substr(0, 2);
-            } else if (value.indexOf(".") === 0) {
-                value = "0." + temp[1].substr(0, 2);
-            } else {
-                value += ".00";
-            }
-            this.updateShopItemForm.price = value;
+            this.updateShopItemForm.price = this.fixToDouble1(this.updateShopItemForm.price);
         },
         submitCreateShopItemForm() {
             var _that = this;
