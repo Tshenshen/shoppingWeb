@@ -42,9 +42,9 @@ new Vue({
             }
         }).catch(function (reason) {
             console.log(reason);
-            _that.$message.error("获取种类错误！")
+            _that.$message.error("获取店铺列表错误！")
         });
-        axios.get("/ShopWeb/dictionary/getAllType").then(function (value) {
+        axios.get("/ShopWeb/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
             if (value.data.success) {
                 _that.typeDic = value.data.content;
             } else {
@@ -112,9 +112,9 @@ new Vue({
             var _that = this;
             axios({
                 method: "get",
-                url: "/ShopWeb/dictionary/getAllStyleByParentValue",
+                url: "/ShopWeb/dictionary/getDictionaryListByParentId",
                 params: {
-                    value: type
+                    parentId: type
                 }
             }).then(function (value) {
                 if (value.data.success) {

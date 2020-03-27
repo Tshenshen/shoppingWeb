@@ -18,41 +18,31 @@ public class DictionaryController {
     @Autowired
     private DictionaryService dictionaryService;
 
-    @GetMapping("/getAllType")
+    @GetMapping("/getDictionaryListByRootValue")
     @ResponseBody
-    public MyResponse getAllType() {
+    public MyResponse getDictionaryListByRootValue(String value) {
         MyResponse myResponse;
         try {
-            List<Dictionary> allType = dictionaryService.getAllType();
-            myResponse = MyResponse.getSuccessResponse("获取种类成功！", allType);
+            List<Dictionary> allType = dictionaryService.getDictionaryListByRootValue(value);
+            myResponse = MyResponse.getSuccessResponse("获取字典列表成功！", allType);
         } catch (Exception e) {
-            myResponse = MyResponse.getFailedResponse("获取种类失败！");
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取字典列表失败！");
         }
         return myResponse;
     }
 
-    @GetMapping("/getAllStyleByParentId")
-    @ResponseBody
-    public MyResponse getAllStyleByParentId(String parentId) {
-        MyResponse myResponse;
-        try {
-            List<Dictionary> allStyle = dictionaryService.getAllStyleByParentId(parentId);
-            myResponse = MyResponse.getSuccessResponse("获取类型成功！", allStyle);
-        } catch (Exception e) {
-            myResponse = MyResponse.getFailedResponse("获取类型失败！");
-        }
-        return myResponse;
-    }
 
-    @GetMapping("/getAllStyleByParentValue")
+    @GetMapping("/getDictionaryListByParentId")
     @ResponseBody
-    public MyResponse getAllStyleByParentValue(String value) {
+    public MyResponse getDictionaryListByParentId(String parentId) {
         MyResponse myResponse;
         try {
-            List<Dictionary> allStyle = dictionaryService.getAllStyleByParentValue(value);
-            myResponse = MyResponse.getSuccessResponse("获取类型成功！", allStyle);
+            List<Dictionary> dictionaryList = dictionaryService.getDictionaryListByParentId(parentId);
+            myResponse = MyResponse.getSuccessResponse("获取字典列表成功！", dictionaryList);
         } catch (Exception e) {
-            myResponse = MyResponse.getFailedResponse("获取类型失败！");
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取字典列表失败！");
         }
         return myResponse;
     }

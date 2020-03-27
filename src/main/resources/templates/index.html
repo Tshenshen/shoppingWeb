@@ -50,7 +50,7 @@
                          v-for="(type,index) in typeDic"
                          :key="index"
                          @click="searchWithType(index)"
-                         :disabled="type.value === shopSearchInfo.type">
+                         :disabled="type.id === shopSearchInfo.type">
                     {{type.name}}
                 </el-link>
             </div>
@@ -65,7 +65,7 @@
                          v-for="(style,index) in styleDic"
                          :key="index"
                          @click="searchWithStyle(index)"
-                         :disabled="style.value === shopSearchInfo.style">
+                         :disabled="style.id === shopSearchInfo.style">
                     {{style.name}}
                 </el-link>
             </div>
@@ -178,7 +178,7 @@
             searchWithType(index) {
                 if (index !== undefined) {
                     this.curType = this.typeDic[index];
-                    this.shopSearchInfo.type = this.curType.value;
+                    this.shopSearchInfo.type = this.curType.id;
                     this.styleDic = this.getStyleDic();
                 } else {
                     this.shopSearchInfo.keyword = '';
@@ -189,7 +189,7 @@
             searchWithStyle(index) {
                 if (index !== undefined) {
                     this.curStyle = this.styleDic[index];
-                    this.shopSearchInfo.style = this.curStyle.value;
+                    this.shopSearchInfo.style = this.curStyle.id;
                 } else {
                     this.shopSearchInfo.keyword = '';
                 }
@@ -203,7 +203,7 @@
             },
             getTypeDic() {
                 var _that = this;
-                axios.get("/ShopWeb/dictionary/getAllType").then(function (value) {
+                axios.get("/ShopWeb/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
                     if (value.data.success) {
                         _that.typeDic = value.data.content;
                     } else {
@@ -218,9 +218,9 @@
                 var _that = this;
                 axios({
                     method: "get",
-                    url: "/ShopWeb/dictionary/getAllStyleByParentValue",
+                    url: "/ShopWeb/dictionary/getDictionaryListByParentId",
                     params: {
-                        value: _that.shopSearchInfo.type
+                        parentId: _that.shopSearchInfo.type
                     }
                 }).then(function (value) {
                     if (value.data.success) {

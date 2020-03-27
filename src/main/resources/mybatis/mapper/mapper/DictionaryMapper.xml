@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liang.shoppingweb.mapper.common.DictionaryMapper">
+
+    <sql id="column">
+        d.id        id,
+        d.`name`    `name`,
+        d.`value`   `value`,
+        d.parent_id parentId,
+        i.id        dic_id,
+        i.`name`    dic_name,
+        i.`value`   dic_value,
+        i.parent_id dic_parentId
+    </sql>
+
+    <resultMap id="dictionaryVoMap" type="com.liang.shoppingweb.entity.common.DictionaryVo" extends="dictionaryMap">
+        <collection property="dictionaryList" columnPrefix="dic_" resultMap="dictionaryMap"
+                    ofType="com.liang.shoppingweb.entity.common.Dictionary"/>
+    </resultMap>
+
+    <resultMap id="dictionaryMap" type="com.liang.shoppingweb.entity.common.Dictionary">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="value" property="value"/>
+        <result column="parent_id" property="parentId"/>
+    </resultMap>
+
+
+    <select id="getDictionaryVoByParentId" resultMap="dictionaryVoMap">
+        select
+        <include refid="column"/>
+        from
+        (select * from tbl_dictionary where id = #{parentId}) d
+        inner join tbl_dictionary i on d.id = i.parent_id
+        order by i.`order` asc
+    </select>
+
+    <select id="getRootDictionaryVoByValue" resultMap="dictionaryVoMap">
+        select
+        <include refid="column"/>
+        from
+        (select * from tbl_dictionary where `value` = #{value} and parent_id is null) d
+        inner join tbl_dictionary i on d.id = i.parent_id
+        order by i.`order` asc
+    </select>
+
+</mapper>

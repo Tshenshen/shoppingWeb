@@ -16,35 +16,23 @@ public class DictionaryService {
     @Resource
     private DictionaryMapper dictionaryMapper;
 
-    public void addDictionary(Dictionary dictionary,int dictionaryType) {
+    public void addDictionary(Dictionary dictionary) {
         dictionary.setId(UUID.randomUUID().toString());
         dictionary.setCreateDate(new Date());
-        if (dictionaryType == DictionaryType.type){
-            dictionaryMapper.addDictionaryToType(dictionary);
-        }else if (dictionaryType == DictionaryType.style){
-            dictionaryMapper.addDictionaryToStyle(dictionary);
-        }
+        dictionaryMapper.addDictionary(dictionary);
     }
 
-    public List<Dictionary> getAllType(){
-        return dictionaryMapper.getAllType();
+    public List<Dictionary> getTypeDictionaryList(){
+        return dictionaryMapper.getDictionaryListByRootValue("TYPE_DIC");
     }
 
 
-    public void batchAddDictionary(List<Dictionary> dictionaries,int dictionaryType){
-        if (dictionaryType == DictionaryType.type){
-            dictionaryMapper.batchAddDictionaryToType(dictionaries);
-        }else if (dictionaryType == DictionaryType.style){
-            dictionaryMapper.batchAddDictionaryToStyle(dictionaries);
-        }
+
+    public List<Dictionary> getDictionaryListByParentId(String parentId) {
+        return dictionaryMapper.getDictionaryListByParentId(parentId);
     }
 
-
-    public List<Dictionary> getAllStyleByParentId(String parentId) {
-        return dictionaryMapper.getAllStyleByParentId(parentId);
-    }
-
-    public List<Dictionary> getAllStyleByParentValue(String value) {
-        return dictionaryMapper.getAllStyleByParentValue(value);
+    public List<Dictionary> getDictionaryListByRootValue(String value) {
+        return dictionaryMapper.getDictionaryListByRootValue(value);
     }
 }
