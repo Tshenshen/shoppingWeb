@@ -28,7 +28,7 @@
             <el-divider style="margin: 10px 0"></el-divider>
             <div class="item left-order">
                 <h3 style="color: red" ref="balance">
-                    &yen;[[${userInfo.balance}]]
+                    &yen;[[${userInfo.balance.toString()}]]
                 </h3>
                 <div style="margin-top: 15px">余额</div>
             </div>
@@ -111,7 +111,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -154,7 +154,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -197,7 +197,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -243,7 +243,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -271,7 +271,7 @@
     </form>
 
     <!--余额充值对话框-->
-    <el-dialog title="添加新店铺" :visible.sync="rechargeDialogVisible">
+    <el-dialog title="余额充值" :visible.sync="rechargeDialogVisible">
         <div style="margin-top: 10px">
             <div style="font-size:20px ">支付方式：</div>
             <el-radio-group v-model="payType" style="margin-top: 5px">

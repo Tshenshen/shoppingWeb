@@ -24,9 +24,17 @@
             </div>
             <el-divider style="margin: 10px 0"></el-divider>
             <div class="balance-item left-order">
-                <h2 style="color: red">
+                <h2 style="color: red" ref="balance">
                     &yen;[[${enterpriseInfo.balance}]]
                 </h2>
+            </div>
+            <div class="left-order wallet-opera">
+                <div class="wallet-opera-item left-order">
+                    <a @click.prevent="rechargeDialogVisible = true">充值</a>
+                </div>
+                <div class="wallet-opera-item left-order">
+                    <a @click.prevent="drawbackDialogVisible = true">提现</a>
+                </div>
             </div>
         </div>
         <!--头像-->
@@ -45,32 +53,32 @@
         </div>
         <!--设置-->
         <div class=" right-bar left-order">
-            <div class="left-order concerned">
-                <div>
-                    <span style="font-size: 20px">待处理订单</span>
-                </div>
-                <el-divider style="margin: 10px 0"></el-divider>
-                <div class="item left-order">
-                    <h3>
-                        <a>{{orderList.unSendList.length}}</a>
-                    </h3>
-                    <div style="margin-top: 15px">待发货</div>
-                </div>
-                <div class="item left-order">
-                    <h3>
-                        <a>{{orderList.refundList.length}}</a>
-                    </h3>
-                    <div style="margin-top: 15px">售后/退款</div>
-                </div>
-            </div>
-            <el-divider direction="vertical"></el-divider>
+            <!--<div class="left-order concerned">-->
+            <!--<div>-->
+            <!--<span style="font-size: 20px">待处理订单</span>-->
+            <!--</div>-->
+            <!--<el-divider style="margin: 10px 0"></el-divider>-->
+            <!--<div class="item left-order">-->
+            <!--<h3>-->
+            <!--<a>{{orderList.unSendList.length}}</a>-->
+            <!--</h3>-->
+            <!--<div style="margin-top: 15px">待发货</div>-->
+            <!--</div>-->
+            <!--<div class="item left-order">-->
+            <!--<h3>-->
+            <!--<a>{{orderList.refundList.length}}</a>-->
+            <!--</h3>-->
+            <!--<div style="margin-top: 15px">售后/退款</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<el-divider direction="vertical"></el-divider>-->
             <div class="left-order setting">
                 <div>
                     <span style="font-size: 20px">我的设置</span>
                 </div>
                 <el-divider style="margin: 10px 0"></el-divider>
                 <div class="text-item left-order">
-                    <a >商家信息</a>
+                    <a>商家信息</a>
                     <!--todo 修改商家信息-->
                 </div>
                 <div class="text-item left-order">
@@ -84,11 +92,11 @@
     <div class=" order-fra">
         <div>
             <span style="font-size: 20px">我的订单</span>
-            <a class="order-more"  th:href="@{getTotalOrderPage}" target="_blank"><i class="el-icon-more"> 所有订单</i></a>
+            <a class="order-more" th:href="@{getTotalOrderPage}" target="_blank"><i class="el-icon-more"> 所有订单</i></a>
         </div>
         <el-divider style="margin: 10px 0"></el-divider>
 
-        <el-tabs type="border-card" >
+        <el-tabs type="border-card">
             <el-tab-pane label="待发货">
                 <div v-if="orderList.unSendList.length === 0" class="none-fra">
                     还没有用户下单，继续加油哦~
@@ -109,7 +117,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -148,7 +156,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -161,7 +169,7 @@
                         <em style="color:red; font-size: 20px">&yen;{{order.sumPrice}}</em>
                     </div>
                     <div class="left-order th-action item-height">
-                        <a style="margin: 15px 15px" >
+                        <a style="margin: 15px 15px">
                             提醒收货<!--todo 提醒收货 -->
                         </a>
                     </div>
@@ -189,7 +197,7 @@
                     </div>
                     <div class="left-order  th-goods">
                         <div class="item-image" style="width: 130px">
-                            <el-image :src="picUrl(order.orderCells[0].shopVo)" lazy></el-image>
+                            <el-image :src="picUrl(order.orderCells[0].shopVo)"></el-image>
                         </div>
                         <div class="item-name">
                             <a :href="orderDetailUrl(order.id)" target="_blank">{{order.orderCells[0].shopVo.shopItems[0].name}}等</a>
@@ -210,6 +218,40 @@
             </el-tab-pane>
         </el-tabs>
     </div>
+    <!--余额充值对话框-->
+    <el-dialog title="余额充值" :visible.sync="rechargeDialogVisible">
+        <div style="margin-top: 10px">
+            <div style="font-size:20px ">支付方式：</div>
+            <el-radio-group v-model="payType" style="margin-top: 5px">
+                <el-radio-button label="余额"></el-radio-button>
+                <el-radio-button label="微信"></el-radio-button>
+                <el-radio-button label="支付宝"></el-radio-button>
+                <el-radio-button label="QQ"></el-radio-button>
+            </el-radio-group>
+        </div>
+        <el-form :model="rechargeForm" :rules="rules" ref="rechargeFormRef">
+            <el-form-item label="充值金额（金额数量需为整数）" prop="balance">
+                <el-input v-model.number="rechargeForm.balance"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="rechargeDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitRechargeForm">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <!--提现对话框-->
+    <el-dialog title="提现" :visible.sync="drawbackDialogVisible">
+        <el-form :model="drawbackForm" :rules="rules" ref="drawbackFormRef">
+            <el-form-item label="提现金额（金额数量需为整数）" prop="balance">
+                <el-input v-model.number="drawbackForm.balance"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="drawbackDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitDrawbackForm">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
 </body>
 <script th:src="@{/js/toolBar/topNavBar.js}"></script>

@@ -111,13 +111,28 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 
-    public User rechargeToWallet(User user) {
-        User currentUser = LoginUtils.getCurrentUser();
-        currentUser.setBalance(currentUser.getBalance() + user.getBalance());
-        userMapper.updateBalance(currentUser);
+    public User rechargeToWallet(double balance) {
+        User user = LoginUtils.getCurrentUser();
+        user.setBalance(user.getBalance() + balance);
+        user.setUpdateDate(new Date());
+        userMapper.updateBalance(user);
         //更新本地用户
-        user = userMapper.getUserById(currentUser.getId());
+        user = userMapper.getUserById(user.getId());
         LoginUtils.setCurrentUser(user);
         return user;
+    }
+
+    public void drawbackFromWallet(double balance) throws Exception {
+        User user = userMapper.getUserById(LoginUtils.getCurrentUserId());
+        double newBalance = user.getBalance() - balance;
+        if (newBalance < 0) {
+            throw new Exception("钱包余额不足");
+        }
+        user.setBalance(newBalance);
+        user.setUpdateDate(new Date());
+        userMapper.updateBalance(user);
+        //更新本地用户
+        user = userMapper.getUserById(user.getId());
+        LoginUtils.setCurrentUser(user);
     }
 }

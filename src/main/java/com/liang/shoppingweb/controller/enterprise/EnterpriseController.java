@@ -12,7 +12,6 @@ import com.liang.shoppingweb.service.shop.ShopVoService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.internal.Function;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +40,42 @@ public class EnterpriseController {
         return "order/totalOrderPage";
     }
 
+    @PutMapping("rechargeToWalletFromUser")
+    @ResponseBody
+    public MyResponse rechargeToWalletFromUser(@RequestBody Enterprise enterprise) {
+        MyResponse myResponse;
+        try {
+            enterprise = enterpriseService.rechargeToWalletFromUser(enterprise.getBalance());
+            myResponse = MyResponse.getSuccessResponse("余额充值成功！", enterprise);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
+        }
+        return myResponse;
+    }
+
+    @PutMapping("drawbackFromWalletToUser")
+    @ResponseBody
+    public MyResponse drawbackFromWalletToUser(@RequestBody Enterprise enterprise) {
+        MyResponse myResponse;
+        try {
+            enterprise = enterpriseService.drawbackFromWalletToUser(enterprise.getBalance());
+            myResponse = MyResponse.getSuccessResponse("余额提现成功！", enterprise);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse(e.getMessage());
+        }
+        return myResponse;
+    }
+
+
     @PostMapping("addNewShopItem")
     @ResponseBody
-    public MyResponse addNewShopItem(@RequestBody ShopItem shopItem){
+    public MyResponse addNewShopItem(@RequestBody ShopItem shopItem) {
         MyResponse myResponse;
         try {
             shopItemService.addNewShopItem(shopItem);
-            myResponse = MyResponse.getSuccessResponse("添加新商品成功！",shopItem);
+            myResponse = MyResponse.getSuccessResponse("添加新商品成功！", shopItem);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("添加新商品失败！");
@@ -57,11 +85,11 @@ public class EnterpriseController {
 
     @PutMapping("updateShopItem")
     @ResponseBody
-    public MyResponse updateShopItem(@RequestBody ShopItem shopItem){
+    public MyResponse updateShopItem(@RequestBody ShopItem shopItem) {
         MyResponse myResponse;
         try {
             shopItemService.updateShopItem(shopItem);
-            myResponse = MyResponse.getSuccessResponse("更新商品成功！",shopItem);
+            myResponse = MyResponse.getSuccessResponse("更新商品成功！", shopItem);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("更新商品失败！");
@@ -71,7 +99,7 @@ public class EnterpriseController {
 
     @DeleteMapping("deleteShopItem")
     @ResponseBody
-    public MyResponse deleteShopItem(@RequestParam String shopItemId){
+    public MyResponse deleteShopItem(@RequestParam String shopItemId) {
         MyResponse myResponse;
         try {
             shopItemService.deleteShopItem(shopItemId);

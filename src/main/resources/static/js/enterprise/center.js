@@ -5,6 +5,21 @@ new Vue({
             unSendList: [],
             unReceiveList: [],
             refundList: []
+        },
+        rechargeDialogVisible: false,
+        payType: '测试',
+        rechargeForm: {
+            balance: ""
+        },
+        drawbackDialogVisible: false,
+        drawbackForm: {
+            balance: ""
+        },
+        rules: {
+            balance: [
+                {required: true, message: "充值金额不能为空！", trigger: "blur"},
+                {type: "number", message: "请输入数字"}
+            ]
         }
     },
     mounted() {
@@ -41,6 +56,44 @@ new Vue({
         }
     },
     methods: {
+        submitRechargeForm() {
+            var _that = this;
+            _that.rechargeDialogVisible = false;
+            axios({
+                method: "put",
+                url: "rechargeToWalletFromUser",
+                data: _that.rechargeForm
+            }).then(function (value) {
+                if (value.data.success) {
+                    _that.$refs.balance.innerHTML = "&yen;" + value.data.content.balance;
+                    _that.$message.success(value.data.message);
+                } else {
+                    _that.$message.error(value.data.message);
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("余额充值错误！")
+            })
+        },
+        submitDrawbackForm() {
+            var _that = this;
+            _that.drawbackDialogVisible = false;
+            axios({
+                method: "put",
+                url: "drawbackFromWalletToUser",
+                data: _that.drawbackForm
+            }).then(function (value) {
+                if (value.data.success) {
+                    _that.$refs.balance.innerHTML = "&yen;" + value.data.content.balance;
+                    _that.$message.success(value.data.message);
+                } else {
+                    _that.$message.error(value.data.message);
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("余额提现错误！")
+            })
+        },
         orderSend(index) {
             var _that = this;
             _that.$confirm('是否确认发货?', '提示', {
@@ -72,7 +125,7 @@ new Vue({
             _that.$confirm("退款原因：" + _that.orderList.refundList[index].refundReason, '退款处理', {
                 confirmButtonText: '确认退款',
                 cancelButtonText: '拒绝退款',
-                distinguishCancelAndClose:true,
+                distinguishCancelAndClose: true,
                 type: 'warning'
             }).then(function () {
                 axios({

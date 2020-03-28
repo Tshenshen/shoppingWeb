@@ -230,7 +230,7 @@ public class UserController {
     public MyResponse rechargeToWallet(@RequestBody User user) {
         MyResponse myResponse;
         try {
-            user = userService.rechargeToWallet(user);
+            user = userService.rechargeToWallet(user.getBalance());
             myResponse = MyResponse.getSuccessResponse("钱包充值成功！", user);
         } catch (Exception e) {
             e.printStackTrace();
