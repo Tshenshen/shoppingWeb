@@ -10,7 +10,6 @@ import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.order.OrderCellVo;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.shop.ShopItem;
-import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.mapper.cart.CartMapper;
 import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.order.OrderCellMapper;
@@ -18,6 +17,7 @@ import com.liang.shoppingweb.mapper.order.OrderMapper;
 import com.liang.shoppingweb.mapper.order.OrderWithCellMapper;
 import com.liang.shoppingweb.service.enterprise.EnterpriseService;
 import com.liang.shoppingweb.service.shop.ShopItemService;
+import com.liang.shoppingweb.service.shop.ShopService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
@@ -49,6 +49,8 @@ public class OrderService {
     private UserService userService;
     @Autowired
     private EnterpriseService enterpriseService;
+    @Autowired
+    private ShopService shopService;
     @Resource
     private OrderWithCellMapper orderWithCellMapper;
 
@@ -158,6 +160,8 @@ public class OrderService {
             //插入新的订单
             orderMapper.addOrders(orderVoList);
             enterpriseService.updateBalanceFromOrderVoList(orderVoList);
+            //店铺销量增加
+            shopService.addSalesFromOrderVoList(orderVoList);
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("支付失败！！订单更新失败！！");
@@ -165,15 +169,15 @@ public class OrderService {
     }
 
     public void orderCancel(String orderId) {
-        updateStateById(orderId,OrderStateConstant.cancel);
+        updateStateById(orderId, OrderStateConstant.cancel);
     }
 
     public void orderSend(String orderId) {
-        updateStateById(orderId,OrderStateConstant.unReceive);
+        updateStateById(orderId, OrderStateConstant.unReceive);
     }
 
     public void orderReceive(String orderId) {
-        updateStateById(orderId,OrderStateConstant.finish);
+        updateStateById(orderId, OrderStateConstant.finish);
     }
 
     private void updateStateById(String orderId, int state) {
@@ -191,24 +195,24 @@ public class OrderService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void refundAccept(String orderId) throws Exception{
+    public void refundAccept(String orderId) throws Exception {
         refundFromOrder(orderMapper.getOrderById(orderId));
-        updateStateById(orderId,OrderStateConstant.refundAccept);
+        updateStateById(orderId, OrderStateConstant.refundAccept);
     }
 
-    @Transactional(rollbackFor = Exception.class,isolation = Isolation.REPEATABLE_READ)
-    void refundFromOrder(Order order) throws Exception{
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.REPEATABLE_READ)
+    void refundFromOrder(Order order) throws Exception {
         enterpriseService.balanceMinusFromOrder(order);
         userService.balanceAddFromOrder(order);
     }
 
     public void refundRefuse(String orderId) {
-        updateStateById(orderId,OrderStateConstant.refundRefuse);
+        updateStateById(orderId, OrderStateConstant.refundRefuse);
     }
 
-    public PageInfo<OrderVo> getOrderVoListByOrderInfoAndPageNum(Order order,int pageNum) {
-        PageHelper.startPage(pageNum,PageConstant.pageSize);
-        return new PageInfo<>(orderWithCellMapper.getOrderVoListByOrderInfo(order)) ;
+    public PageInfo<OrderVo> getOrderVoListByOrderInfoAndPageNum(Order order, int pageNum) {
+        PageHelper.startPage(pageNum, PageConstant.pageSize);
+        return new PageInfo<>(orderWithCellMapper.getOrderVoListByOrderInfo(order));
     }
 
     public void changeReceiver(Order order) {

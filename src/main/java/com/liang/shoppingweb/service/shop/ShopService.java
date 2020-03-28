@@ -3,6 +3,7 @@ package com.liang.shoppingweb.service.shop;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
+import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.mapper.shop.ShopMapper;
 import com.liang.shoppingweb.utils.LoginUtils;
@@ -134,5 +135,17 @@ public class ShopService {
     public PageInfo<Shop> getShopListBySearchInfo(SearchInfo searchInfo) {
         PageHelper.startPage(searchInfo.getPageNum(), PageConstant.pageSize);
         return new PageInfo<>(shopMapper.getShopListBySearchInfo(searchInfo));
+    }
+
+    public void addSalesFromOrderVoList(List<OrderVo> orderVoList) {
+        new Thread(() -> {
+            for (OrderVo orderVo : orderVoList) {
+                addSales(orderVo.getShopId(), orderVo.getOrderCells().size());
+            }
+        }).start();
+    }
+
+    private void addSales(String shopId, int sales) {
+        shopMapper.addSalesByShopId(shopId, sales);
     }
 }

@@ -43,6 +43,10 @@ public class Shop {
      */
     private char enable;
     /**
+     * 销量
+     */
+    private int sales;
+    /**
      * 创建时间
      */
     private Date createDate;

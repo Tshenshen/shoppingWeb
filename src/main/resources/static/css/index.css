@@ -59,11 +59,18 @@
     color: #ff0036;
     font-size: 14px;
     width: 200px;
-    height: 60px;
+    height: 45px;
     margin: 0 0 5px;
     padding: 0 5px;
     overflow: hidden;
     word-wrap: break-word
+}
+
+.productSales {
+    color: #ff0036;
+    font-size: 12px;
+    width: 200px;
+    height: 12px;
 }
 
 .search-frag {
