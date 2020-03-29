@@ -6,7 +6,6 @@ import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.service.shop.ShopService;
-import com.liang.shoppingweb.service.shop.ShopVoService;
 import com.liang.shoppingweb.service.user.CollectService;
 import com.liang.shoppingweb.utils.SearchInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ public class ShopController {
 
     @Autowired
     private ShopService shopService;
-    @Autowired
-    private ShopVoService shopVoService;
     @Autowired
     private CollectService collectService;
 
@@ -75,7 +72,7 @@ public class ShopController {
     public MyResponse getShopVo(@PathVariable String id) {
         MyResponse myResponse;
         try {
-            ShopVo shopVo = shopVoService.getShopVoById(id);
+            ShopVo shopVo = shopService.getShopVoById(id);
             shopVo.setCollect(collectService.getCollectByShopId(id));
             myResponse = MyResponse.getSuccessResponse("获取店铺详细信息成功！", shopVo);
         } catch (Exception e) {

@@ -4,7 +4,8 @@ new Vue({
         createShopDialogVisible: false,
         createShopForm: {
             type: '',
-            style: ''
+            style: '',
+            tagList:[]
         },
         updateShopDialogVisible: false,
         updateShopIndex: '',
@@ -29,6 +30,8 @@ new Vue({
         typeDic: [],
         createFormStyleDic: [],
         updateFormStyleDic: [],
+        tagDicList: [],
+        selectTagIndex: '',
         shopList: [],
         imageList: []
     },
@@ -72,9 +75,68 @@ new Vue({
         },
         uploadShopImage() {
             return "uploadShopImage/" + this.updateShopForm.id
-        },
+        }
     },
     methods: {
+        addTagToUpdateForm(tagDic){
+            var tag = {
+                dicId:tagDic.id,
+                name:tagDic.name
+            };
+            this.updateShopForm.tagList.push(tag);
+            this.tagDicList=[]
+        },
+        addTagToCreateForm(tagDic){
+            var tag = {
+                dicId:tagDic.id,
+                name:tagDic.name
+            };
+            this.createShopForm.tagList.push(tag);
+            this.tagDicList=[]
+        },
+        getUpdateTagDicList(keyword){
+            this.getTagDicList(this.updateShopForm , keyword)
+        },
+        getCreateTagDicList(keyword){
+            this.getTagDicList(this.createShopForm , keyword)
+        },
+        getTagDicList(form, keyword) {
+            var _that = this;
+            axios({
+                method: "get",
+                url: "/ShopWeb/dictionary/getTagDictionaryListByStyleIdAndKeyWord",
+                params: {
+                    styleId: form.style,
+                    keyWord: keyword
+                }
+            }).then(function (value) {
+                if (value.data.success) {
+                    _that.tagDicList = _that.removeSameTag(value.data.content,form.tagList);
+                } else {
+                    _that.$message.error(value.data.message);
+                }
+            }).catch(function (reason) {
+                console.log(reason);
+                _that.$message.error("搜索标签列表错误！")
+            })
+        },
+        removeSameTag(dist, diff){
+            var newArr = [];
+            var theSame;
+            for(var i = 0; i < dist.length; i++){
+                theSame = false;
+                for(var j = 0; j < diff.length; j++){
+                    if(dist[i].id === diff[j].dicId){
+                        theSame = true;
+                        break;
+                    }
+                }
+                if (!theSame) {
+                    newArr.push(dist[i]);
+                }
+            }
+            return newArr;
+        },
         submitCreateShopForm() {
             var _that = this;
             _that.$refs.createShopFormRef.validate(function (isValid) {
@@ -102,10 +164,12 @@ new Vue({
         },
         createFormSelectType() {
             this.createShopForm.style = '';
+            this.updateShopForm.tagList = [];
             this.getStyleDic(this.createShopForm.type, "createFormStyleDic")
         },
         updateFormSelectType() {
             this.updateShopForm.style = '';
+            this.updateShopForm.tagList = [];
             this.getStyleDic(this.updateShopForm.type, "updateFormStyleDic")
         },
         getStyleDic(type, styleDic) {
@@ -185,7 +249,7 @@ new Vue({
                     _that.imageList.push(image);
                 });
             }
-            _that.getStyleDic(_that.updateShopForm.type,"updateFormStyleDic");
+            _that.getStyleDic(_that.updateShopForm.type, "updateFormStyleDic");
             _that.updateShopDialogVisible = true;
         },
         submitUpdateShopForm() {

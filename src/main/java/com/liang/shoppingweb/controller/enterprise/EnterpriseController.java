@@ -8,8 +8,6 @@ import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.service.enterprise.EnterpriseService;
 import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.service.shop.ShopService;
-import com.liang.shoppingweb.service.shop.ShopVoService;
-import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,13 +22,9 @@ import java.util.List;
 public class EnterpriseController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private EnterpriseService enterpriseService;
     @Autowired
     private ShopService shopService;
-    @Autowired
-    private ShopVoService shopVoService;
     @Autowired
     private ShopItemService shopItemService;
 
@@ -123,7 +117,7 @@ public class EnterpriseController {
     public MyResponse getShopVoById(@PathVariable String shopId) {
         MyResponse myResponse;
         try {
-            ShopVo shopVo = shopVoService.getShopVoById(shopId);
+            ShopVo shopVo = shopService.getShopVoById(shopId);
             myResponse = MyResponse.getSuccessResponse("获取店铺信息成功！", shopVo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,11 +129,11 @@ public class EnterpriseController {
 
     @PutMapping("/updateShopInfo")
     @ResponseBody
-    public MyResponse updateShopInfo(@RequestBody Shop shop) {
+    public MyResponse updateShopInfo(@RequestBody ShopVo shopVo) {
         MyResponse myResponse;
         try {
-            shopService.updateShopInfoById(shop);
-            myResponse = MyResponse.getSuccessResponse("修改店铺信息成功！", shop);
+            shopService.updateShopInfoById(shopVo);
+            myResponse = MyResponse.getSuccessResponse("修改店铺信息成功！", shopVo);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("修改店铺信息失败！");
@@ -178,11 +172,11 @@ public class EnterpriseController {
 
     @PostMapping("/createNewShop")
     @ResponseBody
-    public MyResponse createNewShop(@RequestBody Shop shop) {
+    public MyResponse createNewShop(@RequestBody ShopVo shopVo) {
         MyResponse myResponse;
         try {
-            shopService.createNewShop(shop);
-            myResponse = MyResponse.getSuccessResponse("新建店铺成功！", shop);
+            shopService.createNewShop(shopVo);
+            myResponse = MyResponse.getSuccessResponse("新建店铺成功！", shopVo);
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("新建店铺失败！");
@@ -233,7 +227,7 @@ public class EnterpriseController {
     public MyResponse getMyShopList() {
         MyResponse myResponse;
         try {
-            List<Shop> shopList = shopService.getShopListByEnterpriseId();
+            List<ShopVo> shopList = shopService.getShopWithTagListByEnterpriseId();
             myResponse = MyResponse.getSuccessResponse("获取店铺列表成功！", shopList);
         } catch (Exception e) {
             e.printStackTrace();

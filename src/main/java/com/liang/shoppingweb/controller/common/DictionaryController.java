@@ -47,4 +47,18 @@ public class DictionaryController {
         return myResponse;
     }
 
+    @GetMapping("getTagDictionaryListByStyleIdAndKeyWord")
+    @ResponseBody
+    public MyResponse getTagDicListByStyleIdAndKeyWord(String styleId, String keyWord) {
+        MyResponse myResponse;
+        try {
+            List<Dictionary> TagDicList = dictionaryService.getTagDicListByStyleIdAndKeyWord(styleId, keyWord);
+            myResponse = MyResponse.getSuccessResponse("获取标签列表成功！", TagDicList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取标签列表失败！");
+        }
+        return myResponse;
+    }
+
 }

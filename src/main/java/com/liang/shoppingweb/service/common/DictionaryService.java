@@ -1,6 +1,5 @@
 package com.liang.shoppingweb.service.common;
 
-import com.liang.shoppingweb.common.DictionaryType;
 import com.liang.shoppingweb.entity.common.Dictionary;
 import com.liang.shoppingweb.mapper.common.DictionaryMapper;
 import org.springframework.stereotype.Service;
@@ -22,10 +21,9 @@ public class DictionaryService {
         dictionaryMapper.addDictionary(dictionary);
     }
 
-    public List<Dictionary> getTypeDictionaryList(){
+    public List<Dictionary> getTypeDictionaryList() {
         return dictionaryMapper.getDictionaryListByRootValue("TYPE_DIC");
     }
-
 
 
     public List<Dictionary> getDictionaryListByParentId(String parentId) {
@@ -34,5 +32,9 @@ public class DictionaryService {
 
     public List<Dictionary> getDictionaryListByRootValue(String value) {
         return dictionaryMapper.getDictionaryListByRootValue(value);
+    }
+
+    public List<Dictionary> getTagDicListByStyleIdAndKeyWord(String styleId, String keyWord) {
+        return dictionaryMapper.getTagDictionaryListByStyleIdAndKeyWord(styleId, keyWord);
     }
 }

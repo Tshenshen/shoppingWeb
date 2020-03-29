@@ -26,6 +26,23 @@
         i.update_date   item_update_date
     </sql>
 
+    <sql id="columnWithTagList">
+        s.id            id,
+        s.enterprise_id enterprise_id,
+        s.`name`        `name`,
+        s.images        images,
+        s.type          type,
+        s.style         style,
+        s.`describe`    `describe`,
+        s.price         price,
+        s.`enable`      `enable`,
+        s.sales         sales,
+        t.id            tag_id,
+        t.shop_id       tag_shop_id,
+        t.dic_id        tag_dic_id,
+        t.`name`        tag_name
+    </sql>
+
     <resultMap id="ShopVoMap" type="com.liang.shoppingweb.entity.shop.ShopVo">
         <id column="id" property="id"/>
         <result column="enterprise_id" property="enterpriseId"/>
@@ -42,6 +59,15 @@
         <!--<association property="collect" columnPrefix="collect" resultMap="CollectMap"/>-->
         <collection property="shopItems" ofType="com.liang.shoppingweb.entity.shop.ShopItem" columnPrefix="item_"
                     resultMap="ShopItemMap"/>
+        <collection property="tagList" ofType="com.liang.shoppingweb.entity.common.Tag" columnPrefix="tag_"
+                    resultMap="tagMap"/>
+    </resultMap>
+
+    <resultMap id="tagMap" type="com.liang.shoppingweb.entity.common.Tag">
+        <id column="id" property="id"/>
+        <result column="dic_id" property="dicId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="name" property="name"/>
     </resultMap>
 
 
@@ -84,6 +110,15 @@
         WHERE
         s.id = #{itemId}
         order by i.create_date asc
+    </select>
+
+    <select id="getShopWithTagListByEnterpriseId" resultMap="ShopVoMap">
+        SELECT
+        <include refid="columnWithTagList"/>
+        FROM
+        tbl_shop AS s
+        left join tbl_tag AS t ON s.id = t.shop_id
+        order by s.create_date desc
     </select>
 
 </mapper>

@@ -5,12 +5,17 @@ import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.shop.Shop;
+import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.mapper.shop.ShopMapper;
+import com.liang.shoppingweb.mapper.shop.ShopVoMapper;
+import com.liang.shoppingweb.service.common.TagService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.SearchInfo;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +35,16 @@ public class ShopService {
     @Resource
     private ShopMapper shopMapper;
 
+    @Resource
+    private ShopVoMapper shopVoMapper;
+
+    @Autowired
+    private TagService tagService;
+
+    public ShopVo getShopVoById(String shopId) {
+        return shopVoMapper.getShopVoById(shopId);
+    }
+
     public void setImagePath(String imagePath) {
         if (!imagePath.endsWith("/")) {
             this.imagePath = imagePath + "/";
@@ -42,12 +57,14 @@ public class ShopService {
         return shopMapper.getShopListByEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
     }
 
-    public void createNewShop(Shop shop) {
-        shop.setId(UUID.randomUUID().toString());
-        shop.setEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
-        shop.setCreateDate(new Date());
-        shop.setEnable('1');
-        shopMapper.createNewShop(shop);
+    @Transactional
+    public void createNewShop(ShopVo shopVo) {
+        shopVo.setId(UUID.randomUUID().toString());
+        shopVo.setEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
+        shopVo.setCreateDate(new Date());
+        shopVo.setEnable('1');
+        shopMapper.createNewShop(shopVo);
+        tagService.addTapList(shopVo.getTagList(),shopVo.getId());
     }
 
     public void updateShopEnable(Shop shop) {
@@ -117,9 +134,11 @@ public class ShopService {
         }
     }
 
-    public void updateShopInfoById(Shop shop) {
-        shop.setUpdateDate(new Date());
-        shopMapper.updateShopInfoById(shop);
+    @Transactional
+    public void updateShopInfoById(ShopVo shopVo) {
+        shopVo.setUpdateDate(new Date());
+        shopMapper.updateShopInfoById(shopVo);
+        tagService.updateTapList(shopVo.getTagList(),shopVo.getId());
     }
 
     public PageInfo<Shop> getShopListByPage(int pageNum, int pageSize) {
@@ -147,5 +166,9 @@ public class ShopService {
 
     private void addSales(String shopId, int sales) {
         shopMapper.addSalesByShopId(shopId, sales);
+    }
+
+    public List<ShopVo> getShopWithTagListByEnterpriseId() {
+        return shopVoMapper.getShopWithTagListByEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
     }
 }

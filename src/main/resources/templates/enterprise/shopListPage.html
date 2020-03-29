@@ -95,6 +95,35 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <!--标签功能-->
+                    <el-form-item label="店铺标签">
+                        <el-select
+                                value=""
+                                @change="addTagToCreateForm"
+                                placeholder="添加标签"
+                                filterable
+                                remote
+                                :remote-method="getCreateTagDicList">
+                            <el-option
+                                    v-for="(tagDic,index) in tagDicList"
+                                    :key="index"
+                                    :label="tagDic.name"
+                                    :value="tagDic">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <div class="tag-frag">
+                        <el-tag class="tag-item"
+                                type="danger"
+                                v-for="(tag,index) in createShopForm.tagList"
+                                closable
+                                size="small"
+                                effect="plain"
+                                :key="index"
+                                @close="createShopForm.tagList.splice(index,1)">
+                            {{tag.name}}
+                        </el-tag>
+                    </div>
                     <el-form-item label="价格区间" prop="price">
                         <el-input v-model="createShopForm.price" autocomplete="off"></el-input>
                     </el-form-item>
@@ -147,6 +176,35 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <!--标签功能-->
+                    <el-form-item label="店铺标签">
+                        <el-select
+                                value=""
+                                @change="addTagToUpdateForm"
+                                placeholder="添加标签"
+                                filterable
+                                remote
+                                :remote-method="getUpdateTagDicList">
+                            <el-option
+                                    v-for="(tagDic,index) in tagDicList"
+                                    :key="index"
+                                    :label="tagDic.name"
+                                    :value="tagDic">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <div class="tag-frag">
+                        <el-tag class="tag-item"
+                                type="danger"
+                                v-for="(tag,index) in updateShopForm.tagList"
+                                closable
+                                size="small"
+                                effect="plain"
+                                :key="index"
+                                @close="updateShopForm.tagList.splice(index,1)">
+                            {{tag.name}}
+                        </el-tag>
+                    </div>
                     <el-form-item label="价格区间" prop="price">
                         <el-input v-model="updateShopForm.price" autocomplete="off"></el-input>
                     </el-form-item>
