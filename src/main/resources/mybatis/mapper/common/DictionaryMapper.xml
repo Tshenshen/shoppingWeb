@@ -5,14 +5,14 @@
 <mapper namespace="com.liang.shoppingweb.mapper.common.DictionaryMapper">
 
     <sql id="column">
-        d.id        id,
-        d.`name`    `name`,
-        d.`value`   `value`,
-        d.parent_id parentId,
-        i.id        dic_id,
-        i.`name`    dic_name,
-        i.`value`   dic_value,
-        i.parent_id dic_parentId
+        d1.id        id,
+        d1.`name`    `name`,
+        d1.`value`   `value`,
+        d1.parent_id parentId,
+        d2.id        dic_id,
+        d2.`name`    dic_name,
+        d2.`value`   dic_value,
+        d2.parent_id dic_parentId
     </sql>
 
     <resultMap id="dictionaryVoMap" type="com.liang.shoppingweb.entity.common.DictionaryVo" extends="dictionaryMap">
@@ -32,18 +32,27 @@
         select
         <include refid="column"/>
         from
-        (select * from tbl_dictionary where id = #{parentId}) d
-        inner join tbl_dictionary i on d.id = i.parent_id
-        order by i.`order` asc
+        (select * from tbl_dictionary where id = #{parentId}) d1
+        inner join tbl_dictionary d2 on d1.id = d2.parent_id
+        order by d2.`order` asc
+    </select>
+
+    <select id="getDictionaryVoListByParentId" resultMap="dictionaryVoMap">
+        select
+        <include refid="column"/>
+        from
+        (select * from tbl_dictionary where parent_id = #{parentId}) d1
+        inner join tbl_dictionary d2 on d1.id = d2.parent_id
+        order by d1.`order` asc,d2.`order` asc
     </select>
 
     <select id="getRootDictionaryVoByValue" resultMap="dictionaryVoMap">
         select
         <include refid="column"/>
         from
-        (select * from tbl_dictionary where `value` = #{value} and parent_id is null) d
-        inner join tbl_dictionary i on d.id = i.parent_id
-        order by i.`order` asc
+        (select * from tbl_dictionary where `value` = #{value} and parent_id is null) d1
+        inner join tbl_dictionary d2 on d1.id = d2.parent_id
+        order by d2.`order` asc
     </select>
 
 </mapper>

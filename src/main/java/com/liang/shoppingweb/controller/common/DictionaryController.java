@@ -2,6 +2,7 @@ package com.liang.shoppingweb.controller.common;
 
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.entity.common.Dictionary;
+import com.liang.shoppingweb.entity.common.DictionaryVo;
 import com.liang.shoppingweb.service.common.DictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,20 @@ public class DictionaryController {
         return myResponse;
     }
 
+    @GetMapping("/getDictionaryVoListByParentId")
+    @ResponseBody
+    public MyResponse getDictionaryVoListByParentId(String parentId) {
+        MyResponse myResponse;
+        try {
+            List<DictionaryVo> dictionaryVoList = dictionaryService.getDictionaryVoListByParentId(parentId);
+            myResponse = MyResponse.getSuccessResponse("获取字典列表成功！", dictionaryVoList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取字典列表失败！");
+        }
+        return myResponse;
+    }
+
     @GetMapping("getTagDictionaryListByStyleIdAndKeyWord")
     @ResponseBody
     public MyResponse getTagDicListByStyleIdAndKeyWord(String styleId, String keyWord) {
@@ -60,5 +75,6 @@ public class DictionaryController {
         }
         return myResponse;
     }
+
 
 }

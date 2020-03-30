@@ -7,11 +7,15 @@ import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.entity.shop.ShopVo;
 import com.liang.shoppingweb.service.shop.ShopService;
 import com.liang.shoppingweb.service.user.CollectService;
+import com.liang.shoppingweb.utils.JSONUtil;
 import com.liang.shoppingweb.utils.SearchInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.Charset;
 
 @Controller
 @RequestMapping("shop")
@@ -49,9 +53,11 @@ public class ShopController {
 
     @GetMapping("/getShopListBySearchInfo")
     @ResponseBody
-    public MyResponse getShopListBySearchInfo(SearchInfo searchInfo) {
+    public MyResponse getShopListBySearchInfo(@RequestParam String shopSearchInfoStr) {
         MyResponse myResponse;
         try {
+            shopSearchInfoStr = StringUtils.uriDecode(shopSearchInfoStr, Charset.forName("utf-8"));
+            SearchInfo searchInfo = JSONUtil.json2Object(shopSearchInfoStr, SearchInfo.class);
             PageInfo<Shop> pageInfo = shopService.getShopListBySearchInfo(searchInfo);
             myResponse = MyResponse.getSuccessResponse("获取店铺列表成功！", pageInfo);
         } catch (Exception e) {

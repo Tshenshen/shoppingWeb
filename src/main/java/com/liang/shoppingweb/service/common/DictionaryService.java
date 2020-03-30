@@ -1,6 +1,7 @@
 package com.liang.shoppingweb.service.common;
 
 import com.liang.shoppingweb.entity.common.Dictionary;
+import com.liang.shoppingweb.entity.common.DictionaryVo;
 import com.liang.shoppingweb.mapper.common.DictionaryMapper;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +37,9 @@ public class DictionaryService {
 
     public List<Dictionary> getTagDicListByStyleIdAndKeyWord(String styleId, String keyWord) {
         return dictionaryMapper.getTagDictionaryListByStyleIdAndKeyWord(styleId, keyWord);
+    }
+
+    public List<DictionaryVo> getDictionaryVoListByParentId(String parentId) {
+        return dictionaryMapper.getDictionaryVoListByParentId(parentId);
     }
 }

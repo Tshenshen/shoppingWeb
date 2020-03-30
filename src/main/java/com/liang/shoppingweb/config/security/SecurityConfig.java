@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import javax.sql.DataSource;
 
@@ -38,12 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/index", "/*").permitAll()
-                .mvcMatchers(HttpMethod.GET,"/cart/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers(HttpMethod.GET,"/order/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers(HttpMethod.GET,"/user/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
-                .mvcMatchers(HttpMethod.GET,"/enterprise/**").hasAnyAuthority(AuthorityConstant.shop);
+                .mvcMatchers(HttpMethod.GET, "/cart/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
+                .mvcMatchers(HttpMethod.GET, "/order/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
+                .mvcMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(AuthorityConstant.shop, AuthorityConstant.user)
+                .mvcMatchers(HttpMethod.GET, "/enterprise/**").hasAnyAuthority(AuthorityConstant.shop);
         http.formLogin().loginPage("/userLogin").successHandler(myLoginSuccessHandler);
-        http.logout();
+        http.logout().logoutSuccessUrl("/logout/success");
         http.rememberMe().rememberMeParameter("isRemember");
         http.csrf().disable();
     }

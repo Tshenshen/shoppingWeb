@@ -74,7 +74,7 @@
 }
 
 .search-frag {
-    width: 70%;
+    width: 100%;
     margin: auto;
 
 }
@@ -84,23 +84,23 @@
 }
 
 .dictionary-bar {
-    margin: 15px 0;
+    margin: 10px 0;
+    font-size: 15px;
 }
 
 .dictionary-name {
     width: 100%;
     padding-left: 10px;
-    margin: 15px 0;
 }
 
 .dictionary-value {
     width: 100%;
-    padding-left: 20px;
-    margin: 15px 0;
+    padding-left: 10px;
 }
 
 .dictionary-value-item {
-    margin: 3px 40px;
+    margin: 0 10px;
+    font-size: 15px;
 }
 
 .search-bar {

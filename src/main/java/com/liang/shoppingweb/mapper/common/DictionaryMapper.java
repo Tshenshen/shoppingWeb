@@ -54,4 +54,6 @@ public interface DictionaryMapper {
     DictionaryVo getRootDictionaryVoByValue(String value);
 
     DictionaryVo getDictionaryVoByParentId(String parentId);
+
+    List<DictionaryVo> getDictionaryVoListByParentId(String parentId);
 }

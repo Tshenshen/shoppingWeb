@@ -11,6 +11,7 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
     <link th:href="@{/css/index.css}" rel="stylesheet"/>
+    <script src="https://cdn.bootcss.com/qs/6.9.3/qs.js"></script>
 
 </head>
 <body>
@@ -19,10 +20,10 @@
     <div class="search-frag">
         <!--bread-bar-->
         <div class="bread-bar">
-            <div class="dictionary-name">
+            <div class="dictionary-name" style="margin: 10px 0">
                 当前位置：
             </div>
-            <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-left: 60px">
+            <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-left: 60px;font-size: 17px">
                 <el-breadcrumb-item>
                     <a th:href="@{/}">首页</a>
                 </el-breadcrumb-item>
@@ -35,39 +36,75 @@
                     <a @click="searchWithStyle()">{{curStyle.name}}</a>
                 </el-breadcrumb-item>
 
+                <el-breadcrumb-item v-if="shopSearchInfo.tagList.length > 0">
+                    <el-tag type="danger"
+                            v-for="(tag, index) in shopSearchInfo.tagList"
+                            v-if="tag.dicId"
+                            closable
+                            size="mini"
+                            effect="plain"
+                            :key="index"
+                            @close="removeTag(index)">
+                        {{tag.name}}
+                    </el-tag>
+                </el-breadcrumb-item>
+
                 <el-breadcrumb-item v-if="shopSearchInfo.keyword.length > 0">
                     <a @click="searchWithKeyword">{{shopSearchInfo.keyword}}</a>
                 </el-breadcrumb-item>
+
             </el-breadcrumb>
         </div>
-        <div class="dictionary-bar">
-            <div class="dictionary-name">
-                商品类别：
+        <div v-if="shopSearchInfo.style.length === 0 ">
+            <div class="dictionary-bar">
+                <div class="dictionary-name">
+                    商品类别：
+                    <span class="dictionary-value">
+                        <el-link type="primary"
+                                 class="dictionary-value-item"
+                                 v-for="(type,index) in typeDic"
+                                 :key="index"
+                                 @click="searchWithType(index)"
+                                 :disabled="type.id === shopSearchInfo.type">
+                            {{type.name}}
+                        </el-link>
+                    </span>
+                </div>
             </div>
-            <div class="dictionary-value">
-                <el-link type="primary"
-                         class="dictionary-value-item"
-                         v-for="(type,index) in typeDic"
-                         :key="index"
-                         @click="searchWithType(index)"
-                         :disabled="type.id === shopSearchInfo.type">
-                    {{type.name}}
-                </el-link>
+            <div class="dictionary-bar" v-if="shopSearchInfo.type.length > 0 ">
+                <div class="dictionary-name">
+                    商品类型：
+                    <span class="dictionary-value">
+                        <el-link type="primary"
+                                 class="dictionary-value-item"
+                                 v-for="(style,index) in styleDic"
+                                 :key="index"
+                                 @click="searchWithStyle(index)"
+                                 :disabled="style.id === shopSearchInfo.style">
+                        {{style.name}}
+                        </el-link>
+                    </span>
+                </div>
+
             </div>
         </div>
-        <div class="dictionary-bar" v-if="shopSearchInfo.type.length > 0">
-            <div class="dictionary-name">
-                商品类型：
-            </div>
-            <div class="dictionary-value">
-                <el-link type="primary"
-                         class="dictionary-value-item"
-                         v-for="(style,index) in styleDic"
-                         :key="index"
-                         @click="searchWithStyle(index)"
-                         :disabled="style.id === shopSearchInfo.style">
-                    {{style.name}}
-                </el-link>
+        <div v-else>
+            <div class="dictionary-bar"
+                 v-for="(paramTag, paramIndex) in paramTagDic"
+                 :key="paramIndex">
+                <div class="dictionary-name">
+                    {{paramTag.name}}：
+                    <span class="dictionary-value">
+                        <el-link type="primary"
+                                 class="dictionary-value-item"
+                                 v-for="(tagDic,index) in paramTag.dictionaryList"
+                                 :key="index"
+                                 @click="addTag(tagDic,paramIndex)"
+                                 :disabled="isCurrentTag(tagDic.id)">
+                            {{tagDic.name}}
+                        </el-link>
+                    </span>
+                </div>
             </div>
         </div>
         <div class="search-bar">
@@ -119,126 +156,6 @@
 </div>
 </body>
 <script th:src="@{/js/toolBar/topNavBar.js}"></script>
-<script>
-    new Vue({
-        el: "#app",
-        data: {
-            shopSearchInfo: {
-                type: '',
-                style: '',
-                keyword: '',
-                pageNum: '1'
-            },
-            keyword: '',
-            curType: {},
-            curStyle: {},
-            typeDic: [],
-            styleDic: [],
-            pageInfo: {
-                list: []
-            }
-        },
-        mounted() {
-            var _that = this;
-            _that.pageChange(1);
-            _that.getTypeDic();
-        },
-        computed: {
-            imgUrl() {
-                return function (shopId, images) {
-                    if (images.split(",")[0].length > 0) {
-                        return "/ShopWeb/image/" + shopId + "/" + images.split(",")[0];
-                    } else {
-                        return ""
-                    }
-                }
-            }
-        },
-        methods: {
-            pageChange(curPage) {
-                var _that = this;
-                _that.shopSearchInfo.pageNum = curPage;
-                _that.getShopListBySearchInfo()
-            },
-            getShopListBySearchInfo() {
-                var _that = this;
-                _that.keyword = _that.shopSearchInfo.keyword;
-                axios({
-                    method: "get",
-                    url: "getShopListBySearchInfo",
-                    params: _that.shopSearchInfo
-                }).then(function (value) {
-                    if (value.data.success) {
-                        _that.pageInfo = value.data.content;
-                    } else {
-                        _that.$message.error(value.data.message);
-                    }
-                }).catch(function (reason) {
-                    console.log(reason);
-                    _that.$message.error("获取店铺列表错误！");
-                });
-            },
-            searchWithType(index) {
-                if (index !== undefined) {
-                    this.curType = this.typeDic[index];
-                    this.shopSearchInfo.type = this.curType.id;
-                    this.styleDic = this.getStyleDic();
-                } else {
-                    this.shopSearchInfo.keyword = '';
-                }
-                this.shopSearchInfo.style = '';
-                this.getShopListBySearchInfo()
-            },
-            searchWithStyle(index) {
-                if (index !== undefined) {
-                    this.curStyle = this.styleDic[index];
-                    this.shopSearchInfo.style = this.curStyle.id;
-                } else {
-                    this.shopSearchInfo.keyword = '';
-                }
-                this.getShopListBySearchInfo()
-            },
-            searchWithKeyword(keyword) {
-                if (keyword !== undefined) {
-                    this.shopSearchInfo.keyword = keyword;
-                }
-                this.getShopListBySearchInfo()
-            },
-            getTypeDic() {
-                var _that = this;
-                axios.get("/ShopWeb/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
-                    if (value.data.success) {
-                        _that.typeDic = value.data.content;
-                    } else {
-                        _that.$message.error(value.data.message);
-                    }
-                }).catch(function (reason) {
-                    console.log(reason);
-                    _that.$message.error("获取种类字典错误！")
-                })
-            },
-            getStyleDic() {
-                var _that = this;
-                axios({
-                    method: "get",
-                    url: "/ShopWeb/dictionary/getDictionaryListByParentId",
-                    params: {
-                        parentId: _that.shopSearchInfo.type
-                    }
-                }).then(function (value) {
-                    if (value.data.success) {
-                        _that.styleDic = value.data.content;
-                    } else {
-                        _that.$message.error(value.data.message);
-                    }
-                }).catch(function (reason) {
-                    console.log(reason);
-                    _that.$message.error("获取类型字典错误！")
-                })
-            }
-        }
-
-    })
-</script>
+<script th:src="@{/js/index.js}"></script>
 </html>
 

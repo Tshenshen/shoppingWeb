@@ -37,12 +37,14 @@ public interface ShopMapper {
     @Select("select s.* from tbl_shop s inner join tbl_collect c on s.id = c.shop_id where c.user_id = #{userId} order by create_date asc")
     List<Shop> getCollectShopListByPage(String userId);
 
-    @Select("<script> select * from tbl_shop " +
+    @Select("<script> SELECT s.* FROM" +
+            "(select * from tbl_shop " +
             "where enable = '1' " +
             "<if test=\"type != null and '' != type \">and type = #{type} </if>" +
             "<if test=\"style != null and '' != style \">and style = #{style} </if>" +
-            "<if test=\"keyword != null and '' != keyword \">and name like concat('%',#{keyword},'%') </if>" +
-            "order by sales desc" +
+            "<if test=\"keyword != null and '' != keyword \">and name like concat('%',#{keyword},'%') </if>) s " +
+            "${tagListQueryString} " +
+            "order by s.sales desc" +
             "</script>")
     List<Shop> getShopListBySearchInfo(SearchInfo searchInfo);
 

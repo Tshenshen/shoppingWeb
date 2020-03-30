@@ -64,7 +64,7 @@ public class ShopService {
         shopVo.setCreateDate(new Date());
         shopVo.setEnable('1');
         shopMapper.createNewShop(shopVo);
-        tagService.addTapList(shopVo.getTagList(),shopVo.getId());
+        tagService.addTapList(shopVo.getTagList(), shopVo.getId());
     }
 
     public void updateShopEnable(Shop shop) {
@@ -138,7 +138,7 @@ public class ShopService {
     public void updateShopInfoById(ShopVo shopVo) {
         shopVo.setUpdateDate(new Date());
         shopMapper.updateShopInfoById(shopVo);
-        tagService.updateTapList(shopVo.getTagList(),shopVo.getId());
+        tagService.updateTapList(shopVo.getTagList(), shopVo.getId());
     }
 
     public PageInfo<Shop> getShopListByPage(int pageNum, int pageSize) {
@@ -153,6 +153,7 @@ public class ShopService {
 
     public PageInfo<Shop> getShopListBySearchInfo(SearchInfo searchInfo) {
         PageHelper.startPage(searchInfo.getPageNum(), PageConstant.pageSize);
+        searchInfo.tagListToTagListQueryString();
         return new PageInfo<>(shopMapper.getShopListBySearchInfo(searchInfo));
     }
 
