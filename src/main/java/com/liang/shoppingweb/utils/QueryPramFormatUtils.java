@@ -1,12 +1,16 @@
 package com.liang.shoppingweb.utils;
 
 import com.liang.shoppingweb.entity.common.Tag;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 public class QueryPramFormatUtils {
 
     public static String arrayToIn(Object[] list) {
+        if (list == null || list.length == 0) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder("(");
         for (Object item : list) {
             sb.append("'").append(item).append("'").append(",");
@@ -16,6 +20,9 @@ public class QueryPramFormatUtils {
     }
 
     public static String listToIn(List list) {
+        if (list == null || list.size() == 0) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder("(");
         for (Object item : list) {
             sb.append("'").append(item).append("'").append(",");
@@ -25,7 +32,10 @@ public class QueryPramFormatUtils {
     }
 
     public static String strToIn(String str, String Separator) {
-        return arrayToIn(str.split(Separator));
+        if (!StringUtils.isEmpty(str)) {
+            return arrayToIn(str.split(Separator));
+        }
+        return null;
     }
 
     public static String tagListToTagListQueryString(List<Tag> tagList, String alias, String column) {

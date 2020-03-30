@@ -10,11 +10,13 @@ import com.liang.shoppingweb.service.user.CollectService;
 import com.liang.shoppingweb.utils.JSONUtil;
 import com.liang.shoppingweb.utils.SearchInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 
 @Controller
@@ -63,6 +65,25 @@ public class ShopController {
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取店铺列表失败！");
+        }
+        return myResponse;
+    }
+
+    @GetMapping("/getRecommendPage")
+    public String getRecommendPage() {
+        return "shop/detailPage";
+    }
+
+    @GetMapping("/getRecommendShopList")
+    @ResponseBody
+    public MyResponse getRecommendShopList(@RequestParam int pageNum, HttpServletRequest request) {
+        MyResponse myResponse;
+        try {
+            PageInfo<Shop> pageInfo = shopService.getRecommendShopList(pageNum,request);
+            myResponse = MyResponse.getSuccessResponse("获取推荐店铺列表成功！", pageInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取推荐店铺列表失败！");
         }
         return myResponse;
     }

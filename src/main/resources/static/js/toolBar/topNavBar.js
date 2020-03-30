@@ -1,16 +1,18 @@
+
 const topNavBar = new Vue({
     el: "#topNavBar",
     data: {
         isAuthenticated: "false"
     },
     mounted() {
+        // console.log(ctxPath);
         this.isAuthenticated = (document.querySelector("#isAuthenticated").getAttribute("value").toString());
         sessionStorage.setItem("isAuthenticated", this.isAuthenticated);
     },
     methods: {
         logout() {
             var _that = this;
-            axios.post("/ShopWeb/logout").then(function (value) {
+            axios.post(ctx + "/logout").then(function (value) {
                 _that.$message.success(value.data.message);
                 console.log(value.data.message);
             }).catch(function (reason) {

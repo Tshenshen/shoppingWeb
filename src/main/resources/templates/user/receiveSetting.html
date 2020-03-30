@@ -12,6 +12,9 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/user/receiveSetting.css}"/>
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -133,7 +136,7 @@
         },
         mounted() {
             var _that = this;
-            axios.get("/ShopWeb/user/getReceivers").then(function (value) {
+            axios.get(ctx + "/user/getReceivers").then(function (value) {
                 if (value.data.success) {
                     _that.receivers = value.data.content;
                 } else {
@@ -152,7 +155,7 @@
                         _that.newDialogFormVisible = false;
                         axios({
                             method: "post",
-                            url: "/ShopWeb/user/addNewReceiver",
+                            url: ctx + "/user/addNewReceiver",
                             data: _that.newReceiverInfo
                         }).then(function (value) {
                             if (value.data.success) {
@@ -181,7 +184,7 @@
                     _that.newDialogFormVisible = false;
                     axios({
                         method: "delete",
-                        url: "/ShopWeb/user/deleteReceiver/" + id
+                        url: ctx + "/user/deleteReceiver/" + id
                     }).then(function (value) {
                         if (value.data.success) {
                             _that.receivers.splice(index, 1);
@@ -213,7 +216,7 @@
                         _that.dialogFormVisible = false;
                         axios({
                             method: "put",
-                            url: "/ShopWeb/user/updateReceiver",
+                            url: ctx + "/user/updateReceiver",
                             data: _that.updateReceiverInfo
                         }).then(function (value) {
                             if (value.data.success) {

@@ -12,6 +12,9 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/shop/goodsDetail.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 
 </head>
 
@@ -85,13 +88,13 @@
             isNoStock: true
         },
         mounted() {
-            let url = "/ShopWeb/shop/goodsDetail/" + document.querySelector("#goodId").getAttribute("value");
+            let url = ctx + "/shop/goodsDetail/" + document.querySelector("#goodId").getAttribute("value");
             var _that = this;
 
             // 获取商品信息
             axios.get(url).then(function (response) {
                 _that.goodsDetail = response.data;
-                _that.goodsImgUrlList.unshift("/ShopWeb/image/" + _that.goodsDetail.id + ".jpg");
+                _that.goodsImgUrlList.unshift(ctx + "/image/" + _that.goodsDetail.id + ".jpg");
                 _that.isNoStock = _that.goodsDetail.stock <= 0;
             }).catch(function () {
                 // handle 4xx
@@ -101,7 +104,7 @@
         computed: {
             goodsImgUrl() {
                 if (this.goodsDetail.id !== undefined) {
-                    return "/ShopWeb/image/" + this.goodsDetail.id + ".jpg";
+                    return ctx + "/image/" + this.goodsDetail.id + ".jpg";
                 }
                 return ""
             }
@@ -111,7 +114,7 @@
                 var _that = this;
                 axios({
                     method: "post",
-                    url: "/ShopWeb/cart/addGoods",
+                    url: ctx + "/cart/addGoods",
                     data: {
                         goodsNum: _that.goodsNum,
                         goodsId: _that.goodsDetail.id
@@ -132,7 +135,7 @@
                 var _that = this;
                 axios({
                     method: "post",
-                    url: "/ShopWeb/cart/buySingleGoods",
+                    url: ctx + "/cart/buySingleGoods",
                     data: {
                         goodsNum: _that.goodsNum,
                         goodsId: _that.goodsDetail.id

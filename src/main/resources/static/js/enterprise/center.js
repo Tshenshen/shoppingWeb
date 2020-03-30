@@ -24,7 +24,7 @@ new Vue({
     },
     mounted() {
         var _that = this;
-        axios.get("/ShopWeb/order/getUnFinishOrdersByEnterpriseId").then(function (value) {
+        axios.get(ctx + "/order/getUnFinishOrdersByEnterpriseId").then(function (value) {
             if (value.data.success) {
                 value.data.content.forEach(function (order) {
                     if (order.state === 2) {
@@ -46,12 +46,12 @@ new Vue({
     computed: {
         picUrl() {
             return function (shopVo) {
-                return shopVo.images.length > 0 ? "/ShopWeb/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
+                return shopVo.images.length > 0 ? ctx + "/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
             }
         },
         orderDetailUrl() {
             return function (id) {
-                return "/ShopWeb/order/orderDetail/" + id;
+                return ctx + "/order/orderDetail/" + id;
             }
         }
     },
@@ -103,7 +103,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/sendById/" + _that.orderList.unSendList[index].id
+                    url: ctx + "/order/sendById/" + _that.orderList.unSendList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.orderList.unSendList.splice(index, 1);
@@ -130,7 +130,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/refundApply/" + _that.orderList.refundList[index].id
+                    url: ctx + "/order/refundApply/" + _that.orderList.refundList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.orderList.refundList.splice(index, 1);
@@ -146,7 +146,7 @@ new Vue({
                 if (reason === "cancel") {
                     axios({
                         method: "put",
-                        url: "/ShopWeb/order/refundRefuse/" + _that.orderList.refundList[index].id
+                        url: ctx + "/order/refundRefuse/" + _that.orderList.refundList[index].id
                     }).then(function (value) {
                         if (value.data.success) {
                             _that.orderList.refundList.splice(index, 1);

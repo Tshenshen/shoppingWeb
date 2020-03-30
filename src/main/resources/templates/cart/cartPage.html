@@ -12,6 +12,9 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/cart/cartPage.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -147,7 +150,7 @@
                     </div>
                 </div>
             </div>
-            <form ref="selectedListForm" action="/ShopWeb/order/orderPage" method="post">
+            <form ref="selectedListForm" th:action="@{/order/orderPage}" method="post">
                 <input hidden="hidden" v-model="selectedList" name="ids">
             </form>
 
@@ -183,7 +186,7 @@
                     var _that = this;
                     var shop = _that.cartList[index];
                     if (shop.images.length > 0) {
-                        return "/ShopWeb/image/" + shop.id + "/" + shop.images.split(",")[0];
+                        return ctx + "/image/" + shop.id + "/" + shop.images.split(",")[0];
                     } else {
                         return "";
                     }
@@ -227,7 +230,7 @@
                 var _that = this;
                 axios({
                     method: "delete",
-                    url: "/ShopWeb/user/cancelCollectShop",
+                    url: ctx + "/user/cancelCollectShop",
                     data: {
                         id: cartShopVo.collect.id
                     }
@@ -247,7 +250,7 @@
                 var _that = this;
                 axios({
                     method: "post",
-                    url: "/ShopWeb/user/collectShop",
+                    url: ctx + "/user/collectShop",
                     data: {
                         shopId: cartShopVo.id
                     }

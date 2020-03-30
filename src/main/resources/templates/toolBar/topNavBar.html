@@ -12,6 +12,9 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/goodsDetail.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 
 </head>
 <body>
@@ -19,14 +22,16 @@
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <!--回到首页-->
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#" th:href="@{/}">ShopWeb</a>
+            <div class="navbar-header" th:classappend="${#httpServletRequest.getServletPath()=='/shop/index'?'active':''}" style="margin-left: -15px">
+                <a class="navbar-brand" style="margin-left: 0px" th:href="@{/}">ShopWeb</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">为你推荐<span class="sr-only">(current)</span></a></li>
+                    <li th:class="${#httpServletRequest.getServletPath()=='/shop/getRecommendPage'?'active':''}">
+                        <a th:href="@{/shop/getRecommendPage}" >为你推荐</a>
+                    </li>
                     <li><a href="#">猜你喜欢</a></li>
                 </ul>
 

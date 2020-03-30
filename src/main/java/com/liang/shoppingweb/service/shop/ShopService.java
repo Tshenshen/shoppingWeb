@@ -3,6 +3,7 @@ package com.liang.shoppingweb.service.shop;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.PageConstant;
+import com.liang.shoppingweb.common.UserConstant;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.shop.Shop;
 import com.liang.shoppingweb.entity.shop.ShopVo;
@@ -10,6 +11,7 @@ import com.liang.shoppingweb.mapper.shop.ShopMapper;
 import com.liang.shoppingweb.mapper.shop.ShopVoMapper;
 import com.liang.shoppingweb.service.common.TagService;
 import com.liang.shoppingweb.utils.LoginUtils;
+import com.liang.shoppingweb.utils.QueryPramFormatUtils;
 import com.liang.shoppingweb.utils.SearchInfo;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @ConfigurationProperties(prefix = "shop")
 @Service
@@ -171,5 +173,17 @@ public class ShopService {
 
     public List<ShopVo> getShopWithTagListByEnterpriseId() {
         return shopVoMapper.getShopWithTagListByEnterpriseId(LoginUtils.getCurrentUserEnterpriseId());
+    }
+
+    public PageInfo<Shop> getRecommendShopList(int pageNum, HttpServletRequest request) {
+        PageHelper.startPage(pageNum, PageConstant.pageSize);
+        Cookie[] cookies = request.getCookies();
+        String styleIds = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName() != null && cookie.getName().equals(UserConstant.recommend)) {
+                styleIds = QueryPramFormatUtils.arrayToIn(cookie.getValue().split("#"));
+            }
+        }
+        return new PageInfo<>(shopMapper.getShopListByStyleIds(styleIds));
     }
 }

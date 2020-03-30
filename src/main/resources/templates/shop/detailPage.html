@@ -12,6 +12,9 @@
     <link th:href="@{/css/shop/shopSettingPage.css}" rel="stylesheet">
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -88,7 +91,7 @@
                                              style="margin-right: 15px"></el-input-number>
                             <el-button type="warning" size="small" @click="addGoods">加入购物车</el-button>
                             <el-button type="danger" size="small" @click="buySingleGoods">立即购买</el-button>
-                            <form ref="selectedListForm" action="/ShopWeb/order/orderPage" method="post">
+                            <form ref="selectedListForm" th:action="@{/order/orderPage}" method="post">
                                 <input hidden="hidden" name="ids" ref="selectedList">
                             </form>
                         </div>

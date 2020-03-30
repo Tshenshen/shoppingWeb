@@ -12,6 +12,9 @@
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
     <link th:href="@{/css/index.css}" rel="stylesheet"/>
     <script src="https://cdn.bootcss.com/qs/6.9.3/qs.js"></script>
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 
 </head>
 <body>

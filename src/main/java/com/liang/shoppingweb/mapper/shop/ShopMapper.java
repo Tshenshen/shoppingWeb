@@ -50,4 +50,10 @@ public interface ShopMapper {
 
     @Update("update tbl_shop set sales = sales + #{param2} where id = #{param1}")
     void addSalesByShopId(String shopId, int sales);
+
+    @Select("<script> select * from tbl_shop where enable = '1' " +
+            "<if test=\"styleIds != null\">" +
+            "and style in ${styleIds} </if>" +
+            "order by sales desc</script>")
+    List<Shop> getShopListByStyleIds(String styleIds);
 }

@@ -47,7 +47,7 @@ new Vue({
             console.log(reason);
             _that.$message.error("获取店铺列表错误！")
         });
-        axios.get("/ShopWeb/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
+        axios.get(ctx + "/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
             if (value.data.success) {
                 _that.typeDic = value.data.content;
             } else {
@@ -62,7 +62,7 @@ new Vue({
         shopImg() {
             return function (shopId, images) {
                 if (images.length > 0) {
-                    return "/ShopWeb/image/" + shopId + "/" + images.split(",")[0];
+                    return ctx + "/image/" + shopId + "/" + images.split(",")[0];
                 } else {
                     return ""
                 }
@@ -70,7 +70,7 @@ new Vue({
         },
         toUrlWithImageId() {
             return function (shopId, imageId) {
-                return "/ShopWeb/image/" + shopId + "/" + imageId;
+                return ctx + "/image/" + shopId + "/" + imageId;
             }
         },
         uploadShopImage() {
@@ -104,7 +104,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "get",
-                url: "/ShopWeb/dictionary/getTagDictionaryListByStyleIdAndKeyWord",
+                url: ctx + "/dictionary/getTagDictionaryListByStyleIdAndKeyWord",
                 params: {
                     styleId: form.style,
                     keyWord: keyword
@@ -176,7 +176,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "get",
-                url: "/ShopWeb/dictionary/getDictionaryListByParentId",
+                url: ctx + "/dictionary/getDictionaryListByParentId",
                 params: {
                     parentId: type
                 }
@@ -245,7 +245,7 @@ new Vue({
             if (_that.updateShopForm.images.length > 0) {
                 var urls = _that.updateShopForm.images.split(",");
                 urls.forEach(function (value) {
-                    var image = {name: value, url: "/ShopWeb/image/" + _that.updateShopForm.id + "/" + value};
+                    var image = {name: value, url: ctx + "/image/" + _that.updateShopForm.id + "/" + value};
                     _that.imageList.push(image);
                 });
             }

@@ -10,6 +10,9 @@
     <script src="" th:src="@{/js/axios.min.js}"></script>
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -32,7 +35,8 @@
                     <el-radio-button label="QQ"></el-radio-button>
                 </el-radio-group>
             </div>
-            <el-button style="font-size:15px;margin-top: 10px " type="danger" @click="payWithWalletDialog = true">支付</el-button>
+            <el-button style="font-size:15px;margin-top: 10px " type="danger" @click="payWithWalletDialog = true">支付
+            </el-button>
         </el-main>
     </el-container>
 
@@ -43,7 +47,8 @@
             </div>
             <div style="font-size:20px"> 订单金额：<em style="font-size: 30px;color: red">&yen;[[${order.sumPrice}]]</em>
             </div>
-            <div style="font-size:20px">支付后余额：<em style="font-size: 30px;color: red">&yen;[[${#numbers.formatDecimal(user.balance - order.sumPrice,0,2)}]]</em>
+            <div style="font-size:20px">支付后余额：<em style="font-size: 30px;color: red">&yen;[[${#numbers.formatDecimal(user.balance
+                - order.sumPrice,0,2)}]]</em>
             </div>
         </div>
         <div slot="footer" class="dialog-footer">

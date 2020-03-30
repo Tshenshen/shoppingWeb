@@ -12,6 +12,9 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/order/orderPage.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -133,7 +136,7 @@
         mounted() {
             var _that = this;
             //获取收件信息
-            axios.get("/ShopWeb/user/getReceivers").then(function (value) {
+            axios.get(ctx + "/user/getReceivers").then(function (value) {
                 if (!value.data.success) {
                     _that.$message.error(value.data.message);
                     return;
@@ -144,7 +147,7 @@
                 _that.$message.error("获取收件地址错误！！");
             });
             //获取订单详细信息
-            let url = "/ShopWeb/order/getOrderVoById/" + document.querySelector("#orderId").getAttribute("value");
+            let url = ctx + "/order/getOrderVoById/" + document.querySelector("#orderId").getAttribute("value");
             axios.get(url).then(function (value) {
                 if (!value.data.success) {
                     _that.$message.error(value.data.message);
@@ -159,7 +162,7 @@
         computed: {
             picUrl() {
                 return function (cart) {
-                    return cart.shopVo.images.length > 0 ? "/ShopWeb/image/" + cart.shopVo.id + "/" + cart.shopVo.images.split(",")[0] : "";
+                    return cart.shopVo.images.length > 0 ? ctx + "/image/" + cart.shopVo.id + "/" + cart.shopVo.images.split(",")[0] : "";
                 }
             },
             ItemsSum() {
@@ -183,7 +186,7 @@
                 var _that = this;
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/changeReceiver",
+                    url: ctx + "/order/changeReceiver",
                     data: _that.order
                 }).then(function (value) {
                     if (value.data.success) {

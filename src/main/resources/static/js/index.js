@@ -37,7 +37,7 @@ new Vue({
         imgUrl() {
             return function (shopId, images) {
                 if (images.split(",")[0].length > 0) {
-                    return "/ShopWeb/image/" + shopId + "/" + images.split(",")[0];
+                    return ctx + "/image/" + shopId + "/" + images.split(",")[0];
                 } else {
                     return ""
                 }
@@ -127,7 +127,7 @@ new Vue({
         },
         getTypeDic() {
             var _that = this;
-            axios.get("/ShopWeb/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
+            axios.get(ctx + "/dictionary/getDictionaryListByRootValue?value=TYPE_DIC").then(function (value) {
                 if (value.data.success) {
                     _that.typeDic = value.data.content;
                 } else {
@@ -142,7 +142,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "get",
-                url: "/ShopWeb/dictionary/getDictionaryListByParentId",
+                url: ctx + "/dictionary/getDictionaryListByParentId",
                 params: {
                     parentId: _that.shopSearchInfo.type
                 }
@@ -161,7 +161,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "get",
-                url: "/ShopWeb/dictionary/getDictionaryVoListByParentId",
+                url: ctx + "/dictionary/getDictionaryVoListByParentId",
                 params: {
                     parentId: _that.shopSearchInfo.style
                 }

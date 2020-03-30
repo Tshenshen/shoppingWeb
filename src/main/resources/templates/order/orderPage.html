@@ -12,6 +12,9 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/order/orderPage.css}" rel="stylesheet">
     <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
 </head>
 <body>
 <div th:replace="toolBar/topNavBar::topNavBar"></div>
@@ -171,7 +174,7 @@
             _that.ids = _that.$refs.ids.getAttribute("value").split(",");
             axios({
                 method: "post",
-                url: "/ShopWeb/cart/cartsListByIds",
+                url: ctx + "/cart/cartsListByIds",
                 data: {
                     ids: _that.$refs.ids.getAttribute("value")
                 }
@@ -185,7 +188,7 @@
                 console.log(reason);
                 _that.$message.error("获取购物车列表错误！！");
             });
-            axios.get("/ShopWeb/user/getReceivers").then(function (value) {
+            axios.get(ctx + "/user/getReceivers").then(function (value) {
                 if (!value.data.success) {
                     _that.$message.error(value.data.message);
                     return;
@@ -204,7 +207,7 @@
                     var _that = this;
                     var shop = _that.orderList[index].shopVo;
                     if (_that.orderList[index].shopVo.images.length > 0) {
-                        return "/ShopWeb/image/" + shop.id + "/" + shop.images.split(",")[0];
+                        return ctx + "/image/" + shop.id + "/" + shop.images.split(",")[0];
                     } else {
                         return "";
                     }
@@ -243,7 +246,7 @@
                 }
                 axios({
                     method: "post",
-                    url: "/ShopWeb/order/createOrder",
+                    url: ctx + "/order/createOrder",
                     data: {
                         itemIds: _that.ids,
                         receiveInfoId: _that.receiveInfoId
@@ -276,7 +279,7 @@
                         _that.newDialogFormVisible = false;
                         axios({
                             method: "post",
-                            url: "/ShopWeb/user/addNewReceiver",
+                            url: ctx + "/user/addNewReceiver",
                             data: _that.newReceiverInfo
                         }).then(function (value) {
                             if (value.data.success) {

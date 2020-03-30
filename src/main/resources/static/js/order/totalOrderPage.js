@@ -18,12 +18,12 @@ new Vue({
     computed: {
         picUrl() {
             return function (shopVo) {
-                return shopVo.images.length > 0 ? "/ShopWeb/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
+                return shopVo.images.length > 0 ? ctx + "/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
             }
         },
         orderDetailUrl() {
             return function (id) {
-                return "/ShopWeb/order/orderDetail/" + id;
+                return ctx + "/order/orderDetail/" + id;
             }
         }
     },
@@ -32,7 +32,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "get",
-                url: "/ShopWeb/order/getOrderVoListByOrderInfo",
+                url: ctx + "/order/getOrderVoListByOrderInfo",
                 params: {
                     type: _that.type,
                     state: _that.state,
@@ -68,7 +68,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "delete",
-                    url: "/ShopWeb/order/cancelById/" + _that.orderList[index].id
+                    url: ctx + "/order/cancelById/" + _that.orderList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.$message.success(value.data.message);
@@ -93,7 +93,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/receiveById/" + _that.orderList[index].id
+                    url: ctx + "/order/receiveById/" + _that.orderList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.$message.success(value.data.message);
@@ -130,7 +130,7 @@ new Vue({
             }).then(function (val) {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/refundApply",
+                    url: ctx + "/order/refundApply",
                     data: {
                         id: _that.orderList[index].id,
                         refundReason: val.value
@@ -159,7 +159,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/sendById/" + _that.orderList[index].id
+                    url: ctx + "/order/sendById/" + _that.orderList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.$message.success(value.data.message);
@@ -185,7 +185,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/refundApply/" + _that.orderList[index].id
+                    url: ctx + "/order/refundApply/" + _that.orderList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.$message.success(value.data.message);
@@ -201,7 +201,7 @@ new Vue({
                 if (reason === "cancel") {
                     axios({
                         method: "put",
-                        url: "/ShopWeb/order/refundRefuse/" + _that.orderList.refundList[index].id
+                        url: ctx + "/order/refundRefuse/" + _that.orderList.refundList[index].id
                     }).then(function (value) {
                         if (value.data.success) {
                             _that.$message.success(value.data.message);

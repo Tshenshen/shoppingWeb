@@ -42,7 +42,7 @@ new Vue({
             console.log(reason);
             _that.$message.error("获取收藏数量错误！！")
         });
-        axios.get("/ShopWeb/order/getUnFinishOrders").then(function (value) {
+        axios.get(ctx + "/order/getUnFinishOrders").then(function (value) {
             if (value.data.success) {
                 value.data.content.forEach(function (order) {
                     if (order.state === 1) {
@@ -67,13 +67,13 @@ new Vue({
     computed: {
         picUrl() {
             return function (shopVo) {
-                return shopVo.images.length > 0 ? "/ShopWeb/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
+                return shopVo.images.length > 0 ? ctx + "/image/" + shopVo.id + "/" + shopVo.images.split(",")[0] : "";
             }
         }
         ,
         orderDetailUrl() {
             return function (id) {
-                return "/ShopWeb/order/orderDetail/" + id;
+                return ctx + "/order/orderDetail/" + id;
             }
         }
     }
@@ -134,7 +134,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "delete",
-                    url: "/ShopWeb/order/cancelById/" + _that.orderList.unPayList[index].id
+                    url: ctx + "/order/cancelById/" + _that.orderList.unPayList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.orderList.unPayList.splice(index, 1);
@@ -172,7 +172,7 @@ new Vue({
             }).then(function (val) {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/refundApply",
+                    url: ctx + "/order/refundApply",
                     data: {
                         id: _that.orderList[listName][index].id,
                         refundReason: val.value
@@ -203,7 +203,7 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: "/ShopWeb/order/receiveById/" + _that.orderList.unReceiveList[index].id
+                    url: ctx + "/order/receiveById/" + _that.orderList.unReceiveList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.orderList.unReceiveList.splice(index, 1);

@@ -62,7 +62,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "delete",
-                url: "/ShopWeb/user/cancelCollectShop",
+                url: ctx + "/user/cancelCollectShop",
                 data: {
                     id: _that.shopVo.collect.id
                 }
@@ -82,7 +82,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "post",
-                url: "/ShopWeb/user/collectShop",
+                url: ctx + "/user/collectShop",
                 data: {
                     shopId: _that.shopVo.id
                 }
@@ -103,7 +103,7 @@ new Vue({
             var imageList = [];
             if (_that.shopVo.images.length > 0) {
                 _that.shopVo.images.split(",").forEach(function (image) {
-                    imageList.push("/ShopWeb/image/" + _that.shopVo.id + "/" + image);
+                    imageList.push(ctx + "/image/" + _that.shopVo.id + "/" + image);
                 });
             } else {
                 imageList.push("")
@@ -128,7 +128,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "post",
-                url: "/ShopWeb/cart/addGoods",
+                url: ctx + "/cart/addGoods",
                 data: {
                     shopItemNum: _that.shopItemNum,
                     shopItemId: _that.currentItem.id
@@ -149,7 +149,7 @@ new Vue({
             var _that = this;
             axios({
                 method: "post",
-                url: "/ShopWeb/cart/buySingleGoods",
+                url: ctx + "/cart/buySingleGoods",
                 data: {
                     shopItemNum: _that.shopItemNum,
                     shopItemId: _that.currentItem.id

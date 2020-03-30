@@ -57,7 +57,7 @@ new Vue({
                 _that.shopVo = value.data.content;
                 var imageList = [];
                 _that.shopVo.images.split(",").forEach(function (image) {
-                    imageList.push("/ShopWeb/image/" + _that.shopVo.id + "/" + image);
+                    imageList.push(ctx + "/image/" + _that.shopVo.id + "/" + image);
                 });
                 _that.goodsImgUrlList = imageList;
                 _that.defaultItem.name = _that.shopVo.name;
