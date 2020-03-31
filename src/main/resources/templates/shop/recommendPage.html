@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>为你推荐</title>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
+    <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
+    <script src="" th:src="@{/js/bootstrap.js}"></script>
+    <script src="" th:src="@{/js/axios.min.js}"></script>
+    <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
+    <link href="" rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link th:href="@{/css/index.css}" rel="stylesheet"/>
+    <script th:inline="javascript" type="text/javascript">
+        var ctx = [[${#httpServletRequest.getContextPath()}]];
+    </script>
+</head>
+<body style="margin-bottom: -20px">
+<div th:replace="toolBar/topNavBar::topNavBar"></div>
+<div id="app" class="infinite-scroll-frag" v-infinite-scroll="getShopListByPageNum"
+     :infinite-scroll-disabled="busy" infinite-scroll-distance="2">
+    <h1 style="color: red;text-align: center">
+        为你推荐
+    </h1>
+    <div class="product-frag">
+        <div class="product" v-for="(shop,index) in shopList" :key="index">
+            <div class="product-iWrap">
+                <a class="productImg-wrap" :href="'detailPage?shopId=' + shop.id" target="_blank">
+                    <img :src="imgUrl(shop.id, shop.images)" style="object-fit: fill;height: 100%;width: 100%"/>
+                </a>
+                <div class="productPrice">
+                    &yen;{{shop.price}}
+                </div>
+                <div class="productTittle">
+                    <a :href="'detailPage?shopId=' + shop.id" target="_blank">
+                        {{shop.name}}</a>
+                </div>
+                <div class="productSales">
+                    销量：{{shop.sales}}
+                </div>
+            </div>
+        </div>
+        <!--<div  v-for="(shop,index) in shopList" :key="index">-->
+        <!--<h1>{{shop.id}}</h1>-->
+        <!--</div>-->
+
+    </div>
+    <div v-if="loading" style="text-align: center">加载中...</div>
+    <div v-if="noMore" style="text-align: center">没有更多了</div>
+</div>
+</body>
+<script th:src="@{/js/toolBar/topNavBar.js}"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            shopList: [],
+            total: -1,
+            pageNum: 1,
+            loading: false
+        },
+        mounted() {
+            // this.getShopListByPageNum()
+        },
+        computed: {
+            imgUrl() {
+                return function (shopId, images) {
+                    if (images.split(",")[0].length > 0) {
+                        return ctx + "/image/" + shopId + "/" + images.split(",")[0];
+                    } else {
+                        return ""
+                    }
+                }
+            },
+            noMore() {
+                return this.total === this.shopList.length;
+            },
+            busy() {
+                return this.noMore || this.loading;
+            }
+        },
+        methods: {
+            getShopListByPageNum() {
+                var _that = this;
+                _that.loading = true;
+                axios({
+                    method: "get",
+                    url: "getRecommendShopList",
+                    params: {
+                        pageNum: _that.pageNum
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        value.data.content.list.forEach(function (shop) {
+                            _that.shopList.push(shop);
+                        });
+                        _that.pageNum++;
+                        _that.total = value.data.content.total;
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("获取推荐店铺列表错误！");
+                }).finally(function () {
+                    _that.loading = false;
+                });
+            }
+        }
+    })
+</script>
+</html>

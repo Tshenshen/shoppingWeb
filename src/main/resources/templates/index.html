@@ -11,7 +11,6 @@
     <link th:href="@{/webjars/element-ui/2.13.0/lib/theme-chalk/index.css}" rel="stylesheet">
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
     <link th:href="@{/css/index.css}" rel="stylesheet"/>
-    <script src="https://cdn.bootcss.com/qs/6.9.3/qs.js"></script>
     <script th:inline="javascript" type="text/javascript">
         var ctx = [[${#httpServletRequest.getContextPath()}]];
     </script>
@@ -124,22 +123,20 @@
         抱歉，未搜索到相关的店铺
     </div>
     <div>
-        <div class="view grid-nosku ">
-            <div class="product" v-for="(shop,index) in pageInfo.list" :key="index">
-                <div class="product-iWrap">
-                    <a class="productImg-wrap" :href="'detailPage?shopId=' + shop.id" target="_blank">
-                        <img :src="imgUrl(shop.id, shop.images)" style="object-fit: fill;height: 100%;width: 100%"/>
-                    </a>
-                    <div class="productPrice">
-                        &yen;{{shop.price}}
-                    </div>
-                    <div class="productTittle">
-                        <a :href="'detailPage?shopId=' + shop.id" target="_blank">
-                            {{shop.name}}</a>
-                    </div>
-                    <div class="productSales">
-                        销量：{{shop.sales}}
-                    </div>
+        <div class="product" v-for="(shop,index) in pageInfo.list" :key="index">
+            <div class="product-iWrap">
+                <a class="productImg-wrap" :href="'detailPage?shopId=' + shop.id" target="_blank">
+                    <img :src="imgUrl(shop.id, shop.images)" style="object-fit: fill;height: 100%;width: 100%"/>
+                </a>
+                <div class="productPrice">
+                    &yen;{{shop.price}}
+                </div>
+                <div class="productTittle">
+                    <a :href="'detailPage?shopId=' + shop.id" target="_blank">
+                        {{shop.name}}</a>
+                </div>
+                <div class="productSales">
+                    销量：{{shop.sales}}
                 </div>
             </div>
         </div>
