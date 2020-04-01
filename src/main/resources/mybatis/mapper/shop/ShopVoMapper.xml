@@ -118,6 +118,7 @@
         FROM
         tbl_shop AS s
         left join tbl_tag AS t ON s.id = t.shop_id
+        where s.enterprise_id = #{enterpriseId}
         order by s.create_date desc
     </select>
 

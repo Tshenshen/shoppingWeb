@@ -73,6 +73,7 @@ public class ShopController {
         return "shop/recommendPage";
     }
 
+
     @GetMapping("/getRecommendShopList")
     @ResponseBody
     public MyResponse getRecommendShopList(@RequestParam int pageNum, HttpServletRequest request) {
@@ -83,6 +84,25 @@ public class ShopController {
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse("获取推荐店铺列表失败！");
+        }
+        return myResponse;
+    }
+
+    @GetMapping("/getFavouritePage")
+    public String getFavouritePage() {
+        return "shop/favouritePage";
+    }
+
+    @GetMapping("/getFavouriteShopList")
+    @ResponseBody
+    public MyResponse getFavouriteShopList(@RequestParam int pageNum) {
+        MyResponse myResponse;
+        try {
+            PageInfo<Shop> pageInfo = shopService.getFavouriteShopList(pageNum);
+            myResponse = MyResponse.getSuccessResponse("获取喜欢店铺列表成功！", pageInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            myResponse = MyResponse.getFailedResponse("获取喜欢店铺列表失败！");
         }
         return myResponse;
     }

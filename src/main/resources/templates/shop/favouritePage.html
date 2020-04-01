@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>为你推荐</title>
+    <title>猜你喜欢</title>
     <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <script th:src="@{/webjars/vue/2.6.11/dist/vue.js}"></script>
     <script th:src="@{/webjars/element-ui/2.13.0/lib/index.js}"></script>
@@ -20,7 +20,7 @@
 <div id="app" class="infinite-scroll-frag" v-infinite-scroll="getShopListByPageNum"
      :infinite-scroll-disabled="busy" infinite-scroll-distance="2">
     <h1 style="color: red;text-align: center">
-        为你推荐
+        猜你喜欢
     </h1>
     <div class="product-frag">
         <div class="product" v-for="(shop,index) in shopList" :key="index">
@@ -85,7 +85,7 @@
                 _that.loading = true;
                 axios({
                     method: "get",
-                    url: "getRecommendShopList",
+                    url: "getFavouriteShopList",
                     params: {
                         pageNum: _that.pageNum
                     }
@@ -101,7 +101,7 @@
                     }
                 }).catch(function (reason) {
                     console.log(reason);
-                    _that.$message.error("获取推荐店铺列表错误！");
+                    _that.$message.error("获取喜欢店铺列表错误！");
                 }).finally(function () {
                     _that.loading = false;
                 });

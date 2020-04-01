@@ -128,6 +128,7 @@ class ShoppingWebApplicationTests {
 //        System.out.println(shopList);
 //        List<Shop> shopList = shopMapper.getShopListByStyleIds(QueryPramFormatUtils.strToIn("2145b92a-53d3-4618-a8db-073929cc9e5a,00500d57-6f09-4c00-b467-8eaa4878ceac,3bda322e-f875-40a2-81c9-b704a1276114",","));
 //        System.out.println(shopList);
+        shopMapper.getFavouriteShopList("7ba510b1-9bc9-4748-9fe1-cff83eafeb285");
     }
 
     @Test

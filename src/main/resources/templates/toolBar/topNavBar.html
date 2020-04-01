@@ -32,7 +32,9 @@
                     <li th:class="${#httpServletRequest.getServletPath()=='/shop/getRecommendPage'?'active':''}">
                         <a th:href="@{/shop/getRecommendPage}" >为你推荐</a>
                     </li>
-                    <li><a href="#">猜你喜欢</a></li>
+                    <li th:class="${#httpServletRequest.getServletPath()=='/shop/getFavouritePage'?'active':''}" v-if="isAuthenticated === 'true'">
+                        <a th:href="@{/shop/getFavouritePage}">猜你喜欢</a>
+                    </li>
                 </ul>
 
                 <input id="isAuthenticated" hidden="hidden" th:value="${#authentication.getName()!='anonymousUser'}">

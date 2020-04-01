@@ -1,6 +1,7 @@
 package com.liang.shoppingweb.mapper.shop;
 
 import com.liang.shoppingweb.entity.shop.Shop;
+import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.utils.SearchInfo;
 import org.apache.ibatis.annotations.*;
 
@@ -56,4 +57,15 @@ public interface ShopMapper {
             "and style in ${styleIds} </if>" +
             "order by sales desc</script>")
     List<Shop> getShopListByStyleIds(String styleIds);
+
+    @Select("SELECT s.* FROM tbl_shop s  " +
+            "left JOIN " +
+            "   ( SELECT t.shop_id, SUM( f.point ) point_sum FROM  " +
+            "       ( SELECT * FROM tbl_favourite WHERE user_id = #{userId} ORDER BY point DESC LIMIT 7 ) f  " +
+            "       INNER JOIN tbl_tag t ON t.dic_id = f.tag_dic_id " +
+            "       GROUP BY t.shop_id " +
+            "   ) i ON s.id = i.shop_id " +
+            "WHERE s.`enable` = '1' " +
+            "ORDER BY i.point_sum desc, s.sales desc" )
+    List<Shop> getFavouriteShopList(String userId);
 }

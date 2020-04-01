@@ -186,4 +186,9 @@ public class ShopService {
         }
         return new PageInfo<>(shopMapper.getShopListByStyleIds(styleIds));
     }
+
+    public PageInfo<Shop> getFavouriteShopList(int pageNum) {
+        PageHelper.startPage(pageNum, PageConstant.pageSize);
+        return new PageInfo<>(shopMapper.getFavouriteShopList(LoginUtils.getCurrentUserId()));
+    }
 }
