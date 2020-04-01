@@ -46,7 +46,7 @@ public class QueryPramFormatUtils {
         sb.append("INNER JOIN (SELECT t1.shop_id FROM  ");
         sb.append("( SELECT shop_id FROM tbl_tag WHERE dic_id = \"").append(tagList.get(0).getDicId()).append("\" ) t1 ");
         for (int i = 2; i <= tagList.size(); i++) {
-            sb.append("INNER JOIN ");
+            sb.append(" INNER JOIN ");
             sb.append("( SELECT shop_id FROM tbl_tag WHERE dic_id = \"").append(tagList.get(i - 1).getDicId()).append("\" ) t").append(i);
             sb.append(" ON t").append(i - 1).append(".shop_id = t").append(i).append(".shop_id");
         }

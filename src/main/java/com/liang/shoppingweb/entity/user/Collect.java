@@ -12,7 +12,7 @@ public class Collect {
     private String userId;
     private String shopId;
     /**
-     * 是否收藏，收藏为1
+     * 是否收藏，收藏为1，该字段目前多余
      */
     private char collect;
 }

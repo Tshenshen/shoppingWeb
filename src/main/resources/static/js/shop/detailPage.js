@@ -64,7 +64,7 @@ new Vue({
                 method: "delete",
                 url: ctx + "/user/cancelCollectShop",
                 data: {
-                    id: _that.shopVo.collect.id
+                    shopId: _that.shopVo.id
                 }
             }).then(function (value) {
                 if (value.data.success) {

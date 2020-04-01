@@ -3,6 +3,7 @@ package com.liang.shoppingweb.service.user;
 import com.liang.shoppingweb.entity.user.Collect;
 import com.liang.shoppingweb.mapper.user.CollectMapper;
 import com.liang.shoppingweb.utils.LoginUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -14,6 +15,8 @@ public class CollectService {
 
     @Resource
     private CollectMapper collectMapper;
+    @Autowired
+    private FavouriteService favouriteService;
 
     public Collect getCollectByShopId(String shopId) {
         if (LoginUtils.getCurrentUser() == null) {
@@ -37,15 +40,14 @@ public class CollectService {
         collect.setUserId(LoginUtils.getCurrentUserId());
         collect.setCollect('1');
         collectMapper.addCollect(collect);
+        favouriteService.updateWhenCollect(collect.getShopId());
         return collect;
     }
 
     public void cancelCollectShop(Collect collect) {
-        if (!StringUtils.isEmpty(collect.getId())) {
-            collectMapper.deleteCollectById(collect);
-        }
         collect.setUserId(LoginUtils.getCurrentUserId());
         collectMapper.deleteCollectByShopId(collect);
+        favouriteService.updateWhenCancelCollect(collect.getShopId());
     }
 
     public int getCollectShopNumber() {

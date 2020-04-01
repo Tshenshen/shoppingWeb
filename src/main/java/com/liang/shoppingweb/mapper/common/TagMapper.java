@@ -4,6 +4,7 @@ import com.liang.shoppingweb.entity.common.Tag;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -19,4 +20,7 @@ public interface TagMapper {
 
     @Delete("delete from tbl_tag where shop_id = #{shopId}")
     void deleteTapByShopId(String shopId);
+
+    @Select("select * from tbl_tag where shop_id = #{shopId}")
+    List<Tag> getTagListByShopId(String shopId);
 }

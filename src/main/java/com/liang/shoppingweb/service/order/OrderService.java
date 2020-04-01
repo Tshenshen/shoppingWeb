@@ -18,6 +18,7 @@ import com.liang.shoppingweb.mapper.order.OrderWithCellMapper;
 import com.liang.shoppingweb.service.enterprise.EnterpriseService;
 import com.liang.shoppingweb.service.shop.ShopItemService;
 import com.liang.shoppingweb.service.shop.ShopService;
+import com.liang.shoppingweb.service.user.FavouriteService;
 import com.liang.shoppingweb.service.user.UserService;
 import com.liang.shoppingweb.utils.LoginUtils;
 import com.liang.shoppingweb.utils.QueryPramFormatUtils;
@@ -51,6 +52,8 @@ public class OrderService {
     private EnterpriseService enterpriseService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private FavouriteService favouriteService;
     @Resource
     private OrderWithCellMapper orderWithCellMapper;
 
@@ -129,6 +132,7 @@ public class OrderService {
     public void payWithWallet(String orderId) throws Exception {
         OrderVo orderVo;
         String shopId = "";
+        List<String> shopIds = new ArrayList<>();
         List<OrderVo> orderVoList = new ArrayList<>();
         OrderVo newOrderVo = new OrderVo();
         orderVo = orderWithCellMapper.getOrderVoById(orderId);
@@ -138,6 +142,7 @@ public class OrderService {
             for (OrderCellVo orderCellVo : orderVo.getOrderCells()) {
                 if (!shopId.equals(orderCellVo.getShopVo().getId())) {
                     shopId = orderCellVo.getShopVo().getId();
+                    shopIds.add(shopId);
                     newOrderVo = new OrderVo();
                     newOrderVo.setId(UUID.randomUUID().toString());
                     newOrderVo.setUserId(orderVo.getUserId());
@@ -162,6 +167,8 @@ public class OrderService {
             enterpriseService.updateBalanceFromOrderVoList(orderVoList);
             //店铺销量增加
             shopService.addSalesFromOrderVoList(orderVoList);
+            //更新用户喜欢的标签
+            favouriteService.updateWhenPay(shopIds);
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("支付失败！！订单更新失败！！");

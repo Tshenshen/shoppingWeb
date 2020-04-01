@@ -8,11 +8,13 @@ import com.liang.shoppingweb.entity.common.Tag;
 import com.liang.shoppingweb.entity.order.OrderCell;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.shop.Shop;
+import com.liang.shoppingweb.entity.user.Favourite;
 import com.liang.shoppingweb.entity.user.User;
 import com.liang.shoppingweb.mapper.cart.CartShopVoMapper;
 import com.liang.shoppingweb.mapper.cart.CartVoMapper;
 import com.liang.shoppingweb.mapper.common.DictionaryMapper;
 import com.liang.shoppingweb.mapper.shop.ShopMapper;
+import com.liang.shoppingweb.mapper.user.FavouriteMapper;
 import com.liang.shoppingweb.mapper.user.UserMapper;
 import com.liang.shoppingweb.service.common.DictionaryService;
 import com.liang.shoppingweb.service.common.TagService;
@@ -84,6 +86,9 @@ class ShoppingWebApplicationTests {
     @Resource
     private ShopMapper shopMapper;
 
+    @Resource
+    private FavouriteMapper favouriteMapper;
+
     @BeforeAll
     @Test
     void initLogin() {
@@ -92,6 +97,15 @@ class ShoppingWebApplicationTests {
         User user = new User();
         user.setUsername("444");
         session.setAttribute("SW_USER", user);
+    }
+
+    @Test
+    void testFavouriteMapper() throws Exception {
+
+        List<Favourite> favouriteList = new ArrayList<>();
+        favouriteList.add(new Favourite("7ba510b1-9bc9-4748-9fe1-cff83eafeb28","6d7ca88c-8cdc-4284-a193-28a53ca45c83"));
+        favouriteList.add(new Favourite("7ba510b1-9bc9-4748-9fe1-cff83eafeb28","d10baf82-686e-4607-965d-ced5414bc0e9"));
+//        favouriteMapper.insertOrUpdateFavouriteList(favouriteList);
     }
 
     @Test

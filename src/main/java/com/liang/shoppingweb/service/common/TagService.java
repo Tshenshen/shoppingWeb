@@ -15,11 +15,11 @@ public class TagService {
     @Resource
     private TagMapper tagMapper;
 
-    public void addTapList(List<? extends Tag> tagList,String shopId) {
+    public void addTapList(List<? extends Tag> tagList, String shopId) {
         if (tagList == null || tagList.isEmpty()) {
             return;
         }
-        for (Tag tag : tagList){
+        for (Tag tag : tagList) {
             tag.setShopId(shopId);
             tag.setId(UUID.randomUUID().toString());
         }
@@ -32,8 +32,11 @@ public class TagService {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateTapList(List<? extends Tag> tagList, String shopId) {
-        //todo测试事务的传播
         deleteTapByShopId(shopId);
-        addTapList(tagList,shopId);
+        addTapList(tagList, shopId);
+    }
+
+    public List<Tag> getTagListByShopId(String shopId) {
+        return tagMapper.getTagListByShopId(shopId);
     }
 }

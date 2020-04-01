@@ -54,7 +54,7 @@ new Vue({
             this.getShopListBySearchInfo()
         },
         removeTag(index) {
-            this.shopSearchInfo.tagList.splice(index, 1, {tag: {}});
+            this.shopSearchInfo.tagList.splice(index, 1, {dicId:''});
             this.getShopListBySearchInfo()
         },
         pageChange(curPage) {
@@ -103,7 +103,7 @@ new Vue({
                 this.shopSearchInfo.tagList = [];
             }
             this.shopSearchInfo.style = '';
-            this.getShopListBySearchInfo()
+            this.pageChange(1)
         },
         searchWithStyle(index) {
             if (index !== undefined) {
@@ -117,13 +117,13 @@ new Vue({
                     this.shopSearchInfo.tagList.push({tag: {}})
                 }
             }
-            this.getShopListBySearchInfo()
+            this.pageChange(1)
         },
         searchWithKeyword(keyword) {
             if (keyword !== undefined) {
                 this.shopSearchInfo.keyword = keyword;
             }
-            this.getShopListBySearchInfo()
+            this.pageChange(1)
         },
         getTypeDic() {
             var _that = this;
@@ -167,10 +167,10 @@ new Vue({
                 }
             }).then(function (value) {
                 if (value.data.success) {
-                    _that.paramTagDic = value.data.content;
-                    for (var i = 0; i < _that.paramTagDic.length; i++) {
-                        _that.shopSearchInfo.tagList.push({tag: {}})
+                    for (var i = 0; i < value.data.content.length; i++) {
+                        _that.shopSearchInfo.tagList.push({dicId:''})
                     }
+                    _that.paramTagDic = value.data.content;
                 } else {
                     _that.$message.error(value.data.message);
                 }

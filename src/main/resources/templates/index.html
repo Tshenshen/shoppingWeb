@@ -93,7 +93,8 @@
         <div v-else>
             <div class="dictionary-bar"
                  v-for="(paramTag, paramIndex) in paramTagDic"
-                 :key="paramIndex">
+                 :key="paramIndex"
+                v-if="shopSearchInfo.tagList[paramIndex].dicId.length === 0">
                 <div class="dictionary-name">
                     {{paramTag.name}}：
                     <span class="dictionary-value">
