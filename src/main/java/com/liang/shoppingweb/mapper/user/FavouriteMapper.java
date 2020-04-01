@@ -11,10 +11,10 @@ import java.util.List;
 public interface FavouriteMapper {
 
     @Insert("<script> " +
-            "insert into tbl_favourite(id, user_id, tag_id, point) " +
+            "insert into tbl_favourite(id, user_id, tag_dic_id, point) " +
             "values " +
             "<foreach collection=\"list\" item=\"favourite\" separator=\",\"> " +
-            "(#{favourite.id}, #{favourite.userId}, #{favourite.tagId}, #{favourite.point}) " +
+            "(#{favourite.id}, #{favourite.userId}, #{favourite.tagDicId}, #{favourite.point}) " +
             "</foreach> " +
             "ON DUPLICATE KEY UPDATE " +
             "point = point + 1 " +
@@ -23,6 +23,6 @@ public interface FavouriteMapper {
 
     @Update("update tbl_favourite set point = point - 1 where " +
             "user_id = #{arg1} and " +
-            "tag_id in (select id from tbl_tag where shop_id = #{arg0}) ")
+            "tag_dic_id in (select dic_id from tbl_tag where shop_id = #{arg0}) ")
     void cancelFavouriteByShopId(String shopId, String userId);
 }

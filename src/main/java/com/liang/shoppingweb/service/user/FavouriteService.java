@@ -23,7 +23,7 @@ public class FavouriteService {
     public List<Favourite> tagListToFavouriteList(List<Tag> tagList, String userId) {
         List<Favourite> favouriteList = new ArrayList<>();
         for (Tag tag : tagList) {
-            favouriteList.add(new Favourite(userId, tag.getId()));
+            favouriteList.add(new Favourite(userId, tag.getDicId()));
         }
         return favouriteList;
     }

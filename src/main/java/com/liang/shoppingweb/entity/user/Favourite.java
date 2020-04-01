@@ -13,7 +13,7 @@ public class Favourite {
 
     private String id;
     private String userId;
-    private String tagId;
+    private String tagDicId;
     /**
      * 标签的分数
      */
@@ -22,10 +22,10 @@ public class Favourite {
     public Favourite() {
     }
 
-    public Favourite(String userId, String tagId) {
+    public Favourite(String userId, String tagDicId) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
-        this.tagId = tagId;
+        this.tagDicId = tagDicId;
         this.point = 1;
     }
 }
