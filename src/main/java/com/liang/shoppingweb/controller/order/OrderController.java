@@ -4,9 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.liang.shoppingweb.common.MyResponse;
 import com.liang.shoppingweb.common.PageConstant;
+import com.liang.shoppingweb.entity.enterprise.Enterprise;
 import com.liang.shoppingweb.entity.order.Order;
 import com.liang.shoppingweb.entity.order.OrderVo;
 import com.liang.shoppingweb.entity.user.User;
+import com.liang.shoppingweb.service.enterprise.EnterpriseService;
 import com.liang.shoppingweb.service.order.OrderService;
 import com.liang.shoppingweb.service.order.OrderVoService;
 import com.liang.shoppingweb.service.user.UserService;
@@ -30,6 +32,8 @@ public class OrderController {
     private OrderVoService orderVoService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EnterpriseService enterpriseService;
 
 
     @GetMapping("getOrderVoListByOrderInfo")
@@ -98,13 +102,13 @@ public class OrderController {
         return myResponse;
     }
 
-    @PutMapping("/refundApply/{orderId}")
+    @PutMapping("/refundAccept/{orderId}")
     @ResponseBody
     public MyResponse refundAccept(@PathVariable String orderId) {
         MyResponse myResponse;
         try {
             orderService.refundAccept(orderId);
-            myResponse = MyResponse.getSuccessResponse("订单退款接受成功");
+            myResponse = MyResponse.getSuccessResponse("订单退款接受成功", enterpriseService.getEnterpriseByUserId(LoginUtils.getCurrentUserId()));
         } catch (Exception e) {
             e.printStackTrace();
             myResponse = MyResponse.getFailedResponse(e.getMessage());
@@ -179,7 +183,8 @@ public class OrderController {
     public String getOrderDetail(@PathVariable("orderId") String orderId, Model model) {
         model.addAttribute("orderId", orderId);
         Order order = orderService.getOrderById(orderId);
-        if (!order.getUserId().equals(LoginUtils.getCurrentUserId())){
+        if (!order.getUserId().equals(LoginUtils.getCurrentUserId())
+                && !order.getEnterpriseId().equals(LoginUtils.getCurrentUserEnterpriseId())){
             return "error/403";
         }
         return "order/orderDetail";

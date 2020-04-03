@@ -94,7 +94,7 @@
             <div class="dictionary-bar"
                  v-for="(paramTag, paramIndex) in paramTagDic"
                  :key="paramIndex"
-                v-if="shopSearchInfo.tagList[paramIndex].dicId.length === 0">
+                 v-if="shopSearchInfo.tagList[paramIndex].dicId.length === 0">
                 <div class="dictionary-name">
                     {{paramTag.name}}：
                     <span class="dictionary-value">
@@ -120,39 +120,46 @@
     </div>
 
     <!--商品列表-->
-    <div v-if="pageInfo.total === 0" style="color: red;text-align: center">
-        抱歉，未搜索到相关的店铺
+    <div v-if="loading > 0" style="text-align: center;font-size: 25px;margin-top: 50px">
+        <h1>正在加载<i class="el-icon-loading"></i></h1>
     </div>
-    <div>
-        <div class="product" v-for="(shop,index) in pageInfo.list" :key="index">
-            <div class="product-iWrap">
-                <a class="productImg-wrap" :href="'detailPage?shopId=' + shop.id" target="_blank">
-                    <img :src="imgUrl(shop.id, shop.images)" style="object-fit: fill;height: 100%;width: 100%"/>
-                </a>
-                <div class="productPrice">
-                    &yen;{{shop.price}}
-                </div>
-                <div class="productTittle">
-                    <a :href="'detailPage?shopId=' + shop.id" target="_blank">
-                        {{shop.name}}</a>
-                </div>
-                <div class="productSales">
-                    销量：{{shop.sales}}
+    <div v-else>
+        <div v-if="pageInfo.total === 0" style="color: red;text-align: center">
+            抱歉，未搜索到相关的店铺
+        </div>
+        <div>
+            <div class="product" v-for="(shop,index) in pageInfo.list" :key="index">
+                <div class="product-iWrap">
+                    <a class="productImg-wrap" :href="'detailPage?shopId=' + shop.id" target="_blank">
+                        <img :src="imgUrl(shop.id, shop.images)" style="object-fit: fill;height: 100%;width: 100%"/>
+                    </a>
+                    <div class="productPrice">
+                        &yen;{{shop.price}}
+                    </div>
+                    <div class="productTittle">
+                        <a :href="'detailPage?shopId=' + shop.id" target="_blank">
+                            {{shop.name}}</a>
+                    </div>
+                    <div class="productSales">
+                        销量：{{shop.sales}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!--分页-->
-    <div style="display: inline-flex;  width: 100%">
-        <el-pagination
-                v-if="pageInfo.total > 10"
-                style="margin: auto"
-                background
-                layout="prev, pager, next"
-                :total="pageInfo.total"
-                @current-change="pageChange">
-        </el-pagination>
+        <!--分页-->
+        <div style="display: inline-flex;  width: 100%">
+            <el-pagination
+                    v-if="pageInfo.total > 10"
+                    style="margin: auto"
+                    background
+                    layout="prev, pager, next"
+                    :total="pageInfo.total"
+                    :current-page.sync="shopSearchInfo.pageNum"
+                    @current-change="pageChange">
+            </el-pagination>
+        </div>
+
     </div>
 </div>
 </body>

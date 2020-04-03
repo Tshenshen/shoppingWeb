@@ -29,12 +29,13 @@ public class FavouriteService {
     }
 
     public void updateWhenPay(List<String> shopIds) {
+        String userId = LoginUtils.getCurrentUserId();
         new Thread(() -> {
             List<Tag> tagList = new ArrayList<>();
             for (String shopId : shopIds) {
                 tagList.addAll(tagService.getTagListByShopId(shopId));
             }
-            insertOrUpdateFavouriteList(tagListToFavouriteList(tagList, LoginUtils.getCurrentUserId()));
+            insertOrUpdateFavouriteList(tagListToFavouriteList(tagList, userId));
         }).start();
     }
 

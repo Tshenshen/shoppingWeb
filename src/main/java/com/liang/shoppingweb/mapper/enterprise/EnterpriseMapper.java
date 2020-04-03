@@ -6,10 +6,12 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 public interface EnterpriseMapper {
 
-    @Insert("insert into tbl_enterprise(id, user_id, enterprise_name, phone_number, create_date)" +
-            "values(#{id}, #{userId}, #{enterpriseName}, #{phoneNumber}, #{createDate})")
+    @Insert("insert into tbl_enterprise(id, user_id, enterprise_name, phone_number, balance, create_date)" +
+            "values(#{id}, #{userId}, #{enterpriseName}, #{phoneNumber}, #{balance}, #{createDate})")
     void addEnterprise(Enterprise enterprise);
 
     @Select("select * from tbl_enterprise where user_id = #{userId}")
@@ -26,4 +28,11 @@ public interface EnterpriseMapper {
 
     @Update("update tbl_enterprise set balance = balance - #{sumPrice}, update_date = #{updateDate} where id = #{enterpriseId}")
     void balanceMinusFromOrder(Order order);
+
+    @Insert("<script>insert into tbl_enterprise(id, user_id, enterprise_name, phone_number, balance, create_date) values" +
+            "<foreach collection=\"list\" item=\"enterprise\" index=\"index\"  separator=\",\">" +
+            "(#{enterprise.id}, #{enterprise.userId}, #{enterprise.enterpriseName}, #{enterprise.phoneNumber}, #{enterprise.balance}, #{enterprise.createDate})" +
+            "</foreach>" +
+            "</script>")
+    void batchAddEnterprise(List<Enterprise> enterpriseList);
 }

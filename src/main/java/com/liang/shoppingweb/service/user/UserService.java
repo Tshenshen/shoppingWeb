@@ -38,6 +38,7 @@ public class UserService {
 
     public void insertUser(User user) throws MyException {
         try {
+            user.setRole(AuthorityConstant.user);
             user.setPassword(EncodeUtils.encodeByBCrypt(user.getPassword()));
             user.setEnable('1');
             user.setCreateDate(new Date());

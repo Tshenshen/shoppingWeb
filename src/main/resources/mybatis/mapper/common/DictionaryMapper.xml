@@ -28,7 +28,7 @@
     </resultMap>
 
 
-    <select id="getDictionaryVoByParentId" resultMap="dictionaryVoMap">
+    <select id="getDictionaryVoById" resultMap="dictionaryVoMap">
         select
         <include refid="column"/>
         from

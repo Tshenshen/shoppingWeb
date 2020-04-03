@@ -3,6 +3,8 @@ package com.liang.shoppingweb.mapper.shop;
 import com.liang.shoppingweb.entity.shop.ShopItem;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface ShopItemMapper {
 
@@ -21,6 +23,11 @@ public interface ShopItemMapper {
     @Update("update tbl_shop_item set stock = #{stock}, update_date = #{updateDate} where id = #{id}")
     void updateShopItemStock(ShopItem shopItem);
 
-//    @Insert("insert into tbl_shop_item(id, shop_id, name, price, stock, create_date) values ")
-//    void batchAddNewShopItem(ShopItem shopItem);
+    @Insert("<script>" +
+            "insert into tbl_shop_item(id, shop_id, name, price, stock, create_date) values " +
+            "<foreach collection=\"list\" item=\"item\" index=\"index\"  separator=\",\">" +
+            "(#{item.id}, #{item.shopId}, #{item.name}, #{item.price}, #{item.stock}, #{item.createDate})" +
+            "</foreach>" +
+            "</script>")
+    void batchAddNewShopItem(List<ShopItem> shopItemList);
 }

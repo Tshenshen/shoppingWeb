@@ -17,7 +17,7 @@ public interface ShopMapper {
     Shop getShopById(String id);
 
     @Insert("insert into tbl_shop(id, enterprise_id, name, images, type, style, `describe`, price, enable, create_date, sales)" +
-            "values(#{id}, #{enterpriseId}, #{name}, #{images}, #{type}, #{style}, #{describe}, #{price}, #{enable}, #{createDate}, 0)")
+            "values(#{id}, #{enterpriseId}, #{name}, #{images}, #{type}, #{style}, #{describe}, #{price}, #{enable}, #{createDate}, #{sales})")
     void createNewShop(Shop shop);
 
     @Update("update tbl_shop set enable = #{enable}, update_date = #{updateDate} where id = #{id}")
@@ -68,4 +68,11 @@ public interface ShopMapper {
             "WHERE s.`enable` = '1' " +
             "ORDER BY i.point_sum desc, s.sales desc" )
     List<Shop> getFavouriteShopList(String userId);
+
+    @Insert("<script>insert into tbl_shop(id, enterprise_id, name, images, type, style, `describe`, price, enable, create_date, sales) values" +
+            "<foreach collection=\"list\" item=\"shop\"  separator=\",\">" +
+            "(#{shop.id}, #{shop.enterpriseId}, #{shop.name}, #{shop.images}, #{shop.type}, #{shop.style}, #{shop.describe}, #{shop.price}, #{shop.enable}, #{shop.createDate}, #{shop.sales})" +
+            "</foreach>" +
+            "</script>")
+    void batchCreateNewShop(List<Shop> shopList);
 }

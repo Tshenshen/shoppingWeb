@@ -68,6 +68,7 @@ public class EnterpriseService {
         }
         enterprise.setBalance(newBalance);
         enterprise.setUpdateDate(new Date());
+        enterpriseMapper.updateBalance(enterprise);
         userService.rechargeToWallet(balance);
         return enterprise;
     }

@@ -130,10 +130,11 @@ new Vue({
             }).then(function () {
                 axios({
                     method: "put",
-                    url: ctx + "/order/refundApply/" + _that.orderList.refundList[index].id
+                    url: ctx + "/order/refundAccept/" + _that.orderList.refundList[index].id
                 }).then(function (value) {
                     if (value.data.success) {
                         _that.orderList.refundList.splice(index, 1);
+                        _that.$refs.balance.innerHTML = "&yen;" + value.data.content.balance;
                         _that.$message.success(value.data.message);
                     } else {
                         _that.$message.error(value.data.message);

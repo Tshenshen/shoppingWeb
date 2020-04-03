@@ -49,11 +49,11 @@ public interface DictionaryMapper {
             "(#{dictionary.id}, #{dictionary.name}, #{dictionary.value}, #{dictionary.parentId}, #{dictionary.order}, #{dictionary.createDate})" +
             "</foreach>" +
             "</script>")
-    void batchAddDictionary(List<Dictionary> dictionaryList);
+    void batchAddDictionary(List<? extends Dictionary> dictionaryList);
 
     DictionaryVo getRootDictionaryVoByValue(String value);
 
-    DictionaryVo getDictionaryVoByParentId(String parentId);
+    DictionaryVo getDictionaryVoById(String parentId);
 
     List<DictionaryVo> getDictionaryVoListByParentId(String parentId);
 }

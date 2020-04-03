@@ -15,7 +15,7 @@ public interface UserMapper {
     @Select("select * from tbl_user")
     List<User> getAll();
 
-    @Insert("insert into tbl_user(id,username,password,balance,email,role,enable,create_date) values(#{id},#{username},#{password},0,#{email},'ROLE_USER',#{enable},#{createDate})")
+    @Insert("insert into tbl_user(id,username,password,balance,email,role,enable,create_date,enterprise_id) values(#{id},#{username},#{password},#{balance},#{email},#{role},#{enable},#{createDate},#{enterpriseId})")
     void insertUser(User user);
 
     @Update("update tbl_user set last_login_date = #{lastLoginDate} where username = #{username}")
@@ -38,4 +38,11 @@ public interface UserMapper {
 
     @Update("update tbl_user set balance = balance - #{sumPrice}, update_date = #{updateDate} where id = #{userId}")
     void balanceMinusFromOrder(Order order);
+
+    @Insert("<script>insert into tbl_user(id,username,password,balance,email,role,enable,enterprise_id,create_date) values" +
+            "<foreach collection=\"list\" item=\"user\"  separator=\",\">" +
+            "(#{user.id},#{user.username},#{user.password},#{user.balance},#{user.email},#{user.role},#{user.enable},#{user.enterpriseId},#{user.createDate})"+
+            "</foreach>" +
+            "</script>")
+    void batchInsertUser(List<User> userList);
 }
