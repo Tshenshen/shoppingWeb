@@ -4,6 +4,7 @@ import com.liang.shoppingweb.common.AuthorityConstant;
 import com.liang.shoppingweb.entity.cart.CartShopVo;
 import com.liang.shoppingweb.entity.cart.CartVo;
 import com.liang.shoppingweb.entity.common.Dictionary;
+import com.liang.shoppingweb.entity.common.DictionaryVo;
 import com.liang.shoppingweb.entity.common.Tag;
 import com.liang.shoppingweb.entity.enterprise.Enterprise;
 import com.liang.shoppingweb.entity.order.OrderCell;
@@ -114,6 +115,62 @@ class ShoppingWebApplicationTests {
         User user = new User();
         user.setUsername("444");
         session.setAttribute("SW_USER", user);
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    void addDrinkDic() {
+        String[] drinkType = {"牛奶", "汽水", "果汁", "咖啡", "奶茶", "饮用水", "茶"};
+        String[] milkParam = {"品牌", "风味"};
+        String[][] paramTag = new String[2][];
+        String[] param1Tag = {"蒙牛", "伊利", "燕塘"};
+        String[] param2Tag = {"酸奶", "纯牛奶"};
+        paramTag[0] = param1Tag;
+        paramTag[1] = param2Tag;
+        List<Dictionary> dictionaryList = new ArrayList<>();
+        int i = 0, j = 0, k = 0;
+        DictionaryVo type_dic = dictionaryMapper.getRootDictionaryVoByValue("TYPE_DIC");
+        Dictionary dictionary2 = new Dictionary();
+        dictionary2.setId(UUID.randomUUID().toString());
+        dictionary2.setName("饮品");
+        dictionary2.setValue("10");
+        dictionary2.setParentId(type_dic.getId());
+        dictionary2.setCreateDate(new Date());
+        dictionary2.setOrder(11);
+        dictionaryList.add(dictionary2);
+        for (String type : drinkType) {
+            Dictionary dictionary = new Dictionary();
+            dictionary.setId(UUID.randomUUID().toString());
+            dictionary.setName(type);
+            dictionary.setValue(i + "");
+            dictionary.setParentId(dictionary2.getId());
+            dictionary.setCreateDate(new Date());
+            dictionary.setOrder(i++);
+            dictionaryList.add(dictionary);
+        }
+        for (String param : milkParam) {
+            Dictionary dictionary = new Dictionary();
+            dictionary.setId(UUID.randomUUID().toString());
+            dictionary.setName(param);
+            dictionary.setValue(j + "");
+            dictionary.setParentId(dictionaryList.get(1).getId());
+            for (String tag : paramTag[j]) {
+                Dictionary dictionary1 = new Dictionary();
+                dictionary1.setId(UUID.randomUUID().toString());
+                dictionary1.setName(tag);
+                dictionary1.setValue(k + "");
+                dictionary1.setParentId(dictionary.getId());
+                dictionary1.setCreateDate(new Date());
+                dictionary1.setOrder(k++);
+                dictionaryList.add(dictionary1);
+            }
+            k = 0;
+            dictionary.setCreateDate(new Date());
+            dictionary.setOrder(j++);
+            dictionaryList.add(dictionary);
+        }
+        dictionaryMapper.batchAddDictionary(dictionaryList);
     }
 
     class DicVo extends Dictionary {
@@ -278,7 +335,7 @@ class ShoppingWebApplicationTests {
     private List<? extends Tag> getRandomTagListByStyleVo(DicVo style, String shopId) {
         List<Tag> tagList = new ArrayList<>();
         for (DicVo param : style.dicVoList) {
-            if (random.nextInt(3) == 0){
+            if (random.nextInt(3) == 0) {
                 continue;
             }
             int beginIndex = random.nextInt(6);

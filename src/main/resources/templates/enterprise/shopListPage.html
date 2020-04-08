@@ -106,6 +106,7 @@
                                 placeholder="添加标签"
                                 filterable
                                 remote
+                                @focus="getCreateTagDicList('')"
                                 :remote-method="getCreateTagDicList">
                             <el-option
                                     v-for="(tagDic,index) in tagDicList"
@@ -187,6 +188,7 @@
                                 placeholder="添加标签"
                                 filterable
                                 remote
+                                @focus="getUpdateTagDicList('')"
                                 :remote-method="getUpdateTagDicList">
                             <el-option
                                     v-for="(tagDic,index) in tagDicList"

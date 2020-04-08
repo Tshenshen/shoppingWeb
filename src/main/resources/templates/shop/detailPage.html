@@ -41,10 +41,10 @@
             </el-header>
             <el-container direction="horizontal">
 
-                <el-aside style="padding-top: 20px;width: 45%;margin-right: 3%">
-                    <el-carousel height="400px">
+                <el-aside style="padding-top: 20px;width: 45%;margin-right: 3%;margin-bottom: 10px">
+                    <el-carousel height="400px" style=" border: 1px solid gray">
                         <el-carousel-item v-for="(imgUrl,index) in goodsImgUrlList" :key="index">
-                            <div style=" border: 1px solid gray;">
+                            <div>
                                 <el-image class="image_preview "
                                           :src="imgUrl"
                                           fit="fill">

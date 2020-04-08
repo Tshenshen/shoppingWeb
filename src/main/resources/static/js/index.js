@@ -109,6 +109,7 @@ new Vue({
             } else {
                 this.shopSearchInfo.keyword = '';
                 this.shopSearchInfo.tagList = [];
+                this.paramTagDic = [];
             }
             this.shopSearchInfo.style = '';
             this.pageChange(1)
