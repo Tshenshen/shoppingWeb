@@ -212,7 +212,7 @@ class ShoppingWebApplicationTests {
                     //创建user,再注册为商家
                     User user = new User();
                     user.setId(UUID.randomUUID().toString());
-                    user.setUsername(type.getValue() + style.getValue() + i + "");
+                    user.setUsername(type.getValue() + "t " + style.getValue() + "s " + i);
                     user.setEnable('1');
                     user.setPassword(password);
                     user.setRole(AuthorityConstant.shop);
@@ -222,7 +222,7 @@ class ShoppingWebApplicationTests {
                     Enterprise enterprise = new Enterprise();
                     enterprise.setId(user.getEnterpriseId());
                     enterprise.setUserId(user.getId());
-                    enterprise.setEnterpriseName(type.getValue() + style.getValue() + i + "s");
+                    enterprise.setEnterpriseName(user.getUsername() + "e ");
                     enterprise.setPhoneNumber("123");
                     enterpriseList.add(enterprise);
 
@@ -236,8 +236,8 @@ class ShoppingWebApplicationTests {
                         shop.setPrice("0~900");
                         shop.setType(type.getId());
                         shop.setStyle(style.getId());
-                        shop.setSales(random.nextInt(100));
-                        shop.setName(enterprise.getEnterpriseName() + j);
+                        shop.setSales(random.nextInt(10000));
+                        shop.setName(enterprise.getEnterpriseName() + j + "shop ");
                         shopList.add(shop);
 
                         //添加标签
@@ -248,7 +248,7 @@ class ShoppingWebApplicationTests {
                             ShopItem shopItem = new ShopItem();
                             shopItem.setShopId(shop.getId());
                             shopItem.setId(UUID.randomUUID().toString());
-                            shopItem.setName(shop.getName() + k);
+                            shopItem.setName(shop.getName() + k + "item");
                             shopItem.setPrice((k + 1) * 100.00);
                             shopItem.setStock(10);
                             shopItemList.add(shopItem);

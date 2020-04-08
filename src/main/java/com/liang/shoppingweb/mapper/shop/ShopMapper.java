@@ -38,13 +38,26 @@ public interface ShopMapper {
     @Select("select s.* from tbl_shop s inner join tbl_collect c on s.id = c.shop_id where c.user_id = #{userId} order by create_date asc")
     List<Shop> getCollectShopListByPage(String userId);
 
+//    @Select("<script> SELECT s.* FROM" +
+//            "(select * from tbl_shop " +
+//            "where enable = '1' " +
+//            "<if test=\"type != null and '' != type \">and type = #{type} </if>" +
+//            "<if test=\"style != null and '' != style \">and style = #{style} </if>" +
+//            "<if test=\"keyword != null and '' != keyword \">and name like concat('%',#{keyword},'%') </if>) s " +
+//            "${tagListQueryString} " +
+//            "order by s.sales desc" +
+//            "</script>")
+//    List<Shop> getShopListBySearchInfo(SearchInfo searchInfo);
+
     @Select("<script> SELECT s.* FROM" +
             "(select * from tbl_shop " +
             "where enable = '1' " +
             "<if test=\"type != null and '' != type \">and type = #{type} </if>" +
             "<if test=\"style != null and '' != style \">and style = #{style} </if>" +
             "<if test=\"keyword != null and '' != keyword \">and name like concat('%',#{keyword},'%') </if>) s " +
-            "${tagListQueryString} " +
+            "<if test=\"tagDicIds != null and '' != tagDicIds \">inner join " +
+            "(select shop_id from tbl_tag where dic_id in ${tagDicIds} " +
+            "group by shop_id having count(dic_id) = #{tagListSize}) t on s.id = t.shop_id </if> " +
             "order by s.sales desc" +
             "</script>")
     List<Shop> getShopListBySearchInfo(SearchInfo searchInfo);

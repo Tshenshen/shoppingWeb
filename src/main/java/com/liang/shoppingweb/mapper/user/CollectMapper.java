@@ -16,7 +16,7 @@ public interface CollectMapper {
     void addCollect(Collect collect);
 
     @Delete("delete from tbl_collect where user_id = #{userId} and shop_id = #{shopId}")
-    void deleteCollectByShopId(Collect collect);
+    int deleteCollectByShopId(Collect collect);
 
     @Delete("delete from tbl_collect where id = #{id}")
     void deleteCollectById(Collect collect);

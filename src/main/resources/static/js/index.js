@@ -1,3 +1,7 @@
+function Tag() {
+    this.dicId = ''
+}
+
 new Vue({
     el: "#app",
     data: {
@@ -55,12 +59,12 @@ new Vue({
             this.pageChange(1)
         },
         removeTag(index) {
-            this.shopSearchInfo.tagList.splice(index, 1, {dicId: ''});
+            this.shopSearchInfo.tagList.splice(index, 1, new Tag());
             this.pageChange(1)
         },
         pageChange(curPage) {
             var _that = this;
-            _that.loading ++;
+            _that.loading++;
             _that.shopSearchInfo.pageNum = curPage;
             _that.getShopListBySearchInfo()
         },
@@ -83,7 +87,7 @@ new Vue({
                 console.log(reason);
                 _that.$message.error("获取店铺列表错误！");
             }).finally(function () {
-                _that.loading --;
+                _that.loading--;
             });
         },
         getShopSearchInfoStr() {
@@ -118,7 +122,7 @@ new Vue({
                 this.shopSearchInfo.keyword = '';
                 this.shopSearchInfo.tagList = [];
                 for (var i = 0; i < this.paramTagDic.length; i++) {
-                    this.shopSearchInfo.tagList.push({tag: {}})
+                    this.shopSearchInfo.tagList.push(new Tag())
                 }
             }
             this.pageChange(1)
@@ -172,7 +176,7 @@ new Vue({
             }).then(function (value) {
                 if (value.data.success) {
                     for (var i = 0; i < value.data.content.length; i++) {
-                        _that.shopSearchInfo.tagList.push({dicId: ''})
+                        _that.shopSearchInfo.tagList.push(new Tag())
                     }
                     _that.paramTagDic = value.data.content;
                 } else {

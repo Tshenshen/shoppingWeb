@@ -26,7 +26,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @ConfigurationProperties(prefix = "shop")
 @Service
@@ -155,7 +157,7 @@ public class ShopService {
 
     public PageInfo<Shop> getShopListBySearchInfo(SearchInfo searchInfo) {
         PageHelper.startPage(searchInfo.getPageNum(), PageConstant.pageSize);
-        searchInfo.tagListToTagListQueryString();
+        searchInfo.tagListToTagDicIds();
         return new PageInfo<>(shopMapper.getShopListBySearchInfo(searchInfo));
     }
 
@@ -179,9 +181,11 @@ public class ShopService {
         PageHelper.startPage(pageNum, PageConstant.pageSize);
         Cookie[] cookies = request.getCookies();
         String styleIds = null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName() != null && cookie.getName().equals(UserConstant.recommend)) {
-                styleIds = QueryPramFormatUtils.arrayToIn(cookie.getValue().split("#"));
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName() != null && cookie.getName().equals(UserConstant.recommend)) {
+                    styleIds = QueryPramFormatUtils.arrayToIn(cookie.getValue().split("#"));
+                }
             }
         }
         return new PageInfo<>(shopMapper.getShopListByStyleIds(styleIds));

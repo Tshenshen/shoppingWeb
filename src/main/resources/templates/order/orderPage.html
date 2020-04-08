@@ -85,8 +85,8 @@
                                             :value="receiver.id">
                                     </el-option>
                                     <el-option v-if="receivers.length < 10"
-                                            :label="'+添加新的收件地址'"
-                                            :value="0">
+                                               :label="'+添加新的收件地址'"
+                                               :value="0">
                                     </el-option>
                                     <el-option v-if="receivers.length === 10"
                                                :label="'收件地址最多10个'"
@@ -119,20 +119,20 @@
                 <input hidden="hidden" name="orderId" ref="orderId" value="">
             </form>
             <!--新增收货地址对话框-->
-            <el-dialog title="收货地址" :visible.sync="newDialogFormVisible">
+            <el-dialog title="收货地址" :visible.sync="newDialogFormVisible" @close="closeDialog">
                 <el-form :model="newReceiverInfo" status-icon :rules="rules" ref="newReceiverForm">
-                    <el-form-item label="收件人"  prop="receiver">
+                    <el-form-item label="收件人" prop="receiver">
                         <el-input v-model="newReceiverInfo.receiver"></el-input>
                     </el-form-item>
-                    <el-form-item label="电话"  prop="phoneNumber">
+                    <el-form-item label="电话" prop="phoneNumber">
                         <el-input v-model="newReceiverInfo.phoneNumber"></el-input>
                     </el-form-item>
-                    <el-form-item label="地址"  prop="address">
+                    <el-form-item label="地址" prop="address">
                         <el-input v-model="newReceiverInfo.address"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="newDialogFormVisible = false">取 消</el-button>
+                    <el-button @click="closeDialog">取 消</el-button>
                     <el-button type="primary" @click="addNewReceiverInfo">确 定</el-button>
                 </div>
             </el-dialog>
@@ -151,11 +151,11 @@
             orderList: [],
             receivers: [],
             receiveInfoId: '',
-            newDialogFormVisible:false,
-            newReceiverInfo:{
-                receiver:'',
-                phoneNumber:'',
-                address:''
+            newDialogFormVisible: false,
+            newReceiverInfo: {
+                receiver: '',
+                phoneNumber: '',
+                address: ''
             }, rules: {
                 receiver: [
                     {required: true, message: '请输入收件人姓名', trigger: 'blur'},
@@ -267,7 +267,7 @@
                 this.$refs.orderId.setAttribute("value", id);
                 this.$refs.toPayPageForm.submit();
             },
-            receiverChange(value){
+            receiverChange(value) {
                 if (value === 0) {
                     this.newDialogFormVisible = true;
                 }
@@ -298,8 +298,11 @@
                     console.log(reason);
                     _that.$message.error("请完善表单");
                 })
+            },
+            closeDialog() {
+                this.newDialogFormVisible = false;
+                this.receiveInfoId = ''
             }
-
         }
     })
 </script>

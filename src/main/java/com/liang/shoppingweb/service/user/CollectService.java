@@ -46,8 +46,10 @@ public class CollectService {
 
     public void cancelCollectShop(Collect collect) {
         collect.setUserId(LoginUtils.getCurrentUserId());
-        collectMapper.deleteCollectByShopId(collect);
-        favouriteService.updateWhenCancelCollect(collect.getShopId());
+        int updateNum = collectMapper.deleteCollectByShopId(collect);
+        if (updateNum > 0) {
+            favouriteService.updateWhenCancelCollect(collect.getShopId());
+        }
     }
 
     public int getCollectShopNumber() {

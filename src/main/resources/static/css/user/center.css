@@ -14,23 +14,34 @@
     background-color: #eeeeee;
 }
 
-.concerned {
-    width: 50%;
+.collect {
+    width: 30%;
 }
 
 .setting {
-    width: 46%;
+    width: 66%;
 }
 
-.text-item {
-    width: 50%;
+.setting-text-item {
+    width: 33%;
     text-align: center;
     line-height: 110px
 }
 
-.item {
+.collect-item {
+    width: 100%;
+    text-align: center;
+}
+
+.wallet-item{
     width: 50%;
     text-align: center;
+}
+
+.wallet-text-item{
+    width: 50%;
+    text-align: center;
+    line-height: 110px
 }
 
 .wallet {

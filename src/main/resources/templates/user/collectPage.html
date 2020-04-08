@@ -23,9 +23,11 @@
             我的收藏<i class="el-icon-collection"></i></h1>
     </div>
     <div class=" order-fra">
-
         <el-tabs type="border-card">
             <el-tab-pane label="收藏的店铺">
+                <div v-if="collectList.length === 0">
+                    <h4 style="text-align: center">空空如也，快去添加自己喜欢的店铺吧~</h4>
+                </div>
                 <div class="shop left-order" v-for="(shop,index) in collectList" :key="index">
                     <el-image :src="shopImg(shop)" class="shop-image left-order">
                         <div slot="error" class="image-slot shop-image-error">
@@ -34,10 +36,14 @@
                     </el-image>
                     <div class="shop-right left-order">
                         <div class="shop-title">
-                            {{shop.name}}
+                            <a :href="shopUrl(shop.id)" target="_blank">
+                                {{shop.name}}</a>
                         </div>
                         <div class="shop-price">
                             价格：{{shopPrice(shop.price)}}
+                        </div>
+                        <div class="shop-collect-cancel">
+                            <el-link type="primary" @click="cancelCollectShop(index)">取消收藏</el-link>
                         </div>
                     </div>
                 </div>
@@ -71,6 +77,11 @@
             this.getCollectShopList();
         },
         computed: {
+            shopUrl() {
+                return function (id) {
+                    return ctx + '/shop/detailPage?shopId=' + id;
+                }
+            },
             shopImg() {
                 return function (shop) {
                     if (shop.images.length > 0) {
@@ -88,6 +99,26 @@
             }
         },
         methods: {
+            cancelCollectShop(index) {
+                var _that = this;
+                axios({
+                    method: "delete",
+                    url: "cancelCollectShop",
+                    data: {
+                        shopId: _that.collectList[index].id
+                    }
+                }).then(function (value) {
+                    if (value.data.success) {
+                        _that.collectList.splice(index,1);
+                        _that.$message.success(value.data.message);
+                    } else {
+                        _that.$message.error(value.data.message);
+                    }
+                }).catch(function (reason) {
+                    console.log(reason);
+                    _that.$message.error("取消收藏错误！");
+                });
+            },
             getCollectShopList() {
                 var _that = this;
                 axios({

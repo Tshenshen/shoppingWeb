@@ -29,13 +29,13 @@
                 <span style="font-size: 20px">我的钱包</span>
             </div>
             <el-divider style="margin: 10px 0"></el-divider>
-            <div class="item left-order">
+            <div class="wallet-item left-order">
                 <h3 style="color: red" ref="balance">
                     &yen;[[${userInfo.balance.toString()}]]
                 </h3>
                 <div style="margin-top: 15px">余额</div>
             </div>
-            <div class="text-item left-order">
+            <div class="wallet-text-item left-order">
                 <a @click.prevent="rechargeDialogVisible=true">充值</a>
             </div>
         </div>
@@ -51,34 +51,31 @@
         </div>
         <!--设置-->
         <div class=" right-bar left-order">
-            <div class="left-order concerned">
+            <div class="left-order collect">
                 <div>
                     <span style="font-size: 20px">我的收藏</span>
                 </div>
                 <el-divider style="margin: 10px 0"></el-divider>
-                <div class="item left-order">
+                <div class="collect-item left-order">
                     <h3>
                         <a th:href="getCollectPage" target="_blank">{{collectShopNumber}}</a>
                     </h3>
                     <div style="margin-top: 15px">收藏的店铺</div>
                 </div>
-                <div class="item left-order">
-                    <h3>
-                        <a>0<!--todo 需要补充收藏功能--></a>
-                    </h3>
-                    <div style="margin-top: 15px">收藏的商家</div>
-                </div>
             </div>
             <el-divider direction="vertical"></el-divider>
             <div class="left-order setting">
                 <div>
-                    <span style="font-size: 20px">我的设置</span>
+                    <span style="font-size: 20px">我的菜单</span>
                 </div>
                 <el-divider style="margin: 10px 0"></el-divider>
-                <div class="text-item left-order">
-                    <a th:href="@{/user/getReceiveSettingPage}">收货地址</a>
+                <div class="setting-text-item left-order">
+                    <a th:href="@{/cart/cartPage}" target="_blank">购物车</a>
                 </div>
-                <div class="text-item left-order">
+                <div class="setting-text-item left-order">
+                    <a th:href="@{/user/getReceiveSettingPage}" target="_blank">收货地址</a>
+                </div>
+                <div class="setting-text-item left-order">
                     <a th:href="@{/user/toEnterpriseCenter}">商家中心</a>
                 </div>
             </div>
@@ -224,7 +221,7 @@
 
             </el-tab-pane>
 
-            <el-tab-pane label="待评价">待评价</el-tab-pane><!--todo 待评价-->
+            <!--<el-tab-pane label="待评价">待评价</el-tab-pane>&lt;!&ndash;todo 待评价&ndash;&gt;-->
 
             <el-tab-pane label="退款">
                 <div v-if="orderList.refundList.length === 0" class="none-fra">

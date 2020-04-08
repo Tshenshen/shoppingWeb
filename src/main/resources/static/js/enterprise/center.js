@@ -7,7 +7,7 @@ new Vue({
             refundList: []
         },
         rechargeDialogVisible: false,
-        payType: '测试',
+        payType: '余额',
         rechargeForm: {
             balance: ""
         },
