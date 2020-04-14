@@ -47,7 +47,7 @@
                 <div>
                     <div class="cart-filter-bar">
                         <div class="switch-cart-item curr">
-                            <h3 style="color: red">全部商品<span class="number"> {{cartList.length}}</span></h3>
+                            <h3 style="color: red">全部商品<span class="number"> {{cartListLength}}</span></h3>
                         </div>
                     </div>
                 </div>
@@ -181,6 +181,14 @@
             })
         },
         computed: {
+            cartListLength() {
+                var _that = this;
+                var cartListLength = 0;
+                _that.cartList.forEach(function (cartShopVo) {
+                    cartListLength += cartShopVo.cartVoList.length;
+                });
+                return cartListLength
+            },
             picUrl() {
                 return function (index) {
                     var _that = this;

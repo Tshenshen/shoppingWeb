@@ -113,8 +113,8 @@
         <div class="search-bar">
             <div>
                 搜索商品：
-                <input v-model="keyword" style="width: 35%">
-                <el-button size="mini" type="danger" @click="searchWithKeyword(keyword)">搜索</el-button>
+                <input v-model="keyword" style="width: 35%" @keyup.enter="searchWithKeyword(keyword)">
+                <el-button size="mini" type="danger" @click.enter="searchWithKeyword(keyword)">搜索</el-button>
             </div>
         </div>
     </div>
