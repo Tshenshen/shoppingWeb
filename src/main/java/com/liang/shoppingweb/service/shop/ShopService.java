@@ -51,10 +51,9 @@ public class ShopService {
 
     public void setImagePath(String imagePath) {
         if (!imagePath.endsWith("/")) {
-            this.imagePath = imagePath + "/";
-        } else {
-            this.imagePath = imagePath;
+            imagePath = imagePath + "/";
         }
+        this.imagePath = imagePath + "image/";
     }
 
     public List<Shop> getShopListByEnterpriseId() {
