@@ -106,7 +106,7 @@ class ShoppingWebApplicationTests {
     @Resource
     private TagMapper tagMapper;
 
-
+/*
     @BeforeAll
     @Test
     void initLogin() {
@@ -587,5 +587,5 @@ class ShoppingWebApplicationTests {
         System.out.println(carts);
     }
 
-
+*/
 }
